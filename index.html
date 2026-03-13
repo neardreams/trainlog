@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>訓練進度總覽 v6</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;background:#f2f2f7;color:#1c1c1e;font-size:14px}
+.page-header{background:linear-gradient(135deg,#1c1c1e 0%,#3a3a3c 100%);color:white;padding:20px 20px 14px;text-align:center}
+.page-header h1{font-size:1.35rem;font-weight:700;margin-bottom:3px}
+.page-header p{font-size:0.75rem;opacity:0.55}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;padding:9px 16px;background:white;border-bottom:1px solid #e5e5ea;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.btn{padding:7px 14px;border-radius:20px;border:none;cursor:pointer;font-size:0.78rem;font-weight:600;transition:all 0.15s}
+.btn-primary{background:#007aff;color:white}
+.btn-secondary{background:#f2f2f7;color:#1c1c1e}
+.btn:hover{opacity:0.85;transform:scale(1.02)}
+.sort-select{padding:6px 10px;border-radius:20px;border:1px solid #e5e5ea;font-size:0.78rem;background:white;cursor:pointer;color:#1c1c1e}
+/* Week panel */
+.week-panel{background:white;border-bottom:1px solid #e5e5ea;padding:10px 12px 12px}
+.week-panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.week-panel-title{font-size:0.72rem;font-weight:700;color:#8e8e93;text-transform:uppercase;letter-spacing:.5px}
+.week-nav{display:flex;gap:4px}
+.week-nav-btn{background:#f2f2f7;border:none;cursor:pointer;font-size:0.8rem;padding:2px 8px;border-radius:8px;color:#3a3a3c;font-weight:600}
+.week-nav-btn:hover{background:#e5e5ea}
+.week-strip{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.week-strip::-webkit-scrollbar{display:none}
+.day-cell{flex:0 0 auto;width:52px;border-radius:10px;padding:5px 3px 6px;text-align:center;cursor:pointer;border:1.5px solid transparent;transition:all 0.12s;background:#f9f9fb}
+.day-cell:hover{border-color:#007aff;background:#f0f7ff}
+.day-cell.today{background:#007aff;color:white}
+.day-cell.today .day-dow,.day-cell.today .day-num{color:white!important}
+.day-cell.trained{background:#f2f2f7}
+.day-cell.active-sel{border-color:#ff9500!important;box-shadow:0 0 0 2px rgba(255,149,0,.25)}
+.day-dow{font-size:0.6rem;font-weight:700;color:#8e8e93;margin-bottom:2px;text-transform:uppercase}
+.day-num{font-size:0.95rem;font-weight:700;color:#1c1c1e;line-height:1}
+.day-dots{display:flex;flex-wrap:wrap;justify-content:center;gap:2px;margin-top:4px;min-height:8px}
+.day-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+/* Cards */
+.section{padding:0 12px 4px}
+.section-title{font-size:0.9rem;font-weight:700;padding:16px 4px 10px;color:#3a3a3c;display:flex;align-items:center;gap:8px}
+.card{background:white;border-radius:14px;margin-bottom:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.07)}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;user-select:none}
+.card-header:hover{background:rgba(0,0,0,0.02)}
+.card-title{display:flex;align-items:center;gap:9px}
+.card-icon{font-size:1.15rem}
+.card-name{font-weight:600;font-size:0.92rem}
+.card-meta{display:flex;align-items:center;gap:5px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
+.badge{padding:3px 9px;border-radius:10px;font-size:0.7rem;font-weight:600;white-space:nowrap}
+.badge-latest{background:#e8f4ff;color:#007aff}
+.badge-days{font-size:0.68rem;font-weight:700;padding:2px 7px;border-radius:8px}
+.badge-days-fresh{background:#e8faf0;color:#1a7a3a}
+.badge-days-mid{background:#fff3e0;color:#b45309}
+.badge-days-old{background:#ffebeb;color:#cc0000}
+.card-toggle{font-size:0.7rem;color:#c7c7cc;margin-left:4px}
+.card-body{display:none;border-top:1px solid #f2f2f7}
+.card-body.open{display:block}
+.notes-section{padding:10px 14px;background:#fafafa;border-bottom:1px solid #eee}
+.notes-title{font-size:0.68rem;font-weight:700;color:#8e8e93;text-transform:uppercase;margin-bottom:5px;letter-spacing:.5px}
+.note-item{font-size:0.78rem;color:#3a3a3c;padding:2px 0 2px 14px;position:relative}
+.note-item::before{content:'·';position:absolute;left:4px;color:#8e8e93;font-size:1rem;top:0}
+.trend-section{display:flex;gap:16px;padding:12px 14px;background:#f9f9fb;border-bottom:1px solid #eee;flex-wrap:wrap}
+.trend-item{flex:1;min-width:180px}
+.trend-label{font-size:0.68rem;font-weight:700;color:#8e8e93;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.trend-body{display:flex;align-items:center;gap:10px}
+.trend-stats{display:flex;flex-direction:column;gap:2px}
+.trend-stat{display:flex;gap:6px;align-items:baseline}
+.trend-stat span{font-size:0.68rem;color:#8e8e93;width:28px}
+.trend-stat strong{font-size:0.78rem;color:#1c1c1e}
+.spark-js{position:relative;width:140px;height:44px;flex-shrink:0;cursor:crosshair}
+.spark-js svg{overflow:visible}
+.spark-tooltip{position:fixed;background:rgba(28,28,30,0.92);color:#fff;font-size:0.68rem;padding:4px 8px;border-radius:6px;pointer-events:none;white-space:nowrap;z-index:9999;display:none;line-height:1.5}
+.summary-bar{display:flex;gap:6px;padding:8px 14px 10px;flex-wrap:wrap;border-bottom:1px solid #f2f2f7}
+.stat-chip{background:#f2f2f7;border-radius:10px;padding:4px 9px;font-size:0.72rem;color:#3a3a3c}
+.stat-chip strong{color:#1c1c1e}
+.table-wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:0.75rem}
+th{background:#f5f5f7;color:#6e6e73;font-size:0.65rem;font-weight:700;text-transform:uppercase;padding:7px 8px;text-align:left;letter-spacing:.3px;white-space:nowrap}
+td{padding:8px 8px;border-bottom:1px solid #f8f8f8;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even) td{background:#fafafa}
+tr:hover td{background:#f0f8ff!important}
+.date-cell{white-space:nowrap;font-weight:600;color:#007aff;font-size:0.72rem;cursor:pointer;text-decoration:underline dotted}
+.date-cell:hover{color:#0056b3}
+.sets-cell{line-height:1.5}
+.volume-cell{font-weight:700;color:#007aff;white-space:nowrap}
+.volume-na{color:#c7c7cc;font-style:italic}
+.feel-cell{color:#3a3a3c;max-width:120px;line-height:1.4}
+.exhaustion-badge{display:inline-block;padding:2px 7px;border-radius:8px;font-size:0.67rem;font-weight:600;white-space:nowrap}
+.condition-cell{color:#3a3a3c}
+.cue-cell{color:#8e8e93;max-width:160px;line-height:1.4}
+/* ── Modal ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:10000;display:none;align-items:center;justify-content:center;padding:16px}
+.modal-overlay.open{display:flex}
+.modal-box{background:white;border-radius:18px;width:100%;max-width:860px;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.3);overflow:hidden}
+.modal-header{padding:12px 16px;border-bottom:1px solid #f2f2f7;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.modal-back{background:#f2f2f7;border:none;border-radius:10px;cursor:pointer;font-size:0.8rem;font-weight:700;padding:5px 10px;color:#007aff;display:none}
+.modal-back:hover{background:#e5e5ea}
+.modal-title{font-size:0.95rem;font-weight:700;flex:1}
+.modal-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:#8e8e93;line-height:1;padding:0 4px;flex-shrink:0}
+.modal-close:hover{color:#1c1c1e}
+/* Range bar */
+.modal-range-bar{padding:8px 14px 6px;border-bottom:1px solid #f2f2f7;display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex-shrink:0;background:#fafafa}
+.range-chips{display:flex;gap:4px;flex-wrap:wrap}
+.range-chip{padding:4px 10px;border-radius:14px;border:1.5px solid #e5e5ea;font-size:0.72rem;font-weight:600;cursor:pointer;color:#3a3a3c;background:white;transition:all 0.12s}
+.range-chip:hover{border-color:#007aff;color:#007aff}
+.range-chip.active{background:#007aff;color:white;border-color:#007aff}
+.range-sep{color:#e5e5ea;font-size:0.8rem}
+.list-ctrl{display:flex;gap:6px;align-items:center;margin-left:auto}
+.ctrl-sel{padding:4px 8px;border-radius:12px;border:1.5px solid #e5e5ea;font-size:0.72rem;background:white;cursor:pointer;color:#3a3a3c}
+/* Modal tabs */
+.modal-tabs{display:flex;border-bottom:1px solid #e5e5ea;flex-shrink:0}
+.modal-tab{flex:1;padding:9px 8px;font-size:0.78rem;font-weight:600;text-align:center;cursor:pointer;color:#8e8e93;border-bottom:2.5px solid transparent;transition:all 0.15s}
+.modal-tab.active{color:#007aff;border-bottom-color:#007aff}
+.modal-content{flex:1;overflow-y:auto}
+.modal-panel{display:none;padding:0}
+.modal-panel.active{display:block}
+.raw-journal{white-space:pre-wrap;font-family:monospace;font-size:0.74rem;color:#3a3a3c;line-height:1.7;background:#f9f9fb;padding:14px;border-radius:10px;margin:14px}
+/* Range list */
+.range-group-header{display:flex;align-items:center;gap:8px;padding:10px 14px 6px;font-size:0.72rem;font-weight:700;color:#8e8e93;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid #f2f2f7;background:#fafafa;cursor:pointer;user-select:none}
+.range-group-header:hover{background:#f2f2f7}
+.range-group-toggle{font-size:0.65rem;color:#c7c7cc;margin-left:auto}
+.range-group-body{display:block}
+.ex-row{display:flex;align-items:center;gap:8px;padding:7px 14px;border-bottom:1px solid #f8f8f8;cursor:pointer;transition:background 0.1s}
+.ex-row:hover{background:#f0f7ff}
+.ex-row:last-child{border-bottom:none}
+.ex-row-icon{font-size:1rem;flex-shrink:0}
+.ex-row-name{font-weight:600;font-size:0.82rem;flex:1}
+.ex-row-date{font-size:0.68rem;color:#8e8e93;white-space:nowrap}
+.ex-row-sets{font-size:0.72rem;color:#3a3a3c;max-width:160px;text-overflow:ellipsis;overflow:hidden;white-space:nowrap}
+.ex-row-vol{font-size:0.72rem;font-weight:700;color:#007aff;white-space:nowrap;min-width:60px;text-align:right}
+.ex-row-arrow{color:#c7c7cc;font-size:0.7rem;flex-shrink:0}
+/* Exercise detail (drill-down) */
+.ex-detail-panel{padding:0}
+.ex-detail-trend{padding:12px 14px;background:#f9f9fb;border-bottom:1px solid #eee}
+/* Compare */
+.compare-pickers{display:flex;gap:12px;padding:12px 14px;border-bottom:1px solid #f2f2f7;flex-wrap:wrap;align-items:center}
+.compare-picker-group{display:flex;align-items:center;gap:6px;flex:1;min-width:200px}
+.compare-picker-group label{font-size:0.72rem;font-weight:700;color:#8e8e93;white-space:nowrap}
+.date-input{padding:5px 9px;border-radius:10px;border:1.5px solid #e5e5ea;font-size:0.78rem;cursor:pointer}
+.compare-btn{padding:5px 14px;border-radius:14px;background:#007aff;color:white;border:none;font-size:0.78rem;font-weight:600;cursor:pointer}
+.compare-btn:hover{opacity:0.85}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid #f2f2f7}
+.compare-col{border-right:1px solid #f2f2f7;overflow-x:auto}
+.compare-col:last-child{border-right:none}
+.compare-col-header{padding:8px 12px;font-size:0.72rem;font-weight:700;background:#f5f5f7;position:sticky;top:0;z-index:1;border-bottom:1px solid #e5e5ea}
+.compare-ex-row{padding:6px 12px;border-bottom:1px solid #f8f8f8;font-size:0.74rem}
+.compare-ex-row:hover{background:#f0f7ff}
+.compare-ex-name{font-weight:600;margin-bottom:2px}
+.compare-ex-detail{color:#8e8e93;font-size:0.68rem}
+.compare-ex-vol{font-weight:700;color:#007aff;font-size:0.72rem}
+.compare-match{background:#f0fff4}
+.compare-delta-pos{color:#1a7a3a;font-weight:700}
+.compare-delta-neg{color:#cc0000;font-weight:700}
+.compare-delta-zero{color:#8e8e93}
+.compare-only{background:#fff8f0}
+.no-data{padding:24px;text-align:center;color:#8e8e93;font-size:0.82rem}
+
+</style>
+</head>
+<body>
+<div class="page-header">
+  <h1>🏋️ 訓練進度總覽 v6</h1>
+  <p>JSON 外部資料 · 互動圖表 · 日期點擊看當日明細 · 動態排序</p>
+</div>
+<div class="toolbar">
+  <button class="btn btn-primary" onclick="toggleAll(true)">展開全部</button>
+  <button class="btn btn-secondary" onclick="toggleAll(false)">收合全部</button>
+  <select class="sort-select" id="sort-select" onchange="applySortAndRender()">
+    <option value="group">依部位分類</option>
+    <option value="recent">最近訓練優先</option>
+    <option value="overdue">最久未練優先</option>
+    <option value="maxwt">最大重量↓</option>
+    <option value="volume">累計容量↓</option>
+    <option value="sessions">訓練次數↓</option>
+    <option value="progress">重量進步幅度↓</option>
+    <option value="name">名稱字母序</option>
+  </select>
+</div>
+<div class="week-panel" id="week-panel">
+  <div class="week-panel-header">
+    <span class="week-panel-title" id="week-panel-label">最近 14 天</span>
+    <div class="week-nav">
+      <button class="week-nav-btn" onclick="shiftWeek(-7)">‹ 前一週</button>
+      <button class="week-nav-btn" onclick="shiftWeek(0)">今天</button>
+      <button class="week-nav-btn" onclick="shiftWeek(7)">後一週 ›</button>
+    </div>
+  </div>
+  <div class="week-strip" id="week-strip"></div>
+</div>
+<div id="main-content"></div>
+<div class="spark-tooltip" id="spark-tooltip"></div>
+
+<!-- ── Day detail modal ── -->
+<div class="modal-overlay" id="day-modal" onclick="closeDayModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <!-- Header -->
+    <div class="modal-header">
+      <button class="modal-back" id="modal-back-btn" onclick="modalGoBack()">← 返回</button>
+      <div class="modal-title" id="modal-title-text">—</div>
+      <button class="modal-close" onclick="closeDayModal()">✕</button>
+    </div>
+    <!-- Range bar (hidden when in exercise detail view) -->
+    <div class="modal-range-bar" id="modal-range-bar">
+      <div class="range-chips" id="range-chips">
+        <span class="range-chip active" data-days="0" onclick="setRange(0)">當天</span>
+        <span class="range-chip" data-days="3"  onclick="setRange(3)">±3天</span>
+        <span class="range-chip" data-days="7"  onclick="setRange(7)">本週±7</span>
+        <span class="range-chip" data-days="14" onclick="setRange(14)">±14天</span>
+        <span class="range-chip" data-days="30" onclick="setRange(30)">±30天</span>
+      </div>
+      <span class="range-sep">|</span>
+      <div class="list-ctrl">
+        <select class="ctrl-sel" id="group-by-sel" onchange="renderRangePanel()">
+          <option value="exercise">依動作</option>
+          <option value="date">依日期</option>
+          <option value="group">依部位</option>
+        </select>
+        <select class="ctrl-sel" id="sort-by-sel" onchange="renderRangePanel()">
+          <option value="date-desc">時間↓新→舊</option>
+          <option value="date-asc">時間↑舊→新</option>
+          <option value="vol-desc">容量↓</option>
+          <option value="wt-desc">重量↓</option>
+          <option value="name">名稱</option>
+        </select>
+      </div>
+    </div>
+    <!-- Tabs -->
+    <div class="modal-tabs" id="modal-tabs">
+      <div class="modal-tab active" id="tab-range"   onclick="switchModalTab('range')">📊 訓練整理</div>
+      <div class="modal-tab"        id="tab-compare" onclick="switchModalTab('compare')">🔍 日期比較</div>
+      <div class="modal-tab"        id="tab-raw"     onclick="switchModalTab('raw')">📄 原始日誌</div>
+    </div>
+    <!-- Content -->
+    <div class="modal-content">
+      <div class="modal-panel active" id="panel-range"></div>
+      <div class="modal-panel"        id="panel-compare">
+        <div class="compare-pickers">
+          <div class="compare-picker-group">
+            <label>📅 日期 A</label>
+            <input type="date" class="date-input" id="cmp-date-a">
+          </div>
+          <div class="compare-picker-group">
+            <label>📅 日期 B</label>
+            <input type="date" class="date-input" id="cmp-date-b">
+          </div>
+          <button class="compare-btn" onclick="renderCompare()">比較</button>
+        </div>
+        <div id="compare-result"></div>
+      </div>
+      <div class="modal-panel" id="panel-raw"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Embedded data ─────────────────────────────────────────────────────────────
+const EXERCISES   = [{"id": "zercher_squat", "name": "熊抱槓深蹲", "group": "腿部", "icon": "🏋️", "notes": ["骨盆稍微前傾把屁股往上翹；上半身有一個傾斜角度", "起槓時屁股不要往前頂，往上只靠腳往上踢", "腳趾用力抓地，重心才穩"], "history": [{"date": "2026-01-29", "sets": [[50, 7], [50, 8], [50, 8]], "feel": "背闊（前日疲勞）感受明顯；手肘不適感重", "exhaustion": "吃力", "condition": "背闊有延遲性痠痛", "cue": "護肘太小戴不上；第三組後股四頭大量發力，屁股沒力"}, {"date": "2026-02-02", "sets": [[70, 10], [50, 10], [50, 10], [50, 10]], "feel": "70kg 核心撐不住；腿部感受正常", "exhaustion": "力竭", "condition": "正常", "cue": "70kg第六七下核心就撐不住；組間休息沒控制好"}, {"date": "2026-02-11", "sets": [[null, null]], "feel": "教練課動作練習，無量化", "exhaustion": "—", "condition": "正常", "cue": "腳趾用力抓地；骨盆前傾屁股往後啟動；上半身要有傾斜角度"}, {"date": "2026-02-17", "sets": [[50, 10], [60, 10], [60, 10], [60, 10]], "feel": "心肺跟核心跟不上，腿的刺激越來越少", "exhaustion": "吃力", "condition": "髖部外側輕微痠痛（持續兩天）", "cue": "現在瓶頸是心肺與核心，不是腿；休息控制要更嚴格"}, {"date": "2026-02-23", "sets": [[60, 10], [60, 10], [60, 10], [60, 10]], "feel": "心肺先受不了", "exhaustion": "吃力", "condition": "髖部外側痠痛（上次練後未完全恢復）", "cue": "現在是心肺>核心>腿的受不了順序"}, {"date": "2026-02-25", "sets": [[null, null]], "feel": "教練課：腳趾抓地後屁股有酸感（之前沒有）", "exhaustion": "—", "condition": "正常", "cue": "骨盆要往前側腳方向轉，不只是轉腰"}, {"date": "2026-03-10", "sets": [[40, 10], [50, 10], [50, 10], [50, 10]], "feel": "感冒痊癒後心跳爆了，心跳恢復也較慢；第四組心跳接近170", "exhaustion": "吃力", "condition": "感冒剛痊癒", "cue": "試著髖往後但上半身不要過分前傾；今天忘記錄影"}]}, {"id": "ssb_squat", "name": "SSB 背槓深蹲", "group": "腿部", "icon": "🏋️", "notes": ["手向上撐到鎖骨，讓槓靠在斜方肌而非頸椎", "往下蹲時重心壓在身體前後正中間", "後面幾下容易上半身代償；姿勢跑掉就腰痠"], "history": [{"date": "2026-01-31", "sets": [[40, null]], "feel": "40kg 感覺不重，但腿後側到第二三組稍微沒力了", "exhaustion": "吃力", "condition": "腿有點緊繃（前日腿日疲勞）", "cue": "沒有明確記錄組次；這種無力感不是酸脹感，像要沒電"}, {"date": "2026-02-05", "sets": [[50, 10], [50, 10], [50, 10], [50, 10]], "feel": "大腿後側酸緊無力（不是斷電感）", "exhaustion": "普通", "condition": "正常", "cue": "空槓重量不確定（估30-35kg）；這次腿後側是「緊無力」而非「斷電」，進步"}, {"date": "2026-02-13", "sets": [[55, 10], [55, 10], [55, 10], [55, 10]], "feel": "右腳明顯疲勞更多", "exhaustion": "吃力", "condition": "正常", "cue": "右腳不平衡；腰有些正常痠感"}, {"date": "2026-02-20", "sets": [[65, 10], [65, 10], [65, 10], [65, 10]], "feel": "做到後面腰有點正常的痠", "exhaustion": "吃力", "condition": "正常", "cue": "特別注意髖屈；手往上撐讓槓落在斜方肌"}, {"date": "2026-02-28", "sets": [[75, 10], [75, 10], [65, 10], [65, 10]], "feel": "後面兩三個有點上不來，想用上半身代償", "exhaustion": "力竭", "condition": "正常", "cue": "75kg時最後2-3下姿勢跑掉→腰痠；下次先從65開始"}]}, {"id": "leg_press", "name": "垂直腿推", "group": "腿部", "icon": "🦵", "notes": ["安全槓5，踏板由下往上第二格，腳踩由上往下第四格，站距偏寬", "重心放後面減少股四頭比例→左膝聲響減輕", "心肺容易先受不了，不是腿", "⚠️ 一邊各加X公斤 = 兩側合計，例如一邊各30kg = 總重60kg"], "history": [{"date": "2026-01-22", "sets": [[60, 10], [60, 10], [60, 10]], "feel": "第二組起腿後側越來越沒力，股四頭佔比越來越高；第三組做完已做不了", "exhaustion": "力竭", "condition": "正常", "cue": "放在分腿蹲後面做，心跳負擔比分腿蹲輕；一邊各30kg=總60kg"}, {"date": "2026-02-05", "sets": [[60, 10], [60, 10], [60, 10], [60, 10]], "feel": "大腿後側酸緊無力（不是直接斷電）", "exhaustion": "普通", "condition": "正常", "cue": "第一次做完是「緊無力感」而非「斷電感」，這是進步；左膝聲響在熱身時就出現"}, {"date": "2026-02-13", "sets": [[70, 10], [70, 10], [70, 10], [70, 10]], "feel": "左膝仍有異響，全程腰靠墊子", "exhaustion": "吃力", "condition": "正常", "cue": "下來不要下到那麼低，左膝聲響稍減；屁股感受偏少，行程可能不夠深"}, {"date": "2026-02-20", "sets": [[80, 10], [80, 10], [80, 10], [80, 10]], "feel": "後兩組最後幾下頭很脹；做完覺得有點累", "exhaustion": "吃力", "condition": "正常", "cue": "感覺心肺比腿先受不了；頭脹要注意閉氣方式"}, {"date": "2026-02-28", "sets": [[80, 10], [80, 10], [80, 10], [85, 10]], "feel": "最大瓶頸在心肺", "exhaustion": "吃力", "condition": "正常", "cue": "最後一組試85kg；戰鬥有氧後膝蓋內側靠小腿處有點痛"}]}, {"id": "bulgarian_split", "name": "後腳抬高蹲", "group": "腿部", "icon": "🦵", "notes": ["腳底三個重心平均；腳趾緊緊抓地板不要翹起來", "骨盆往前側腳方向轉（不只轉腰），臀部拉伸感才佳", "以左邊為優先決定右邊容量"], "history": [{"date": "2026-01-22", "sets": [[10, 10], [10, 10], [10, 10], [15, 10]], "feel": "第四組（左右各7.5kg）刺激明顯強很多", "exhaustion": "普通", "condition": "正常", "cue": "手有負重時上半身比較不會依賴手扶桿，挺得比較好"}, {"date": "2026-01-26", "sets": [[7.5, 10], [7.5, 10], [7.5, 10], [0, null]], "feel": "第四組空手，左腳8下就沒力", "exhaustion": "力竭（左腳）", "condition": "正常", "cue": "左右不平衡明顯；右腳15下、左腳8下"}, {"date": "2026-02-03", "sets": [[10, 10], [10, 10], [10, 10], [10, 10]], "feel": "心肺狀況比上次好，組間休息都小於2分鐘", "exhaustion": "普通", "condition": "正常", "cue": "前兩組扶槓，後兩組靠自身平衡"}, {"date": "2026-02-10", "sets": [[10, 10], [10, 10], [10, 10], [10, 10]], "feel": "最後一組前腳往前半步後側才有感", "exhaustion": "普通", "condition": "正常", "cue": "前三組前腳距離太後，股四頭介入過多；站距要調整"}, {"date": "2026-02-18", "sets": [[12.5, 10], [12.5, 10], [12.5, 10], [12.5, 10]], "feel": "正常", "exhaustion": "普通", "condition": "正常", "cue": "無特別記錄"}, {"date": "2026-02-24", "sets": [[15, 10], [15, 10], [15, 10], [15, 10]], "feel": "比較穩，不像之前晃得嚴重", "exhaustion": "普通", "condition": "正常", "cue": "後腳稍微張開一點，不要靠身體太近；穩定性改善"}, {"date": "2026-02-25", "sets": [[0, null]], "feel": "教練課空手，但屁股確實有酸感", "exhaustion": "—", "condition": "正常", "cue": "腳趾抓地；骨盆往前側腳轉；不只是轉腰，這樣臀部才有拉伸感，腰才不痠"}, {"date": "2026-03-11", "sets": [[0, null]], "feel": "做完腿後側有感，但腰有點酸", "exhaustion": "—", "condition": "正常", "cue": "教練課：坐姿測量站距（比日常站距長）；身體直直向下；後腳靠墊子中心點"}]}, {"id": "leg_extension", "name": "坐姿踢腿機", "group": "腿部", "icon": "🦵", "notes": ["做慢離心效果更好", "下次可以做一組再加重試試看"], "history": [{"date": "2026-01-29", "sets": [[38, 15], [38, 15], [38, 12]], "feel": "股四頭確實很痠", "exhaustion": "吃力", "condition": "有疲勞感（前日訓練）", "cue": "做慢離心"}, {"date": "2026-02-09", "sets": [[45, 10], [45, 10], [45, 10]], "feel": "踢起來比之前輕鬆", "exhaustion": "普通", "condition": "正常", "cue": "下次可以做一組再加重"}, {"date": "2026-02-13", "sets": [[18, 10], [23, 10], [23, 10]], "feel": "23kg有點吃力，18kg感受度較好", "exhaustion": "吃力", "condition": "正常", "cue": "感受度 18kg > 23kg，下次可以從18kg開始"}, {"date": "2026-02-17", "sets": [[52, 10], [52, 10], [52, 10]], "feel": "第一次做，做到會喘；心跳恢復快", "exhaustion": "普通", "condition": "正常", "cue": "後兩組頂峰停一秒再慢慢放回"}, {"date": "2026-02-23", "sets": [[59, 10]], "feel": "只記錄第一組", "exhaustion": "—", "condition": "有點累", "cue": "今天因為有點累提早結束"}, {"date": "2026-03-10", "sets": [[52, 10], [52, 10], [59, 10]], "feel": "踢起來比之前輕鬆（充分休息後）", "exhaustion": "輕鬆", "condition": "感冒剛痊癒", "cue": "前兩組52，最後一組試59kg"}]}, {"id": "leg_curl_seated", "name": "坐姿腿後勾", "group": "腿部", "icon": "🦵", "notes": ["練前放鬆小腿（坐姿按壓小腿內側）→ 左膝聲響減少", "全程保持張力，頂端不能放鬆"], "history": [{"date": "2026-01-29", "sets": [[38, 12], [38, 12], [38, 8.5]], "feel": "好像很久沒做，大腿後側有感", "exhaustion": "吃力", "condition": "有疲勞感", "cue": "左膝內側軟組織聲響跑出來；做慢離心"}, {"date": "2026-02-03", "sets": [[38, 10], [38, 10], [38, 10]], "feel": "最後一組左膝輕微聲響", "exhaustion": "普通", "condition": "正常", "cue": "最後一組最後幾下左腳膝蓋輕微聲響"}, {"date": "2026-02-10", "sets": [[45, 10], [38, 10], [38, 10]], "feel": "今天左膝沒有聲響", "exhaustion": "普通", "condition": "正常", "cue": "有放鬆小腿，左膝無聲響"}, {"date": "2026-02-18", "sets": [[52, 10], [52, 10], [38, 10]], "feel": "前兩組力竭感較重；第三組降重", "exhaustion": "力竭", "condition": "正常", "cue": "前兩組忘記全程保持張力（頂端都放鬆了）；第三組降38kg補完"}, {"date": "2026-02-24", "sets": [[52, 10], [45, 10], [45, 10]], "feel": "第一組難控制", "exhaustion": "吃力", "condition": "正常", "cue": "忘記放鬆小腿，左膝聲音有跑出來；下次從45kg開始或維持52/45組合"}]}, {"id": "leg_curl_prone", "name": "趴姿腿後勾", "group": "腿部", "icon": "🦵", "notes": ["行程不要做得太滿：往上勾太高大腿前側會騰空", "膝蓋要對準軸心再爬上去"], "history": [{"date": "2026-01-31", "sets": [[30, 10], [30, 10], [30, 10]], "feel": "跟坐姿做起來感受度不太一樣", "exhaustion": "吃力", "condition": "腿有點緊繃", "cue": "最後一組最後兩下吃力"}, {"date": "2026-02-20", "sets": [[18, 10], [23, 10], [23, 10]], "feel": "腿後側有感，但行程做得不滿", "exhaustion": "普通", "condition": "正常", "cue": "往上勾太高大腿前側會騰空；行程要改善"}]}, {"id": "hip_abduction", "name": "坐姿外展機", "group": "腿部", "icon": "🦵", "notes": ["感覺刺激變小時要加重"], "history": [{"date": "2026-01-22", "sets": [[38, 10], [38, 10], [38, 10], [38, 10]], "feel": "感覺刺激變小了", "exhaustion": "輕鬆", "condition": "正常", "cue": "下次可以試著加重"}, {"date": "2026-01-26", "sets": [[45, 10], [45, 10], [45, 10]], "feel": "6片45kg，感受正常", "exhaustion": "普通", "condition": "正常", "cue": "無"}, {"date": "2026-01-29", "sets": [[38, 15], [38, 15], [38, 12]], "feel": "做慢離心，感受度還不錯", "exhaustion": "吃力", "condition": "有疲勞感", "cue": "做慢離心"}, {"date": "2026-02-24", "sets": [[45, 10], [45, 10], [45, 10]], "feel": "正常", "exhaustion": "普通", "condition": "正常", "cue": "無"}]}, {"id": "hip_adduction", "name": "坐姿內收機", "group": "腿部", "icon": "🦵", "notes": ["前日教練課後大腿內側容易緊繃無力"], "history": [{"date": "2026-01-22", "sets": [[38, 10], [38, 10], [38, 8]], "feel": "大腿內側緊繃無力", "exhaustion": "吃力", "condition": "前日教練課有延遲性痠痛", "cue": "昨天教練課側棒式刺激到大腿內側"}, {"date": "2026-01-26", "sets": [[45, 10], [45, 8], [38, 10]], "feel": "45kg 第二組只有8下", "exhaustion": "力竭", "condition": "正常", "cue": "降至38kg補完"}, {"date": "2026-02-28", "sets": [[45, 10], [45, 10], [45, 10]], "feel": "正常", "exhaustion": "普通", "condition": "正常", "cue": "無"}]}, {"id": "standing_calf", "name": "站姿提踵機", "group": "腿部", "icon": "🦶", "notes": ["03/12 遞增到120kg，上半身已到極限而小腿未力竭", "稍微內八可加強小腿外側"], "history": [{"date": "2026-01-27", "sets": [[25, 25], [32, 20], [32, 20], [32, 20]], "feel": "超級組（與二頭），小腿充血感不錯", "exhaustion": "普通", "condition": "正常", "cue": "做超級組"}, {"date": "2026-01-30", "sets": [[32, 25], [32, 25], [32, 20]], "feel": "提踵小腿的充血感非常好", "exhaustion": "普通", "condition": "正常", "cue": ""}, {"date": "2026-02-11", "sets": [[38, 20], [38, 20], [38, 20], [38, 20]], "feel": "正常", "exhaustion": "普通", "condition": "感覺比較累（可能練前沒補碳水）", "cue": ""}, {"date": "2026-02-14", "sets": [[45, 20], [45, 20], [45, 20], [45, 20]], "feel": "充血感好", "exhaustion": "普通", "condition": "正常", "cue": ""}, {"date": "2026-02-17", "sets": [[45, 10], [45, 10], [45, 10], [45, 10]], "feel": "稍微內八，想加強小腿外側", "exhaustion": "普通", "condition": "正常", "cue": "次數偏少（10下），可能意圖加強離心或次數記錄有誤"}, {"date": "2026-03-12", "sets": [[59, 10], [79, 10], [100, 10], [120, 10], [120, 10]], "feel": "上半身快到極限，小腿還沒力竭", "exhaustion": "吃力", "condition": "正常", "cue": "瓶頸在上半身承重極限，不是小腿；考慮其他方式繼續加強"}]}, {"id": "kettlebell_rdl", "name": "壺鈴硬拉", "group": "腿部", "icon": "🔔", "notes": ["髖屈主打，膝蓋不要往前太多", "大腿後側與臀部為主要發力部位"], "history": [{"date": "2026-02-17", "sets": [[24, 10], [24, 10], [24, 10]], "feel": "大腿後側與屁股有感", "exhaustion": "普通", "condition": "正常", "cue": ""}, {"date": "2026-02-18", "sets": [[32, 10], [32, 10], [32, 10]], "feel": "大腿後側緊", "exhaustion": "普通", "condition": "正常", "cue": ""}, {"date": "2026-02-20", "sets": [[32, 10], [32, 10], [32, 10]], "feel": "感受度不錯", "exhaustion": "普通", "condition": "正常", "cue": "髖屈主打，膝蓋不要往前太多"}, {"date": "2026-02-23", "sets": [[32, 10], [32, 10], [32, 10]], "feel": "正常", "exhaustion": "普通", "condition": "正常", "cue": ""}, {"date": "2026-02-24", "sets": [[32, 10], [32, 10]], "feel": "正常", "exhaustion": "普通", "condition": "正常", "cue": "今天組數較少"}]}, {"id": "rdl", "name": "RDL（槓鈴）", "group": "腿部", "icon": "🏋️", "notes": ["出槓起來時上半身放鬆不要去拉槓，靠腳往上蹬", "屁股不要往前，只有腳往上踩", "往下時膝蓋微彎，身體前傾多一點就可以過膝蓋", "呼吸撐住核心，才不會因為核心鬆掉而代償"], "history": [{"date": "2026-03-11", "sets": [[30, null]], "feel": "大腿後側非常緊", "exhaustion": "—", "condition": "正常", "cue": "教練課練習；出槓起來上半身放鬆不要去拉槓，靠腳往上蹬"}]}, {"id": "lat_pulldown", "name": "滑輪下拉", "group": "背部", "icon": "💪", "notes": ["做慢離心可強化感受度", "充分休息後拉起來明顯更輕鬆，此時可加重"], "history": [{"date": "2026-01-27", "sets": [[38, 10], [38, 10], [38, 10]], "feel": "休了近一週，狀態明顯比之前好", "exhaustion": "普通", "condition": "正常", "cue": "反握寬位為主，練闊背肌；做超級組（與三頭）"}, {"date": "2026-01-30", "sets": [[45, 10], [45, 8], [45, 8]], "feel": "最後一組最後幾下吃力", "exhaustion": "吃力", "condition": "正常", "cue": "應是目前能維持動作的最大重量"}, {"date": "2026-02-02", "sets": [[32, 10], [32, 10], [32, 10]], "feel": "降重，感受度正常", "exhaustion": "輕鬆", "condition": "正常", "cue": "這天換寬距反握"}, {"date": "2026-02-09", "sets": [[45, 10], [45, 10], [45, 10]], "feel": "最後一組最後3-4下吃力", "exhaustion": "吃力", "condition": "正常", "cue": "做完有點喘，心跳150幾，但很快恢復"}, {"date": "2026-02-17", "sets": [[45, 10], [45, 10], [45, 10]], "feel": "做慢離心，做完會喘", "exhaustion": "普通", "condition": "正常", "cue": "心跳150幾但恢復快"}, {"date": "2026-02-23", "sets": [[45, 10], [45, 10], [45, 10]], "feel": "做慢離心", "exhaustion": "普通", "condition": "髖部外側痠痛", "cue": ""}, {"date": "2026-03-03", "sets": [[36, 10], [36, 10], [45, 10], [45, 10]], "feel": "感冒中，降重開始", "exhaustion": "普通", "condition": "感冒中", "cue": "前兩組36kg，後兩組45kg"}, {"date": "2026-03-10", "sets": [[45, 10], [45, 10], [45, 10]], "feel": "充分休息後拉起來更輕鬆", "exhaustion": "輕鬆", "condition": "感冒剛痊癒", "cue": "下次可試做一兩組加重"}]}, {"id": "seated_row", "name": "坐姿划船", "group": "背部", "icon": "💪", "notes": ["窄距反握為主", "做慢離心；左邊背比右邊更容易酸（不平衡要注意）"], "history": [{"date": "2026-01-27", "sets": [[38, 10], [38, 10], [38, 10]], "feel": "做超級組，感受正常", "exhaustion": "普通", "condition": "正常", "cue": ""}, {"date": "2026-02-02", "sets": [[32, 10], [32, 10], [32, 10]], "feel": "降重，感受普通", "exhaustion": "普通", "condition": "正常", "cue": ""}, {"date": "2026-02-09", "sets": [[38, 10], [38, 10], [38, 10]], "feel": "正常", "exhaustion": "普通", "condition": "正常", "cue": "下次前兩組可加重"}, {"date": "2026-02-17", "sets": [[45, 10], [45, 10], [45, 10]], "feel": "左邊的背比右邊的背要來的酸", "exhaustion": "普通", "condition": "正常", "cue": "左右不平衡；握把處血液循環不太好"}, {"date": "2026-02-23", "sets": [[45, 10], [45, 10], [45, 10]], "feel": "做慢離心，手握處有點不舒服", "exhaustion": "普通", "condition": "有點累", "cue": "握著的地方感覺血液不循環"}, {"date": "2026-03-10", "sets": [[45, 10], [45, 10], [45, 10]], "feel": "充分休息後拉起來更輕鬆", "exhaustion": "輕鬆", "condition": "感冒剛痊癒", "cue": "下次可試加重"}]}, {"id": "assisted_pullup", "name": "器械輔助引體向上", "group": "背部", "icon": "💪", "notes": ["輔助64kg（實際負荷 = 體重 − 64kg）", "左邊比右邊更快力竭（前鋸肌沒力）", "到底時肩胛往上轉延伸但不能鬆開"], "history": [{"date": "2026-02-17", "sets": [[null, 10], [null, 10], [null, 8]], "feel": "左右很不平衡：左邊已力竭，右邊還沒感受度", "exhaustion": "力竭（左）", "condition": "正常", "cue": "左邊前鋸肌沒力；大拇指要出力握好"}]}, {"id": "straight_arm_pulldown", "name": "直臂下拉（Cable）", "group": "背部", "icon": "💪", "notes": ["繩索稍微拉開不要靠太近，背部感受度會好一點", "目前25kg不適合再增加重量"], "history": [{"date": "2026-02-05", "sets": [[25, 10], [18, 10], [18, 10], [18, 10]], "feel": "完全找不到背的感覺；左斜方跑出來幫忙", "exhaustion": "普通", "condition": "正常", "cue": "姿勢問題：上半身有沒有前傾、胸部有沒有往前挺，大大影響感受度"}, {"date": "2026-02-13", "sets": [[25, 10], [25, 10], [25, 10], [25, 10]], "feel": "有試著加重但不太行", "exhaustion": "普通", "condition": "正常", "cue": "維持25kg"}, {"date": "2026-02-20", "sets": [[25, 10], [25, 10], [25, 10], [25, 10]], "feel": "感受度不錯", "exhaustion": "普通", "condition": "正常", "cue": "繩索稍微拉開，感受度明顯改善"}, {"date": "2026-02-28", "sets": [[25, 10], [25, 10], [25, 10], [25, 10]], "feel": "正常", "exhaustion": "普通", "condition": "正常", "cue": ""}]}, {"id": "barbell_row", "name": "俯身板凳划船", "group": "背部", "icon": "💪", "notes": ["頭高過水平但做時頭會有點脹，可能是角度或閉氣問題"], "history": [{"date": "2026-01-30", "sets": [[30, 10], [30, 10], [30, 10]], "feel": "頭有點脹", "exhaustion": "普通", "condition": "正常", "cue": "不確定上半身應該停到什麼角度"}]}, {"id": "machine_fly", "name": "飛鳥夾胸（器械）", "group": "胸部", "icon": "🫁", "notes": ["行程放到最短感受度最佳", "胸部張力要維持；下次四組都直接做38kg以上"], "history": [{"date": "2026-01-30", "sets": [[32, 10], [32, 10], [32, 12], [32, 8]], "feel": "從第一組就覺得胸部很有感！", "exhaustion": "吃力", "condition": "正常", "cue": "行程放到最短"}, {"date": "2026-02-06", "sets": [[32, 10], [32, 10], [38, 10], [38, 10]], "feel": "充血膨脹感沒有之前強", "exhaustion": "普通", "condition": "正常", "cue": "下次四組都直接做38kg"}, {"date": "2026-02-12", "sets": [[45, 10], [45, 10], [45, 5], [38, 5]], "feel": "充血感", "exhaustion": "力竭", "condition": "這兩天沒睡好，精神不好", "cue": "第三組45kg力竭，降38kg補完"}, {"date": "2026-03-12", "sets": [[45, 10], [45, 10], [38, 10]], "feel": "後來夾不到中間，胸部有塌掉的感覺", "exhaustion": "力竭", "condition": "正常", "cue": "第三組行程變短；下次要維持胸部撐起來"}]}, {"id": "chest_press_machine", "name": "胸推機（器械）", "group": "胸部", "icon": "🫁", "notes": ["坐墊調最低，腰往前一個拳頭；往前往上挺胸", "呼吸：吸飽氣再往下放，往上推過程中慢慢吐氣", "注意力一直放在胸肌維持張力"], "history": [{"date": "2026-01-28", "sets": [[null, null]], "feel": "教練課：胸口感覺蠻明顯的，代償並不明顯", "exhaustion": "—", "condition": "正常", "cue": "三片槓片（重量不詳）；坐墊調最低，腰離座椅一拳，往前往上挺胸"}, {"date": "2026-01-30", "sets": [[25, 10], [25, 10], [25, 10]], "feel": "注意力一直放在呼吸上，常忘記做到第幾下", "exhaustion": "普通", "condition": "正常", "cue": "吸氣→閉氣→吐氣的呼吸模式開始導入"}, {"date": "2026-02-03", "sets": [[32, 10], [32, 10], [32, 10], [32, 10]], "feel": "左手肩關節有點怪怪的", "exhaustion": "普通", "condition": "正常", "cue": "左肩怪感可能與當天動態弓箭步大迴旋的聲響有關"}, {"date": "2026-02-10", "sets": [[38, 10], [38, 10], [38, 10], [38, 10]], "feel": "今天胸肌充血感非常好", "exhaustion": "普通", "condition": "正常", "cue": "注意力要一直集中在胸肌；維持胸部張力不然手就介入更多"}, {"date": "2026-02-18", "sets": [[38, 10], [45, 10], [45, 10], [38, 10]], "feel": "肩膀代償有點多", "exhaustion": "普通", "condition": "正常", "cue": "今天兩個胸部動作都有肩膀代償偏多"}, {"date": "2026-02-24", "sets": [[52, 10], [52, 10], [45, 10], [45, 10]], "feel": "做完肩膀不舒服，有點酸軟", "exhaustion": "吃力", "condition": "正常", "cue": "做完後肩膀不舒服，沒再做肩推"}, {"date": "2026-03-12", "sets": [[45, 10], [45, 10], [38, 10], [38, 10]], "feel": "今天胸的發力感非常好", "exhaustion": "普通", "condition": "正常", "cue": ""}]}, {"id": "floor_bench_press", "name": "地板槓鈴臥推", "group": "胸部", "icon": "🫁", "notes": ["中指對準外側線；往後擠時肩胛要用力才能擠出較大胸椎角度", "全程維持身體張力，雙腳踩地不能鬆", "往下不要夾肘，直上直下"], "history": [{"date": "2026-02-07", "sets": [[null, null]], "feel": "教練課：學習動作模式", "exhaustion": "—", "condition": "正常", "cue": "學習正確姿勢"}, {"date": "2026-02-12", "sets": [[30, 10], [30, 10], [40, 10], [40, 10]], "feel": "胸部有充血，但感覺不明顯；三頭肌介入的有點多", "exhaustion": "普通", "condition": "這兩天沒睡好", "cue": "瑜珈墊跟衣服有點滑，往後擠時感覺會滑掉"}, {"date": "2026-02-14", "sets": [[45, 6], [45, 6], [45, 6]], "feel": "胸部感覺還不錯，三頭肌介入少", "exhaustion": "普通", "condition": "正常", "cue": "教練課：45kg每組6下；往後擠時肩胛要有意識地用力"}, {"date": "2026-02-18", "sets": [[40, 6], [50, 8], [50, 8], [50, 6]], "feel": "胸部充血", "exhaustion": "吃力", "condition": "正常", "cue": "第一組40kg，之後嘗試50kg"}, {"date": "2026-03-02", "sets": [[50, 10], [50, 10], [50, 10]], "feel": "正常", "exhaustion": "普通", "condition": "感冒中", "cue": "感冒中仍做 50kg 3×10"}]}, {"id": "dumbbell_bench", "name": "啞鈴臥推 / 平躺槓鈴臥推", "group": "胸部", "icon": "🫁", "notes": ["胸部充血感不太明顯，感覺姿勢與發力正常，就是充血感不強"], "history": [{"date": "2026-01-26", "sets": [[20, 10], [20, 10], [20, 10]], "feel": "胸部感受普通", "exhaustion": "普通", "condition": "正常", "cue": ""}, {"date": "2026-02-06", "sets": [[25, 10], [25, 10], [25, 10]], "feel": "胸部沒有什麼充血感", "exhaustion": "吃力", "condition": "正常", "cue": "感覺姿勢跟發力感是正常的，胸部還是有力竭感但充血感沒有之前來的強"}]}, {"id": "shoulder_press_machine", "name": "肩推機（器械）", "group": "肩部", "icon": "🙌", "notes": ["胸口挺胸、沉肩；肩胛骨要張開（不能向前夾）", "手掌催油門姿勢往上推，不要用手指", "右手肘卡卡→先放鬆三頭再做肩推"], "history": [{"date": "2026-01-24", "sets": [[null, null]], "feel": "教練課學動作，重量極低", "exhaustion": "—", "condition": "正常", "cue": "往上慢慢吐氣，上面吸飽氣再下來；下來時慢且不放重量"}, {"date": "2026-01-26", "sets": [[18, 10], [18, 10], [18, 10]], "feel": "斜方肌與三角肌前束有感", "exhaustion": "普通", "condition": "正常", "cue": ""}, {"date": "2026-01-30", "sets": [[18, 12], [18, 12], [18, 10], [18, 10]], "feel": "斜方與三角前束都有感覺", "exhaustion": "普通", "condition": "正常", "cue": "奇怪：機器圖沒有畫到斜方肌"}, {"date": "2026-02-03", "sets": [[25, 10], [25, 10], [25, 10]], "feel": "三頭刺激多，右手肘關節怪怪的", "exhaustion": "普通", "condition": "右手肘不適", "cue": "按摩球放鬆三頭後右手肘好一點"}, {"date": "2026-02-10", "sets": [[32, 10], [32, 10], [32, 10]], "feel": "右手肘卡卡，按摩球放鬆後好很多", "exhaustion": "普通", "condition": "右手肘不適", "cue": "下次先放鬆三頭肌再做肩推；注意力不能一直放在手推"}, {"date": "2026-02-12", "sets": [[10, 10], [10, 10], [10, 10], [10, 10]], "feel": "坐姿啞鈴肩推，感受普通", "exhaustion": "普通", "condition": "這兩天沒睡好", "cue": "一邊5kg（雙手10kg），今天先不練Day3"}, {"date": "2026-02-18", "sets": [[32, 10], [32, 10], [32, 10]], "feel": "右手肘關節一樣怪怪卡卡", "exhaustion": "普通", "condition": "正常", "cue": "用按摩球放鬆後好很多"}, {"date": "2026-03-12", "sets": [[32, 10], [32, 10], [32, 10]], "feel": "前兩組肩的發力感還不錯；右手肘仍卡卡", "exhaustion": "普通", "condition": "右手肘仍有不適", "cue": "要一直放鬆三頭才能改善，但還是無法完全消除"}]}, {"id": "tricep_pushdown", "name": "Cable 三頭下拉", "group": "手臂", "icon": "💪", "notes": ["上半身前傾、胸部往前挺→三頭感受度大幅提升", "25kg 感受度比32kg 更好"], "history": [{"date": "2026-01-27", "sets": [[38, 10], [38, 10], [32, null]], "feel": "第三組做幾下就沒力了", "exhaustion": "力竭", "condition": "正常", "cue": "做超級組（與下拉）"}, {"date": "2026-01-30", "sets": [[38, 8], [32, 7], [32, 7]], "feel": "拉不太動，38kg勉強只拉8下", "exhaustion": "力竭", "condition": "下拉已用較重", "cue": "上次可能記錯重量；今天下拉有加重所以三頭更沒力"}, {"date": "2026-02-02", "sets": [[25, 10], [25, 10], [25, 10]], "feel": "感受度比之前好", "exhaustion": "普通", "condition": "正常", "cue": ""}, {"date": "2026-02-05", "sets": [[38, 10], [32, 10], [32, 10], [32, 10], [32, 10]], "feel": "第一組因姿勢問題三頭沒感受；後來改善", "exhaustion": "普通", "condition": "正常", "cue": "意外多做一組（原本要做直臂下壓）；身體前傾胸部往前挺，感受度差很多"}, {"date": "2026-02-09", "sets": [[38, 10], [32, 10], [32, 10]], "feel": "38kg有點不太行", "exhaustion": "吃力", "condition": "正常", "cue": "下次從32kg開始就好"}, {"date": "2026-02-17", "sets": [[32, 10], [25, 10], [25, 10]], "feel": "25kg感受度好很多", "exhaustion": "普通", "condition": "正常", "cue": "25kg的感受度比32kg好很多；下次降一格"}, {"date": "2026-02-23", "sets": [[25, 10], [25, 10], [25, 10]], "feel": "感受度好很多，比前幾次都好", "exhaustion": "普通", "condition": "有點累", "cue": "三頭沒有之前一開始練的腫脹刺激感"}, {"date": "2026-03-10", "sets": [[25, 10], [25, 10], [32, 10]], "feel": "第三組試32kg", "exhaustion": "普通", "condition": "感冒剛痊癒", "cue": ""}]}, {"id": "bicep_curl_cable", "name": "Cable 二頭彎舉", "group": "手臂", "icon": "💪", "notes": ["手肘要固定不要一直動；手腕維持角度不出力", "握在桿兩側靠外側；左邊出力比右邊多（不平衡）"], "history": [{"date": "2026-02-10", "sets": [[25, 10], [25, 10], [25, 10]], "feel": "感受度比器械二頭好", "exhaustion": "普通", "condition": "正常", "cue": ""}, {"date": "2026-02-18", "sets": [[25, 10], [25, 10], [25, 10]], "feel": "左邊出力比右邊多", "exhaustion": "普通", "condition": "正常", "cue": "左右不平衡"}, {"date": "2026-02-24", "sets": [[25, 10], [25, 10], [25, 10]], "feel": "正常", "exhaustion": "普通", "condition": "正常", "cue": ""}, {"date": "2026-03-12", "sets": [[25, 10], [25, 10], [25, 10]], "feel": "發力感沒特別好；但三組做完二頭確實有充血、力竭的感覺", "exhaustion": "力竭", "condition": "正常", "cue": "下拉時發力感不好，但最終有充血力竭感"}]}, {"id": "bicep_curl_machine", "name": "二頭彎舉機", "group": "手臂", "icon": "💪", "notes": ["感受度不如 Cable 二頭彎舉；感覺就是使不上勁斷電，沒有酸脹感"], "history": [{"date": "2026-01-27", "sets": [[25, 12], [25, 10], [18, 10]], "feel": "沒有酸感也沒有脹感，就是覺得使不上勁了直接斷電", "exhaustion": "力竭", "condition": "正常", "cue": "後改用 Cable 二頭感受度更好"}, {"date": "2026-01-30", "sets": [[25, 10], [18, 12]], "feel": "最後兩下做不完整個行程", "exhaustion": "力竭", "condition": "正常", "cue": "只記錄了第2-3組；直接斷電感"}]}, {"id": "plank", "name": "棒式（負重）", "group": "核心", "icon": "🔥", "notes": ["槓片放肩胛骨上面，不要放腰上", "屁股不要往下垂，整個背部維持水平", "這是整個訓練裡最讓人喘的動作"], "history": [{"date": "2026-01-22", "sets": [[0, 30], [0, 60], [0, 60]], "feel": "沒有很抖（比上次教練課好）", "exhaustion": "普通", "condition": "正常", "cue": "在草皮區做棒式手很痛"}, {"date": "2026-01-29", "sets": [[5, 60], [5, 60], [5, 60], [5, 60]], "feel": "今天最喘的就是棒式，一撐起來就一直加速呼吸", "exhaustion": "力竭", "condition": "有疲勞感", "cue": "從第三組開始腰有點沒辦法挺直；但還是可以撐著"}, {"date": "2026-01-31", "sets": [[10, 30]], "feel": "感覺強度還好，做完沒什麼疲勞感", "exhaustion": "輕鬆", "condition": "腿有點緊繃", "cue": "負重10kg 30秒，強度可以加強"}, {"date": "2026-02-03", "sets": [[10, 60], [10, 60], [10, 60]], "feel": "做完闊背的疲勞感比昨天練背還明顯", "exhaustion": "普通", "condition": "正常", "cue": "可能是棒式讓闊背感受更強"}, {"date": "2026-02-06", "sets": [[10, 60], [10, 60], [10, 60]], "feel": "正常", "exhaustion": "普通", "condition": "正常", "cue": ""}, {"date": "2026-02-13", "sets": [[15, 40], [15, 40], [15, 40], [15, 40]], "feel": "正常", "exhaustion": "普通", "condition": "正常", "cue": ""}, {"date": "2026-02-20", "sets": [[15, 40], [15, 40], [15, 40], [15, 40]], "feel": "最後一組末段發抖", "exhaustion": "力竭", "condition": "正常", "cue": "前三組感覺下次可以再加重"}]}, {"id": "crunch_machine", "name": "捲腹機", "group": "核心", "icon": "🔥", "notes": ["含胸由胸部帶動，不要全部用肚子帶", "手只要撐著就好；腳盡量放鬆"], "history": [{"date": "2026-01-22", "sets": [[25, 10], [25, 10], [25, 10]], "feel": "不確定背部應該呈現什麼狀態", "exhaustion": "普通", "condition": "正常", "cue": "只有做正面；背部狀態不確定"}, {"date": "2026-01-24", "sets": [[10, null]], "feel": "教練課：學習輕重量動作", "exhaustion": "—", "condition": "正常", "cue": "重量不要放太重；啟動時要有含胸，由胸部帶動"}, {"date": "2026-02-03", "sets": [[38, 10], [38, 10], [32, 10]], "feel": "有感，第三組降重", "exhaustion": "吃力", "condition": "正常", "cue": ""}, {"date": "2026-02-06", "sets": [[10, 10], [10, 10], [10, 10], [10, 10]], "feel": "感覺輕，下次可以加重", "exhaustion": "輕鬆", "condition": "正常", "cue": "下次可以加重了"}, {"date": "2026-02-24", "sets": [[32, 10], [32, 10], [32, 10]], "feel": "正常", "exhaustion": "普通", "condition": "正常", "cue": ""}]}, {"id": "copenhagen_side_plank", "name": "哥本哈根側棒式", "group": "核心", "icon": "🔥", "notes": ["可嘗試拉長時間或多做幾組", "可挑戰正常版（不使用進階腳踝支撐）"], "history": [{"date": "2026-01-31", "sets": [[null, 30], [null, 30]], "sets_display": "2組×2邊×30秒", "feel": "正常", "exhaustion": "普通", "condition": "腿有點緊繃", "cue": ""}, {"date": "2026-02-13", "sets": [[null, 30], [null, 30]], "sets_display": "2組×30秒", "feel": "正常", "exhaustion": "普通", "condition": "正常", "cue": ""}, {"date": "2026-02-20", "sets": [[null, 30], [null, 30]], "sets_display": "2組×30秒", "feel": "不知道怎麼增加強度", "exhaustion": "普通", "condition": "正常", "cue": "可嘗試正常版，或拉長時間"}]}, {"id": "sled_push", "name": "推雪橇", "group": "髖部", "icon": "🏃", "notes": ["作為功能性熱身使用", "重量從16kg逐步增加到48kg", "一趟=15m；總容量=Σ(重量×趟數)"], "history": [{"date": "2026-01-22", "sets": [[16, 2]], "feel": "熱身", "exhaustion": "輕鬆", "condition": "正常", "cue": "每趟15m"}, {"date": "2026-02-05", "sets": [[16, 1], [24, 1]], "feel": "輕鬆熱身", "exhaustion": "輕鬆", "condition": "正常", "cue": "16kg×1趟 + 24kg×1趟，各15m"}, {"date": "2026-02-06", "sets": [[24, 1], [32, 1]], "feel": "輕鬆", "exhaustion": "輕鬆", "condition": "正常", "cue": "24kg×1趟 + 32kg×1趟，各15m"}, {"date": "2026-02-09", "sets": [[35, 4]], "feel": "35kg×4趟共60m", "exhaustion": "輕鬆", "condition": "正常", "cue": "來回兩次=4趟×15m"}, {"date": "2026-02-10", "sets": [[35, 2], [39, 2]], "feel": "輕鬆", "exhaustion": "輕鬆", "condition": "正常", "cue": "35kg×2趟 + 39kg×2趟，各15m（去回）"}, {"date": "2026-02-14", "sets": [[40, 4]], "feel": "40kg×4趟共60m", "exhaustion": "普通", "condition": "正常", "cue": "教練課熱身；4趟×15m"}, {"date": "2026-02-20", "sets": [[15, 2], [40, 2]], "feel": "正常", "exhaustion": "輕鬆", "condition": "正常", "cue": "15kg×2趟 + 40kg×2趟，各15m"}, {"date": "2026-02-23", "sets": [[15, 2], [39, 2]], "feel": "正常", "exhaustion": "輕鬆", "condition": "正常", "cue": "15kg×2趟 + 39kg×2趟，各15m"}, {"date": "2026-02-24", "sets": [[40, 2]], "feel": "正常", "exhaustion": "輕鬆", "condition": "正常", "cue": "40kg×2趟×15m"}, {"date": "2026-02-25", "sets": [[40, 2]], "feel": "推的時候感覺今天的雪橇好沉重", "exhaustion": "普通", "condition": "正常", "cue": "40kg×2趟×15m"}, {"date": "2026-02-28", "sets": [[40, 2]], "feel": "正常", "exhaustion": "輕鬆", "condition": "正常", "cue": "40kg×2趟×15m"}, {"date": "2026-03-03", "sets": [[40, 2]], "feel": "感冒中，感覺雪橇好沉重", "exhaustion": "吃力", "condition": "感冒中", "cue": "40kg×2趟×15m"}, {"date": "2026-03-10", "sets": [[40, 2]], "feel": "感冒痊癒後感覺特別累", "exhaustion": "吃力", "condition": "感冒剛痊癒", "cue": "40kg×2趟×15m"}, {"date": "2026-03-11", "sets": [[40, 2]], "feel": "正常", "exhaustion": "普通", "condition": "正常", "cue": "40kg×2趟×15m"}, {"date": "2026-03-12", "sets": [[44, 2], [48, 2]], "feel": "正常", "exhaustion": "普通", "condition": "正常", "cue": "44kg×2趟 + 48kg×2趟，各15m"}]}, {"id": "kettlebell_swing", "name": "壺鈴擺盪", "group": "髖部", "icon": "🏋️", "notes": ["靠身體下蹲與往上挺讓壺鈴自然擺動", "手不要用力，自然擺盪"], "history": [{"date": "2026-02-07", "sets": [[8, 20]], "feel": "心跳有飆到160，有氧效果佳", "exhaustion": "吃力", "condition": "正常", "cue": "教練課作為有氧訓練"}, {"date": "2026-03-11", "sets": [[12, 20], [12, 20], [12, 20]], "feel": "教練課熱身，感受良好", "exhaustion": "普通", "condition": "正常", "cue": "12kg 3×20，作為熱身"}]}];
+const JOURNALS    = {"2026-01-22": "# 2026年1月22日星期四\n\n心情：平靜\n分類：健康、體能\n\n今天熱身做了滾筒放鬆，包括：\n1. 背部\n2. 大腿前側\n3. 大腿後側\n4. 臀中肌\n靜態推雪橇16公斤，15米兩趟。\n分腿蹲共四組：\n1. 前三組：抱 10 公斤啞鈴，每組 10 下\n2. 第四組：左右手各拿 7.5 公斤啞鈴，共 10 下\n第四組對腿的刺激明顯強很多，下次試試看兩手各拿 10 公斤！\n手有負重、沒有扶著桿子的時候，上半身好像也比較不會試著要去依賴手扶著桿子，可以挺得比較好一點\n換組或換腿中間大約抓 3 分鐘，心跳可以回到 130 以下。這 3 分鐘裡面，前面 1 分鐘慢走踏步，後面 2 分鐘可以坐下休息\n今天下午有吃小番茄、橘子和 30 克乳清。今天感覺大項目做完後那幾分鐘的虛弱感降低很多！但是心跳還是很容易去到150-160。\n今天發現分腿蹲時腳雖然也很痠，但是好像沒有深蹲時那種「咔咔」響的感覺。\n三組 Panatta Vertical Leg Press，一邊各加 30 公斤槓片做三組，每組 10 下。\n具體設定如下：\n1. 安全槓固定在 5\n2. 踏板從下往上數第二格\n3. 腳踩在由上往下數第四格\n4. 腳尖部位站距偏寬\n從第二組開始，就覺得腿後側越來越沒力，股四頭肌的佔比越來越高。第三組做完後，股四頭肌變得很酸，已經做不了了。\n雖然腿推放在分腿蹲後面做，但是好像心跳的狀況與負擔，都沒有分腿蹲來的高\n三樓 Impulse 坐姿外展：\n1. 重量：38 公斤（5 塊槓片）\n2. 組數：一組 10 下，共 4 組\n感覺刺激變小了，下次可以試著加重量試試看！\n四樓Impulse，坐姿內收機\n重量 38 公斤，5 片槓片，組數共三組：\n1. 前兩組：10 下\n2. 第三組：8 下\n可能是因為昨天上完教練課的關係，大腿內側有點緊繃、無力，以及輕微的延遲性痠痛。\n昨天教練課做了一個側棒式，是用腿夾板凳的動作，很厲害地刺激到大腿內側；但是要記得，不要用屁股代償。\n一樓的 Impulse SL7036 腹肌機共三組：\n1. 重量：一片 25 公斤槓片\n2. 組數：共三組\n3. 次數：每組十下\n還是有一點不太確定，我的背應該要呈現什麼樣的狀況來做這個腹肌訓練？上半身好像都會有一點想要出力。今天做的方向沒有分側面，是正面的。\n在一樓草皮區做三組棒式，沒有負重：\n1. 第一組：30 秒\n2. 後面兩組：一分鐘\n今天做棒式比較沒有像上次教練課那樣一直抖。\n在草皮區做棒式手很痛。\n", "2026-01-24": "# 2026年1月24日星期六\n\n今天早上10點教練課。\n早餐在9點前喝了一杯30克乳清，吃了小番茄、香蕉，還有一塊吐司。\n昨天吃了不少碳水跟鈉，今天體重多了快1公斤，應該有良好充碳。早上還有補充肌酸跟瓜胺酸。\n熱身：\n1.跑步機時速4公里，坡度3度，走大概5分鐘\n2.接著做滾筒放鬆：\n(a)背部、大腿前側、大腿後側\n(b)臀中肌\n(c)後腿交叉拉臀中肌\n(d)斜方肌（用槓鈴放鬆）\n今天先用跑步機走了5分鐘，就是為了想要實驗一下，是不是先做站立的動態熱身就比較不會頭脹脹發熱。確實後面在用滾筒的時候，比較沒有頭脹脹、發熱的感覺了。\n以下是教練課內容\n拉伸大腿前側的方法：\n1.用分腿蹲的方式，直接跪在地上\n2.雙手扶槓鈴，握到最寬\n3.兩腳分別做15-20秒\n分腿蹲有幾個注意事項：\n1.要注意大腿前側的比重有沒有太高\n2.要注意腳底的三個重心：\n(a)大拇指球要有辦法用力\n(b)三個重心要平均，重心才會穩\n(c)腳可以踩棒狀物，來放鬆腳底三個重心中間的那條筋\n3.前腳、後腳以及骨盆都要回正，不要歪向一邊\n4.避免用胸口附近的位置來帶動身體旋轉，應該要用髖部來帶動\n5.往下蹲的時候，上半身應該要稍微往前傾，用這個往前傾的角度來減少後腳的重心佔比\n6.可以用墊腳的對側，也就是對應另一邊的手持啞鈴做下蹲，另一手扶著槓面。\n大腿內側也要經常用滾筒放鬆。\n接下來是三樓Impulse肩推機的注意事項：\n1.先把重量調到最低，這次設置的是兩片槓片\n2.胸口要挺胸、沉肩\n3.背部不可以向前夾，要感覺肩胛骨是張開的\n4.手握的地方不能用手指往上推，要用手掌的部分往上推，像在催油門的那個姿勢。\n往上推的時候要慢慢吐氣，在上面吸飽氣再下來。下來的時候動作要慢，但不可以放掉重量。不要在下面停留，一下來就繼續往上推。\n推完之後，你應該會感覺肩部前側跟後斜方的部分會有點痠。\n斜方肌放鬆，用槓鈴放鬆的時候，槓鈴可能要上點重量\n一樓Impulse SL7036捲腹機，重量不要放得太重，今天掛10公斤的槓片一片\n動作重點如下：\n1.啟動時要有一點含胸，由胸部來帶動。\n2.不要全部都只用肚子來帶。\n3.手只要撐著就好，不要想著用手去用力。\n4.腳的部分也要盡量放鬆，不要用力。\n5.利用輕的重量多做幾組。\n如果感覺大腿前側跟後側的比例差太多（前側多很多的話），可以用筋膜球或用手指去按壓大腿前側，包含靠近膝蓋的內側以及中間的那個地方。\n課後做了20分鐘的跑步機用走的\n1.速度：3.5公里\n2.坡度：3%\n3.心率：大概120幾下\n", "2026-01-26": "# 2026年1月26日星期一\n\n今天練前熱身做了跑步機，速度3公里，坡度5以下（一直跳來跳去不知道為什麼），時間6分鐘。\n然後做運動放鬆，全身包含大腿的前側、外側、內側、後側，還有臀大肌。\n還有用跪姿分腿蹲的方式拉大腿。\n分腿蹲：\n1. 單手持 7.5 公斤啞鈴，進行三組，每組 10 下\n2. 第四組改為空手：右腳 15 下，左腳 8 下就沒力了\n3樓 impulse 坐姿外展機：\n6片 45 公斤，3 組 10 下\n2樓 Impulse 坐姿內收機：\n1. 45 公斤：\n(a) 第一組 10 下\n(b) 第二組 8 下\n2. 38 公斤：10 下\n3 樓 Impulse 肩推機：\n(a) 18 公斤兩塊槓片\n(b) 3 組各 10下\n平躺槓鈴臥推：\n1. 重量：一手 10 公斤\n2. 組數：3 組\n3. 次數：每組 10 下\n4. 跑步機：15 分鐘\n(a) 速度：3 公里/小時\n(b) 坡度：0\n(c) 心跳：控制在小於 130\n", "2026-01-27": "# 2026年1月27日星期二\n\n熱身計畫如下：\n1.滾筒放鬆背部\n2.按摩球放鬆胸外側\n3.槓鈴上兩邊各20公斤\n4.放鬆斜方肌\n5.坐姿下拉與三頭訓練（超級組）：\n(a)坐姿下拉：3組，每組10下，重量5片槓片（38公斤）\n(b)三頭下拉：前兩組每組10下（38公斤），第三組做幾下就沒力了，重量減至4片槓片（32公斤）(c)訓練細節：今天的坐姿下拉做的是「反握寬位」，主要是為了練闊背肌\n3.站姿提踵機與二頭彎舉機的超級組：\n(a)站姿提踵機：\n1.第一組：3片槓片（25公斤），25下\n2.後面三組：4片槓片（32公斤），每組20下\n(b)二頭彎舉機：\n1.前兩組（25公斤）：第一組12下，第二組10下\n2.第三組：18公斤，10下\n3. 坐姿划船（繩索）：\n3組，每組10下，38公斤（5片槓片）\n跑步機4公里，沒有坡度，10分鐘，心跳控制在130左右\n這次闊背休息了快一個禮拜，狀態很明顯比之前好。\n可以做完5片，兩個動作各三組；上次5片做完下拉就沒力做划船了。\n今天趕時間，所以做了兩個超級組。\n", "2026-01-28": "# 2026年1月28日星期三\n\n使用滾筒跟按摩球放鬆大腿：\n1.前側\n2.內側\n3.外側\n4.後側\n背部\n以下是今天教練課的內容：\n1. 大腿前側放鬆\n(a) 把彈力繩綁在槓鈴架的最高處\n(b) 呈現跪姿面對彈力繩，雙手抓住彈力繩，手不用力\n(c) 靠大腿的力量把上半身往後拉，達到髖部拉伸的效果，再利用髖部的力量往前，如此來回做動態拉伸\n2. 死蟲式\n同樣是做髖部的訓練，注意腰後方不能代償\n3. 坐姿單腿的髖部對抗\n這個動作可能需要兩個人配合操作\n4. 前抱式深蹲\n今天做前抱式深蹲，因為前面有做過一些髖部的啟動，以及比較多熱身、拉鬆、拉筋相關的動作，所以今天的重心比較穩，而且股四頭肌發力的比例也沒有一直跑出來，膝蓋的異響也比較少一點，整個做起來比之前的感覺好很多。\n再來是 Impulse 的胸推機，今天做三片槓片。\n預備姿勢：\n1. 將坐墊調到最低\n2. 腰部離開椅子往前約一個拳頭\n3. 肩胛、背部與頭部靠在椅子上\n4. 往前往上挺胸\n5. 手要實握，不能虛握\n呼吸方式類似肩推跟深蹲：\n吸飽氣之後再往下放，往上推的過程中慢慢吐氣。\n今天做這個胸推機，胸口的感覺蠻明顯的，但是往下放的時候，胸肌的拉伸感沒有很重，整體來說代償並不明顯。\n最後做砸藥球的動作：\n使用 3 公斤的藥球往下深蹲，起來時將藥球往上丟，約丟到牆面的「G」字上方。如此反覆做有氧，一組約 15 次，心跳有飆到 160 左右。\n現在我的深蹲可能最大的局限性在於心肺，需要針對心肺做一些加強。\n", "2026-01-29": "# 2026年1月29日星期四\n\n熱身：\n1.滾筒：\n(a)大腿前側\n(b)大腿後側\n(c)臀中肌\n(d)大腿外側\n(e)背部\n2.按摩球：放鬆股四頭肌\n3.槓鈴：放鬆斜方肌\n第一項訓練（三樓的Impulse）：\n1.坐姿踢腿機：38公斤\n2.組數與次數：\n(a)前兩組：各15下\n(b)第三組：12下\n3.動作要求：做慢離心訓練\n做完股四頭肌確實很痠，昨天有留下一些疲勞感\n熊抱槓深蹲，50公斤：\n1.第一組：7下\n2.第二組：8下\n3.第三組：8下\n今天在做這個動作時，感覺到背闊滿痠（昨天的疲勞還在），背闊肌的刺激感很強，好像今天有練背一樣然後手肘的不適感蠻重的。大概做到第三組左右的時候，股四頭肌就開始大量發力，後面屁股好像有點沒力了。有買了一組護肘，結果發現太小了，根本戴不上。\n3樓Impulse做肢腿後勾機38公斤：\n1.前面兩組：12下（做慢離心）\n2.第三組：8下半（做慢離心）\n好像很久沒有做腿後勾了，做的時候左膝內側那個軟組織的聲音又跑出來了。\n三樓 Impulse 坐姿外展機：\n38 公斤一組。前兩組 15 下，第三組 12 下。\n三組都做慢離心。\n一樓 Impulse 坐姿提踵機，共 7 組：\n1. 第一組：空重 25 下\n2. 第二到第四組：20 公斤，各 20 下\n棒式四組：\n1. 負重 5 公斤槓片，每組一分鐘\n2. 從第三組開始，腰就有一點沒辦法挺直，但還是可以撐著 😔\n今天最喘的就是這個棒式，一撐起來就想要一直加速呼吸 😮‍💨\n3. 二樓跑步機（目標心跳維持 130 左右）：\n(a) 前面 15 分鐘：速度 3 公里、坡度 0\n(b) 後面心跳有點掉下來，把坡度加到 3.8\n(c) 總共運動 25 分鐘\n", "2026-01-30": "# 2026年1月30日星期五\n\n輕輕熱身，滾筒放背部，槓鈴放斜方。\n第一個動作：俯身板凳划船30公斤，左右各5公斤，共三組，一組10下。\n有一點點忘記我的上半身應該要停到什麼角度？\n做這個姿勢的時候，不知道是不是角度還是閉氣的關係，會覺得頭變得有點脹。可是我的頭已經高過水平了。\n三樓 Inpulse 器械繩索下拉（滑輪下拉）三組：\n45 公斤\n1. 第一組：10 下\n2. 第二組：8 下\n3. 第三組：8 下\n這感覺應該是我能維持動作的最大重量了。\n三頭繩索下拉與剛剛的滑輪下拉做超級組。\n三頭部分共三組：\n1. 第一組：38公斤，8下\n2. 後面兩組：32公斤，7下\n不知道是不是上次記錯了，還是因為今天的下拉有加重量，用上次的重量拉起來有點拉不太動，38公斤第一組也勉強只拉了 8 下。\n三樓 Impulse 站姿提踵機跟二頭彎舉機做超級組。\n站姿提踵總共三組 32 公斤：\n1. 第一組 25 下\n2. 第二組 25 下\n3. 第三組 20 下\n二頭彎舉\n第二組：25公斤，10下\n第三組：18公斤，12下（最後兩下做不完整個行程）\n二頭感覺沒力了，可是沒有酸感也沒有脹感，就是覺得使不上勁了直接斷電\n三樓飛鳥夾胸 32 公斤，共三組：\n1. 第一組\n2. 第二組：12 下\n3. 第三組：8 下\n行程放到最短\n從第一組開始，就覺得胸部很有感覺！\n三樓肩推機18公斤\n第一組12下\n第二組12下\n第三組10下\n第四組10下\n這次斜方肌跟三角肌前束都有感覺，不過奇怪的是，機器上的圖沒有畫到斜方肌\n3樓 Impulse 機械式胸推：\n1. 重量：3片 25公斤\n2. 組數：共 3組\n3. 次數：每組 10下\n開始注意「吸氣、閉氣、吐氣」這個流程的呼吸模式之後，注意力就一直放在呼吸上面，導致一直忘記做到第幾下，甚至連第幾組都忘記了。\n二樓的跑步機做走路（速度 3 公里，坡度 4 到 5），維持心跳大約在 130 左右，持續 20 分鐘。\n不知道是身體比較適應了，還是因為我加入了這個跑步的緩和運動，現在延遲性肌肉酸痛的強度沒有那麼強，而且好像也比較快好。\n", "2026-01-31": "# 2026年1月31日星期六\n\n禮拜三練的腿，今天有點痠痛。酸痛的程度沒有很強，不過很緊繃\n今天用滾筒放鬆：\n1.背部跟開胸\n2.槓鈴放在斜方肌\n3.滾筒放鬆腿部\n先用高架的彈力繩放大腿前側\n做俯臥腿後勾的時候要注意，膝蓋要對準軸心再爬上去。如果左膝還有不舒服的彈響，要加強放鬆小腿（用坐姿的方式，按壓小腿內側）如果勾起來時屁股會馬上翹，行程就可以不用那麼長，放下去也可以不用放到那麼底，以避免膝蓋不適。\n上半身要看著板凳，胸口挺起來，並用核心支撐。重量不用重，慢慢做即可。今天只有加到兩片槓片，加上面的 3 公斤加重。忘記到底是多少重量了。\n今天做 SSB 深蹲槓的背槓深蹲，要注意幾個項目：\n1. 手要向上撐到鎖骨左右，讓這個槓靠在斜方肌，不要靠在頸椎上。\n2. 背槓的時候要站進去一點，往上背穩了、站穩了，才往後退。\n3. 往下蹲的時候，要感覺重心是壓在身體前後的正中間。\n4. 手要記得維持住、不要掉下去，不然槓就會往脊椎上壓。\n今天做 40 公斤，感覺不是很重，但是對腿後側來說，做到第二、三組就已經稍微沒力了。這種無力感也不是酸脹感，就是覺得好像要沒電了。\n這種深蹲的方式，注意力可以比較好的集中在腿跟重心的控制上面，不像熊抱槓會一直被上半身拉走注意力。\n接下來做板凳腿內收夾的訓練。跟上次比起來，這次可以夾得比較穩定，但是到後面，下面那一腳會一直往下掉，撐不太上去。\n負重 10 公斤的棒式：一组30秒，感覺強度好像還好做完沒什麼疲勞感\n要記得槓片是放在肩胛骨上面，不要放在腰上面。\n最後用跑步機 30 分鐘，速度 3，坡度 5 到 7。\n今天的心率感覺好像沒有那麼高，到後面坡度要調到 7 才能維持 130 左右的心跳。\n三樓趴姿腿勾。這跟坐姿做起來的感受度不太一樣。\n做三組，每組 10 下，三片槓片 30 公斤。最後一組最後兩下做起來有點吃力。\n哥本哈根側棒式兩組兩邊，每次 30 秒\n", "2026-02-02": "# 2026年2月2日星期一\n\n滾筒放背，滾筒放大腿前側，跟股中肌\n這兩天，我的背部不平衡感跟肋骨的緊繃感又跑出來了。\n熊抱槓深蹲：\n第一組70公斤，做了10下。感覺從第六下、第七下開始，核心就撐不太住了，這個重量可能太重了。\n第二組：50公斤，10下\n第三組：50公斤，10下\n第四組：50公斤，10下\n組間休息好像沒有控制得很好，今天做起來很吃力。心跳也蠻高的\n寬距反握滑輪下拉，32公斤共3組，1組10下\n窄距反握坐姿划船：\n32公斤，3組，1組10下\n繩索三頭：\n25公斤，3組，1組10下\n站姿提踵：\n32公斤\n1.第一組25下\n2.第二組25下\n3.第三組20下\n跑步機：\n1. 用走的 3 公里\n2. 坡度 5\n3. 心跳維持在 130 左右\n4. 20 分鐘\n", "2026-02-03": "# 2026年2月3日星期二\n\n今天的熱身\n跑步機走五分鐘速度 3 公里，坡度 5%\n動態熱身：弓箭步大迴旋，15 米兩趟\n滾筒放背，還有大腿前側\n第一項是後腳抬高蹲\n單手持重 10 公斤\n後四組，一組 10 下：\n1. 前面兩組：單手扶槓\n2. 後面兩組：靠自身平衡\n心肺的狀況應該有在恢復了，這次很明顯沒有像上次心肺那麼受不了。\n前面三組基本組間休息都小於 2 分鐘，只有最後一組 3 分鐘。\n3. 三樓 impulse 器械胸推：\n32公斤，四組，每組10下\n做這個胸推的時候，左手的肩關節會有一點怪怪的，不知道跟那個大迴旋的聲響有沒有關係。\n4. 三樓 Impulse 坐姿腿後勾：\n38 公斤，三組，每組 10 下\n最後一組的最後幾下，左腳膝蓋輕微的聲響又出現了，不過前面沒有。\n3 樓 Impulse 器械捲腹機：\n1. 第一組：38 公斤，10 下\n2. 第二組：38 公斤，10 下\n3. 第三組：32 公斤，10 下\nIn-Pose 肩推（坐姿）：\n1. 25 公斤，3 組，每組 10 下\n今天感覺三頭刺激又比較多一點，斜方比較沒有感覺，三角肌前束有感覺。\n右手的肘關節怪怪的，好像是因為三頭太緊了，按壓之後有好一點。\n負重棒式 10 公斤，三組，每組一分鐘\n跑步機用走的：\n1. 3 公里\n2. 坡度 5%\n3. 20 分鐘\n今天闊背的疲勞感比昨天練背還要明顯，是棒式的關係嗎？\n", "2026-02-04": "# 2026年2月4日星期三\n\n今天的熱身項目：\n1. 跑步機走 7分鐘\n2. 滾筒開背\n3. 大腿內側跟前側\n4. 按壓小腿\n5. 教練課內容：\n(a) 放鬆胸前側\n(b) 放鬆三角肌及肱三頭肌附近的肌肉\n(c) 使用筋膜球改善手臂彈響\n(d) 雙手扶在牆壁往上延伸（撐住彈力帶）再往下回到胸前\n不過因為阻力都集中在撐住彈力帶，所以背部的感覺沒那麼明顯\n(e) 做側棒式要加強較弱的那一邊\n(a) 身體要直，上半身要打直\n(b) 膝蓋呈 90 度，大腿、身體與膝蓋之間都要維持 90 度\n(c) 屁股不要夾，感受手穩穩地往地板推\n這樣應該是身體側面的肌群會有感受\n器械引體向上，放置重量要插在倒數第二片或第三片。\n操作重點如下：\n1. 保持手肘往下拉，感受大小圓肌的部分要有感受度。\n2. 往上拉的時候不要聳肩。\n3. 下到最底的時候，要感覺肩胛往上轉、往上延伸，但是不能鬆開。\n4. 做這個的時候，感覺到左右很不平衡：左邊力竭感已經出來了，右邊卻還沒什麼感受度\n，大拇指要出力握好。\n做坐姿肩推的動作時，拿 5 公斤的啞鈴，左手先。\n手肘要靠著身體，但不要用力夾，沿著身體旁邊往外、往上、往後方推，自然而然地手臂會往前轉，感受度應該要在大小圓肌。\n手肘如果開掉，就表示三角肌中束介入、沒力了\n做一個跪姿胸椎旋轉的動作（忘記叫什麼名字了），\n重量11或18公斤用繩索拉在胸口左右的高度，拿黑色的三角形握把，三個圓環都要扣上去。\n動作細節如下：\n1. 跪姿在地上訓練，對應腳在後，腳尖要撐著，前腳大約 90 度。\n2. 要感受肩膀跟骨盆，還有脊椎要正。\n3. 感覺往後拉的時候，應該是大圓肌、小圓肌跟前鋸肌，還有比較靠側面的闊背肌感受度會比較好一點。\n大拇指要出力握好。\n繩索二頭：\n1. 把繩索固定在最低的位置。\n2. 使用銀色金屬、中等寬度的桿子。\n3. 站的時候有點類似三頭的站法。\n4. 手肘要固定，不要一直動。\n5. 手腕維持角度，不要出力。\n6. 握在槓最兩側、靠外側的地方。\n7. 這個動作明顯比原來器械的感受度要好很多。\n今天做的訓練很明顯，都是左邊很快就沒力了，右邊比較有力。\n在進行分邊訓練的時候，要以左邊為優先，來決定右邊要練的容量。\n做重量的選擇時，如果加重之後做不了 10 下，剩下的次數可以減一格重量來補完\n今天的訓練做完，左手大迴旋的彈響明顯變小，但還是有。\n最後做 20 分鐘的跑步機，速度 3 公里，坡度 8，也是用走的，心率 130 左右。\n回家的路上發現整個左邊背部除了斜方肌都很緊繃 右邊像沒事發生\n", "2026-02-05": "# 2026年2月5日星期四\n\n今天的熱身是滾筒放鬆，包括：\n1.大腿前側\n2.大腿後側\n3.臀中肌\n4.開背\n還有推雪橇：\n1. 16公斤一趟\n2. 24公斤一趟\n第一個訓練是SSB槓（背槓深蹲），兩邊各放10公斤鋼片。空槓是不是30還是35公斤？我記不清楚了。做四組，每組十下。\n一樓 Panata 垂直腿推熱身組的時候，就發現左腳膝蓋內側的聲響又出現了。做了大腿前側與小腿的按壓之後，感覺還是有一點。\n正式組兩邊各 30 公斤槓片，共四組，每組 10 下。\n最後一組發現，下來的時候不要下到那麼低，好像就沒有聽到聲響了。\n今天第一次做腿推完感覺大腿後側是酸緊無力，而不是直接斷電的那種感覺。\n接下來做 Cable 三頭，做到一半才發現今天要做的是直臂下壓，不是 Cable 三頭。一不小心就多做了一組，變五組了\n第一組 38 公斤 10 下，後面四組 32 公斤 10 下。\n這次做的時候發現，上半身有沒有前傾、胸部有沒有往前挺，會很大地影響三頭的感受度。第一組就是因為身體沒有往前傾，胸部也沒有挺，所以三頭沒什麼感覺。\n直臂下拉，總共四組：\n1. 第一組：25 公斤\n2. 後面三組：18 公斤\n每組 10 下。今天完全找不到背的感覺，不知道為什麼後面左邊的斜方肌還跑出來幫忙\n最後做跑步機 20 分鐘。速度3 公里，坡度控制在 5 以下，並維持心跳在 130 左右。\n", "2026-02-06": "# 2026年2月6日星期五\n\n今天的放鬆包含以下項目：\n1. 滾筒：放鬆背部與開胸\n2. 槓鈴：放鬆斜方肌\n3. 動態訓練：推雪橇\n(a) 24 公斤，15 米，1 趟\n(b) 32 公斤，15 米，1 趟\n器械式蝴蝶機飛鳥夾胸（共 4 組）：\n(a) 前面兩組：32 公斤，一組 10 下，覺得有點太輕了\n(b) 後面兩組：加到 38 公斤，一組 10 下\n感覺胸部的張力感4. 器械式蝴蝶機飛鳥夾胸（共 4 組）：\n(a) 前面兩組：32 公斤，一組 10 下，覺得有點太輕了\n(b) 後面兩組：加到 38 公斤，一組 10 下\n感覺胸部的充血膨脹感沒有之前強，下次四組都直接做 38 公斤看看\n啞鈴臥推跟坐姿提踵機做超級組\n1. 啞鈴臥推：一手 12.5 公斤，共 3 組，每組 10 下\n今天胸部還是沒有什麼充血感。感覺姿勢跟發力的感覺是正常的，胸部還是有力竭感但就是充血感沒有之前來的強\n提踵小腿的充血感非常好\n一樓 Impulse 捲腹肌，正面的 10 公斤，4 組一組 10 下。好像下次可以加重量了。\n負重棒式：\n鋼片 10 公斤，3 組，每組 1 分鐘\n跑步機：\n1. 速度：3 公里\n2. 坡度：6 以下\n3. 心跳：控制在 130 左右\n4. 時間：20 分鐘\n", "2026-02-07": "# 2026年2月7日星期六\n\n今天的熱身動作是用滾筒放背、開胸，還有大腿前側、內側與臀中肌，以及用槓鈴放斜方肌。\n先做趴姿的胸椎活動度練習：\n1. 單手靠在地上，把頭放在前面的那隻手上\n做地板的槓鈴臥推，先躺在槓鈴槓下，眼睛對著槓。\n1. 預備動作：\n(a) 把屁股抬高，上半身往後塞\n(b) 肩膀位置基本不動，只動角度讓整個背可以拱起來\n(c) 腳略與肩同寬，往地板踩給身體支撐\n2. 握槓方式：\n(a) 雙手握住槓鈴外側的線，中指對準外側線握上去\n(b) 握法大約是「催油門」的角度，讓槓鈴可以靠在掌骨上\n3. 出槓與推行：\n(a) 出槓時要往外推直，一口氣將槓推直\n(b) 位置大約在胸的上方，也就是肩胛骨的正上方\n(c) 往下時不要夾肘，保持直上直下\n(d) 身體全程都要維持張力，手越往下時，胸部要越往前挺來與槓鈴抗衡\n(e) 腳要踩穩支撐\n(f) 如果感覺肩的參與度過高，可能就是胸塌了\n(g) 半身伏地挺身（跪姿）：\n1. 膝蓋併攏，後腳交叉且腳離地，僅剩膝蓋與手掌支撐。\n2. 手掌約 1.5 倍肩寬，位置大概在瑜伽墊外側。\n3. 上半身盡量往前，讓手掌的支撐點靠近胸部。\n4. 動作維持直下直上，感受會像是在做臥推，胸部的發力比例會比較高。\n5. 負重棒式的姿勢校正：\n(a) 平常在做負重棒式時，屁股可能會稍微往下垂。\n(b) 姿勢要稍微往上挺，讓整個背部可以維持水平。\n3. 最後做壺鈴的有氧：\n(a) 壺鈴放在雙腳中央，腿開約是深蹲的站距。\n(b) 雙手持壺鈴，手不要用力，自然擺盪。\n(c) 靠身體下蹲與往上挺的姿勢，讓壺鈴自然擺動。\n(d) 一組 20 下，重量 8 公斤。\n3. 伸展與恢復：\n教練說這幾天開始做「推雪橋」之後，胸椎活動度有比較好，要持續做。\n", "2026-02-09": "# 2026年2月9日星期一\n\n今天熱身用滾筒：\n1.開背\n2.開胸\n3.大腿前側\n4.臀中肌\n推雪橇：\n1. 35公斤\n2. 15米，共4趟（來回兩次）\n3.胸前抱槓深蹲60公斤四組，每組十下\n今天盡量控制上半身不要搖搖晃晃，重心確定好再往下蹲，好像有比較穩定一點。\n4.滑輪下拉：45公斤三組，每組10下\n最後一組的最後三、四下有點吃力\n坐姿划船：下次前兩組可以加個重量試試看。這次是38公斤，10下三組\n機械腿踢\n45公斤，三組10下\n下次可以做一組再加重量的試試看\n繩索三頭共三組：\n1.第一組：38公斤，10下\n2.後面兩組：32公斤，10下\n下次從32公斤開始就好，38公斤有點不太行。\n跑步機速度3公里，坡度3以下，時間20分鐘，心跳130左右\n", "2026-02-10": "# 2026年2月10日星期二\n\n今天热身用这个健身滚筒：開背、開胸、大腿前側、臀中肌。\n推雪橇：\n1.前兩趟（15米去回）：35公斤\n2.後面兩趟（去回）：39公斤\n3.後腳抬高蹲：四組\n(a)單手持啞鈴10公斤，每組10下\n(b)前面三組的前腳距離太後面，感覺都是股四頭肌在介入\n(c)最後一組前腳往前半步，後側就比較有感覺了\n3.胸部訓練：\n(a)器械臥推：4組，38公斤，每組10下\n(b)今天的胸肌充血感很好\n注意力要一直集中在胸肌上，維持胸部張力，不然手就會介入更多\n2.器械腿勾\n(a)第一組：45公斤，10下\n(b)後面兩組：38公斤，10下\n(c)今天左膝沒有聲響\n3.器械肩推：\n(a)全部都是32公斤\n(b)共三組，每組10下\n(c)今天右手肘關節一樣怪怪、卡卡的\n(d)用按摩球放鬆後好很多\n(e)下次可能要先放鬆三頭肌，再做肩推\n注意力不能一直放在手推 不然都是三頭比較多\n(f) Cable 二頭：三組，25 公斤（每組 10 下，三片就對了）\n跑步机用走的速度 3 公里，坡度 5 以下，维持心跳 130。20 分鐘\n", "2026-02-11": "# 2026年2月11日星期三\n\n今天熱身內容：\n1.滾筒放背、開胸、大腿前側\n教練課內容：\n1.靠桌子放鬆三頭肌和小手臂肌肉利用筋膜球\n2.用筋膜球放鬆臀中肌，位置類似使用滾筒放鬆的地方，靠自身體重去壓\n3.鴿式伸展：\n(a)前腳膝蓋盡量呈現90度，可以用手去調整\n(b)上半身不要駝背，要往前壓\n(c)應該要感覺到屁股有被拉長的感覺\n4.側棒式：\n(a)做側棒式時，將上面那一腳往上抬，不要靠在下面那腳上面\n(b)接著可以做髖屈與髖伸的練習\n(c)過程中應該要感覺到是屁股在用力\n3.坐羅馬椅感覺是要從腳後跟用力，然後大腿跟屁股一直往上帶。\n(a)靠著的時候，骨盆前面的骨頭不要靠在墊子上\n(b)往下的時候，應該要感覺到屁股有被拉伸\n不過今天因為會覺得膝蓋有被鎖死的感覺，所以暫時沒有做了。\n做壺鈴的硬舉，也可以感受到屁股拉伸。\n還有一個姿勢：雙腳打開，比平常深蹲的距離還要寬，大約是兩倍肩寬。接著膝蓋微彎，上半身往前做「髖屈」（Hip Hinge）。\n在這個動作中，你會感覺到大腿後側和屁股有緊繃感。維持這個姿勢，膝蓋想辦法往後用力，感覺屁股往天上、往天花板的方向延伸。過程中也可以用手去幫忙推大腿前側。\n這個是今天最有感覺、可以輕鬆拉到屁股的一個動作\n熊抱槓深蹲，蹲下去的時候要感覺屁股往後啟動。蹲下去之前，骨盆要稍微前傾，把屁股往上翹。\n上半身要有一個傾斜的角度，不能太直。\n感覺重心要在身體中間起槓的時候，用膝蓋把屁股往前帶。\n然後屁股一樣是往後翹，兩腳要併攏，起槓才會穩。肩膀要放鬆，不要聳肩。\n後腳抬高蹲跟熊抱槓深蹲類似的方式：\n1.站直的時候，屁股不要用力夾\n2.身體要往前腳側轉，強迫骨盆維持正面\n這個動作可能就會拉緊屁股，但是要記得不要夾。\n3.往下蹲的時候，上半身要有一個前傾角度，感覺是腿在踩，上半身不要主動往上晃\n这一次的练习虽然是空手，但是感觉屁股会酸，之前做的好像没有这么酸。\n三樓：站姿提踵，38公斤。\n四組，每組20下。\n跑步機用走的 3 公里。\n速度與坡度 5 以下，控制心跳在 130 左右。\n今天感覺比較累一點，不知道是不是練前只有喝乳清，沒有補碳水。\n", "2026-02-12": "# 2026年2月12日星期四\n\n今天熱身：\n1.滾筒放鬆背部\n2.開胸\n這兩天沒有睡好，精神不是很好，感覺有點累。今天先不練Day3\n地板槓鈴臥推，今天做四組，練習每組十下。\n1.前兩組30公斤\n2.後面兩組40公斤\n胸部有充血，但感覺不明顯，三頭肌介入的有點多。\n瑜珈墊跟我的衣服有點滑，往後擠的時候感覺會有一點滑掉。\n坐姿啞鈴肩推，做四組：\n1.一邊各四組\n2. 5公斤，10下\n機械飛鳥夾胸，共三組：\n1.前兩組：45公斤，10下\n2.第三組：45公斤，5下；38公斤，5下\n跑步機（走路）：\n1. 速度：3 公里\n2. 坡度：7 到 9\n3. 時間：20 分鐘\n4. 心跳：維持在 130 左右\n", "2026-02-13": "# 2026年2月13日星期五\n\n今天的熱身：\n1.用滾筒開胸、放鬆背部\n3.用筋膜球放鬆臀部\n4. SSB槓鈴深蹲：\n(a) 55公斤\n(b) 4組\n(c)每組10下\n只做了五下空槓的動態熱身，好像有點不太夠。今天沒有推雪橇\n上半身第一組做完之後有點不太舒服，不過後面好像有好一點。\n2.垂直腿推\n(a) 70公斤\n(b) 4組\n(c)每組10下\n今天左膝還有異響，好像跟行程也沒太大關係，不過異響好像有減輕一點。今天腿推做完，大腿後側很痠，不過屁股好像還好，是不是行程不夠深，所以屁股沒有刺激到？全程有想辦法把腰靠在墊子上，不過做完四組後，腰有一點點痠，但不會痛。\n最近腿練完，好像都沒有那種腿軟的感覺。\n今天感覺右腳明顯疲勞很多\n直臂下壓25公斤，共四組，每組十下。中間有試著加重，不過好像不太行，先維持25公斤就好。\n腿部伸展（Leg Extension）記錄：\n1.第一組：18公斤，10下\n2.第二組：23公斤，10下\n3.第三組：23公斤，10下\n23公斤做起來有點吃力，18公斤的感受度比較好。\n哥本哈根側棒式：兩組，30秒\n負重棒式：15公斤，4組，每組40秒\n跑步機：用走的\n1.速度：3公里\n2.坡度：5以下\n回到家才發現屁股很酸但是跟腳一樣右腳比較多\n", "2026-02-14": "# 2026年2月14日星期六\n\n今天的熱身滾筒項目：\n1.開胸\n2.放背\n3.放腿（前側、後側）\n4.屁股\n5.大腿內側\n推雪橇40公斤，4趟共60公尺\n以下是教練課內容：\n6.前鋸肌訓練\n動作要領如下：\n1.採趴姿趴在地上，雙腳成跪姿，上半身像做棒式一樣。\n2.用彈力繩撐住往外，重心要稍微靠前，過程中會感覺到前鋸肌在用力。\n感覺到呼吸時，胸背打開，不要聳肩。要用這種方式做棒式以及深蹲等等的。\n下一個動作是類似的動作，只是上半身改成趴姿，而不是用肘關節著地。\n針對右邊肩胛骨，右手壓住瑜伽磚做上面相同的動作，可以增加肩胛的活動度。\n做靠牆呼吸練習時，整個背都要貼在牆上，頭也要有意識地靠在牆上。\n下半身雙腳往前放並微蹲，上半身持重壺鈴4公斤，位置大概在胸口往前20公分處，一樣做胸腔擴張的呼吸練習，每次都要練習。\n熊抱槓深蹲，起槓前先讓重量落在手肘內側維持，肩膀放鬆。\n起槓時，屁股不要往前頂，膝蓋微彎，屁股稍微往後。往上時，只要腳往上踢，不要再想著用上半身把重量撐起來。\n往下蹲之前，先看一下自己的站距是否正確，不要站太窄。往下蹲之前，膝蓋應該要微彎，屁股稍微向後，不要靠著屁股往前頂來，向上支撐，屁股不要出力。\n要注意重心是在腳的中間，再往下蹲。\n​\n地板槓鈴臥推預備動作：\n往後擠時肩胛要有意識地用力，才不會被屁股擠走，也可以擠出比較大的胸椎角度。\n今天做到45公斤，每組6下。胸部的感覺還不錯，沒有太多三頭肌參與的感覺。\n要記得，除了胸部的張力要維持之外，雙腳踩地的張力也要一直維持，不能鬆掉。\n坐姿三頭訓練：\n1.坐在板凳上，把啞鈴放在肩上。\n2.雙手反握，將手肘夾緊。\n3.把啞鈴推到頭的上後方。\n4.將啞鈴往頭的後方放，然後再舉起來。\n5.下來時也要先放在肩上\n過程中要注意，肘關節不能打開，要感覺三頭肌在拉伸。\n要避免只有慣用手在用力，兩手要平均發力。\n以上教練課內容結束。\n站姿提踵，總計45公斤：\n1.四組\n2.每組20下\n跑步機（走）：\n1.速度：3公里\n2.坡度：12以下\n3.心跳：維持在130左右\n4.時間：20分鐘\n​\n", "2026-02-17": "# 2026年2月17日星期二\n\n今天的熱身滾筒：\n1.放背\n2.放大腿前側\n3.放大腿內側\n4.開胸\n板凳跪姿拉伸大腿前側\n雙腳半蹲放鬆後側\n5.壺鈴硬拉：24公斤，三組，每組10下\n6.熊抱槓深蹲：\n(a)四組，每組10下\n(b)第一組50公斤\n(c)後面三組60公斤\n(a) 45公斤\n(b)三組，每組10下\n(c)最後一組明顯比上週好\n3.坐姿划船：窄距反握：45公斤，三組，每組10下\n(a)今天感覺划船左邊的背比右邊的背要來的酸。\n三樓，坐姿踢腿機：52公斤，三組，每組10下\n1.後面兩組在頂峰停一秒，再慢慢放回來\n第一次做這個，做到會喘，心跳恢復得很快，但是要多喘一下。\nCable三頭：\n1.第一組：32公斤，10下\n2.第二組與第三組：25公斤，10下\n25公斤的感覺比較好，下次再降一格吧。\n三樓站姿提踵：45公斤，4組，每組10下\n這次做有一點點內八，想要加強小腿外側的肌肉。\n器械輔助引體向上：64公斤，3組\n1.前兩組：10下\n2.最後一組：8下\n3.補充筆記：左邊的背部應該是前鋸肌沒力了\n應該還有跑步機 走路 心跳130左右 30分鐘\n", "2026-02-18": "# 2026年2月18日星期三\n\n今天的熱身\n滾筒放大腿前側內側後側筋膜球放屁股\n膝蓋靠牆拉伸腳踝\n寬距微蹲放大腿後側\n壺鈴硬舉，32公斤三組每組10下\n後腳抬高蹲\n單手持12.5公斤啞鈴\n四組 每組十下\n地板槓鈴臥推\n4組\n第一組 40公斤6下\n2-3組 50公斤 8下\n第4組 50公斤 6下\n器械胸推\n第一組 38公斤 十下\n第2-3組 45公斤10下\n第四組 38公斤 10下\n今天兩個胸部動作\n肩膀代償有點多\n坐姿腿後勾\n共三組\n第1-2組 52公斤 十下\n這兩組忘記全程保持張力 到頂端時都放鬆了\n第三組 38公斤 10下\n器械肩推\n32公斤 三組 每組十下\nCable二頭 三組 25公斤 每組十下\n二頭感覺左邊出力比較多\n跑步機 用走的\n速度三公里\n波度六以內 30分鐘\n", "2026-02-20": "# 2026年2月20日星期五\n\n今天熱身：\n1.滾筒放鬆大腿前側\n2.放鬆背部與開胸\n3.筋膜球放鬆臀肌\n4.推雪橇：\n(a) 15公斤，兩趟共30米\n(b) 40公斤，兩趟共30米\n3.伸展運動：\n(a)腳踝碰牆趴姿\n(b)放臀肌雙腳交叉拉臀肌\n壺鈴硬拉32公斤，三組，每組10下\n注意髖屈主打，膝蓋不要往前太多\nSSB槓深蹲65公斤，四組，每組10下\n特別注意：髖屈，手要往上撐，讓槓落在斜方肌上面，而不是落在頸椎上。\n做到後面覺得腰也有一點痠，不過是正常的痠，沒有不適感。\n垂直腿推 80 公斤，四組，每組 10 下\n後面兩組的最後一到兩下，感覺頭很脹。\n左邊膝蓋只要有非常注意地把重心放在後面，不要讓股四頭肌的占比太高，那個輕微的聲響就會變得更輕。我有時候沒有注意，聲響就會比較明顯。\n今天做完垂直腿推，就覺得人有一點累了。\n感覺腿推好像心肺會先受不了，而不是腿先受不了了。\nCable 直臂下拉：\n1. 25 公斤\n2. 四組，每組 10 下\n繩索稍微拉開一點，不要靠太近，背部的感受度會好一點今天的感受度還不錯，但好像不適合再增加重量\n趴姿腿勾\n1. 第一組：18 公斤\n2. 第二、三組：23 公斤\n每組 10 下\n行程還是做得很不滿：\n往上勾得太高，大腿前側會騰空\n哥本哈根側棒式兩組，一組 30 秒\n這個不知道要怎麼加強度？是拉長時間，還是多做幾組？\n還是可以挑戰正常版的\n負重棒式：15 公斤，4 組，每組 40 秒\n最後一組最後一點時間會發抖\n不過，前三組的感覺下一次應該可以再加重了\n跑步機用走的三公里速度，坡度維持在0，心跳就維持在 130 左右 可能前面有點累了\n", "2026-02-23": "# 2026年2月23日星期一\n\n今天的熱身：\n1.滾筒\n(a)放鬆背部與開胸\n(b)放鬆大腿前側、內側\n2.筋膜球：放鬆臀部與腹股溝\n3.壺鈴硬拉：32公斤，每組10下，共3組\n4.膝蓋靠牆：做踝關節活動度伸展\n5.推雪橇：\n(a) 15公斤，兩趟共30米\n(b) 39公斤，兩趟共30米\n熊抱槓深蹲\n(a) 60公斤\n(b) 4組，每組10下\n現在感覺都是心肺跟核心有點跟不上，腿的刺激越來越少了\n不過從上週練完開始，髖部就有一點痠痛，大概是正面到外側中間45度的深處。\n上週五練完後，休了兩天，到今天還沒有完全好。\n今天練完之後，又變得更酸了。\n滑輪下拉：\n1. 45公斤\n2.三組\n3.每組10下\n4.做慢離心\n做完會喘，心跳也有150幾，不過很快就恢復了\n坐姿划船，45公斤，三組，每組10下\n做慢離心。\n手握著的地方會有點不舒服感覺血液不循環\n坐姿踢腿機，三組：\n1.第一組：59公斤，10下\nCable三頭：\n1.三組\n2. 25公斤\n3.每組10下\n這個重量的感受度又來得好很多，比前幾次好。\n但是三頭沒有之前一開始練的腫脹刺激的感覺\n本來還要做引體跟提踵，不過今天覺得有點累，就先到這裡。\n跑步機用走的，時速3公里，坡度9以下，控制心跳在130左右，時間30分鐘。\n", "2026-02-24": "# 2026年2月24日星期二\n\n今天熱身：\n1. 滾筒放背\n2. 開胸\n3. 筋膜球放屁股\n1. 壺鈴硬拉：32 公斤，兩組，每組 10 下\n2. 推雪橇：40 公斤，兩趟，共 30 米\n3. 單腳跪姿前挺拉伸股四頭肌\n3. 後腳抬高蹲：單手持啞鈴 15 公斤，4 組，每組 10 下\n今天試著把後面那隻腳稍微張開一點，不要靠身體那麼近，好像有比較穩，沒有之前晃得那麼嚴重。\n器械胸推：\n1. 四組\n2. 前兩組 52 公斤，每組 10 下\n3. 後兩組 45 公斤，每組 10 下\n今天胸推做完，覺得肩膀不太舒服，有點酸軟的感覺，所以沒有再做肩推。\n坐姿後勾，共三組：\n1. 第一組：52 公斤，10 下（有點難控制）\n2. 後面兩組：45 公斤，10 下（勉強還能控制）\n下次可以再嘗試一樣的重量組合看看或是從 45 公斤開始\n今天忘記放鬆小腿，左膝的那個聲音、卡卡感會有一點跑出來。\n坐姿外展機：45 公斤，3 組，每組 10 下。\n三樓InPulse 捲腹機：32 公斤，3 組，每組 10 下\nCable 二頭：25 公斤，10 下，3 組\n跑步機 用走的 速度3公里 坡度9以下 心跳130左右\n", "2026-02-25": "# 2026年2月25日星期三\n\n今天的熱身：\n1. 滾筒：放背、開胸\n2. 筋膜球：放屁股跟大腿前側\n3. 伸展：膝蓋靠牆伸展\n4. 推雪橇：40 公斤，兩趟共 30 米\n今天的教練課內容：\n1. 單腳 RDL\n(a) 用單腳足弓、大拇指球跟小指的部位踩在斜板墊子上\n(b) 五隻腳趾張開並抓牢地板，不要翹起來\n(c) 腳後跟靠牆做單腳 RDL，感覺用腳往上推\n(d) 抬起來的那隻腳要稍微往右轉，要靠腹股溝（骨頭）轉，不能只是靠身體或腰轉\n今天做的應該是退階版雙手扶在牆上\n7. 後腳抬高蹲\n(a) 重點是像剛剛一樣，腳趾要緊緊抓著地板，不要彎來彎去，這樣踩起來才會穩\n(b) 骨盆要往前側腳的方向轉，不要只是轉腰，這樣臀部才會有拉伸感，發力感會更好，腰也不會痠\n(c) 體感的感覺是身體會有一點向著前側腳那一面的方向\n3. 今天這樣做後腳抬高蹲，基本上不單手持啞鈴，可以不用扶就能做完\n熊抱槓深蹲跟剛剛一樣，腳趾頭要用力抓著地板，這樣重心會更穩。\n往上的時候，要感覺是用腳往上踩，不要想著用上半身往上帶，這樣腰才不會不舒服。\n最後一個動作是槓鈴的 RDL。把保護槓架在重訓架約一號的高度，將槓鈴放在上面。\n起槓姿勢\n1. 小腿靠在槓鈴上，然後髖屈啟動\n2. 眼睛要看向前方，不要低頭（低頭會影響胸椎，導致上半身塌掉）\n3. 上半身要放鬆，不要靠上半身去拉槓鈴，而是靠腳往上蹬\n身體到挺直就好，不要把肚子往前推，否則身體會往後傾。\n會感覺大腿後側非常的緊。這個動作可以拿來做每天的熱身動作，從 30 公斤開始。\n最後做跑步機，用走的速度 3 公里，坡度 9 以下，維持心跳 130 左右，持續 40 分鐘。\n", "2026-02-26": "# 2026年2月26日星期四\n\n過兩天要抽血，今天只有過來用跑步機走路。\n訓練菜單如下：\n1. 速度：3.5 公里\n2. 坡度：7 左右\n3. 心跳控制：130\n4. 時間：1 小時\n", "2026-02-28": "# 2026年2月28日星期六\n\n今天提早去抽血，下午來補這週的 Day 3\n今天熱身：\n1.滾筒：放背開胸、放大腿前側\n2.筋膜球：放屁股（不是筋膜槍）\n3.推雪橇：40公斤，兩趟，共30米\n4.分腿跪姿：拉伸大腿前側\nSSB背杠深蹲：\n1. 75公斤：兩組，每組10下\n2. 65公斤：兩組，每組10下\n發現每一組到最後兩三個，都會有一點上不來的感覺，就會想要用上半身代償，就是下去後剛要上來的那個地方。前面七八個都能維持正常姿勢，但是後面兩三個姿勢就跑掉了。所以今天腰也有點痠。下次先從 65開始。\n一樓垂直腿推四組：\n1.前三組：80公斤，10下\n2.最後一組：85公斤，10下\n現在比較大的瓶頸都是卡在心肺了\n直臂下拉 25 公斤：\n4 組，每組 10 下\n坐姿內收肌機45 公斤：\n3 組，每組 10 下\n參加四點的戰鬥有氧後，膝蓋內側靠近小腿的地方有點痛\n使用跑步機走 10 分鐘，速度 3 公里，坡度 0，做緩和運動。\n", "2026-03-02": "# 2026年3月2日星期一\n\n今天感冒了，加上上禮拜六的膝蓋痛還沒好，所以今天只做一些動作練習：\n1. 熱身\n2. 滾筒\n3. 放背\n4. 開胸\n(a) 找不太到感覺\n(b) 覺得槓鈴一到膝蓋位置，腳後側就非常緊繃\n(c) 再放下去就腰痠\n3. 地板槓鈴臥推：50公斤，三組，每組10下\n4. 跑步機：\n(a) 用走的方式\n(b) 速度 4 公里\n(c) 坡度 3\n(d) 時間 40 分鐘\n(e) 心跳維持在 128 左右\n今天在用跑步機的時候，覺得小手臂有點痠，不知道是前面哪一項影響的。\n", "2026-03-03": "# 2026年3月3日星期二\n\n感冒還沒好，沒什麼力\n來活動一下\n今天的熱身\n1.滾筒放背、開胸\n2.推雪橇40公斤，兩趟共30米\n推雪橇的時候，覺得今天的雪橇好沉重。\n滑輪下拉共 4 組：\n1. 前兩組 36 公斤，10 下\n2. 後兩組 45 公斤，10 下\n3. 走步機：\n時速 4 公里，坡度 4 左右\n控制心跳不超過 130\n時間 50 分鐘\n這兩天走完跑步機後，都有一點輕飄飄的感覺。\n膝蓋右膝內側的不適感，今天有再好一點，感覺應該再休息個兩三天會好。\n", "2026-03-10": "# 2026年3月10日星期二\n\n今天的熱身：\n1.滾筒放鬆背跟開胸\n2.筋膜球放鬆屁股\n3.推雪橇40公斤（兩趟共30米）\n4.熊抱槓深蹲：\n(a)第一組：40公斤\n(b)第二到第四組：50公斤\n(c)每組10下\n今天感覺跟上次感冒痊癒後一樣，開始爆心跳了，而且心跳恢復也比較慢一點。做到第四組，最後結束心跳接近170\n今天試著髖往後啟動，但是上半身不要太過於前傾。\n這個角度感覺這樣股四頭參與的比原來稍微多一些，腳的重心也算穩定，好像少了一個往前的剪力。不知道這樣的姿勢對不對，不過今天忘記錄影了。\n1. 滑輪下拉：3 組，45 公斤，每組 10 下\n2. 坐姿划船：3 組，45 公斤，每組 10 下\n充分休息過後，這兩個練背的感覺比之前拉起來輕鬆，下次可以試著做一兩組再加重。\n坐姿腿踢三組：\n1. 前面兩組 52 公斤，各 10 下\n2. 最後一組 59 公斤，10 下\n腿的部分也是一樣，覺得踢起來比之前輕鬆。\nCable 三頭：\n三組，前兩組 25 公斤 10 下，第三組 32 公斤 10 下。\n跑步機用走的速度 4 公里，坡度 0，心跳大概在 130 左右，不過一個不小心就會往上移。時間 30 分鐘。\n今天一開始，推雪橇跟熊抱槓深蹲時感覺特別累心肺，有點受不了。\n後面的項目就還好，大致上正常\n", "2026-03-11": "# 2026年3月11日星期三\n\n今天的熱身：\n1.滾筒（放鬆背部與開胸）\n2.推雪橇：40公斤，兩趟共30米\n3.壺鈴擺盪：12公斤，一組20下，做3組\n今天教練課內容：\n之前有做過的一個動作：\n1. 單腳腳跟離地，踩在小斜板上\n2. 雙手扶牆，後腳往後朝天，前腳微彎\n3. 往上蹬時，後腳往前、向上，並且骨盆往內旋轉，再返回\n1. RDL\n(a)重量在30公斤左右\n(b)出槓時還有起來的時候要注意，上半身不要想要去把槓拉起來，要用腿往上蹬\n(a)屁股不要往前，只有腳往上踩\n(b)往下的時候，膝蓋微彎，身體前傾多一點就可以過膝蓋了\n(c)呼吸要撐住核心，才不會因為核心鬆掉而產生代償\n4.後腳抬高蹲\n(a)用坐姿測量腿的站距，這個站距會比日常做的後腳抬高蹲還要來得長一些，會感受到腿後側在用力\n(b)身體直直向下，後腳靠在墊子上的中心點\n(c)比例也會比較高，比之前做的方式高\n(d)做完後腳確實蠻有感覺，但腰有點酸\n3.呼吸調整\n(a)做上半身靠牆的呼吸時，要確保肋骨擴張\n(b)肩部跟肚子不要收縮，確保力量不要往肩上去，或是往肚子\n3.呼吸調整與90-90呼吸法：\n(a)躺在地上，讓上半身貼地，髖部與膝蓋皆呈90度彎曲。\n(b)雙腳踩在牆上，膝蓋中間夾著墊子，並保持膝蓋與身體同寬。\n(c)腳對著牆踩，感覺像是腿部在用力，但注意不要讓骨盆跑掉。\n(d)過程中上半身要持續貼著地板，特別是腰部的地方，不能讓手伸進去（保持平貼）。\n(e)進行呼吸練習時，全程都要把核心撐住。\n跑步機用走的：\n1.速度：4公里\n2.坡度：3\n3.時間：30分鐘\n4.心跳：130左右\n", "2026-03-12": "# 2026年3月12日星期四\n\n今天的熱身：\n1.滾筒放鬆背部、開胸\n2.放鬆大腿前側\n3.推雪橇：\n(a) 44公斤：兩趟，共30米\n(b) 48公斤：兩趟，共30米\n4. 90/90呼吸：\n(a) 5組，每組10次\n(b)多做了兩組找一下感覺\n(c)做完感覺核心有點酸\n(d)飛鳥夾胸三組：\n1.前面兩組：45公斤，10下\n2.第三組：38公斤，10下最後幾下行程變短了，夾不到中間而且胸部有一種塌掉的感覺，撐不起來。\n站姿提踵機：\n1.第一組：59公斤，10下\n2.第二組：79公斤，10下\n3.第三組：100公斤，10下\n4.第四組：120公斤，10下\n5.第五組：120公斤，10下\n感覺這個重量已經快要到上半身的極限了，小腿還是沒辦法10下力竭\n機械胸推共4組：\n1.前面兩組45公斤，10下\n2.後面兩組38公斤，10下\n今天胸的發力感非常好。\n機械肩推32公斤：\n1.三組，每組10下\n3.前面兩組肩的發力感還不錯\n但就是右手肘關節還是有點卡卡的，要一直放鬆三頭才能改善，但還是無法完全消除卡卡的感覺\nCable二頭：25公斤，三組，每組10下\n下拉的時候覺得發力感好像沒有特別好，不過三組做完，二頭確實有充血、力竭的感覺。\n跑步機用走的，時速 4 公里、坡度 3 左右，控制心跳在 130 左右，持續 30 分鐘。\n"};
+const DAILY_INDEX = {"2026-01-29": ["zercher_squat", "leg_extension", "leg_curl_seated", "hip_abduction", "plank"], "2026-02-02": ["zercher_squat", "lat_pulldown", "seated_row", "tricep_pushdown"], "2026-02-11": ["zercher_squat", "standing_calf"], "2026-02-17": ["zercher_squat", "leg_extension", "standing_calf", "kettlebell_rdl", "lat_pulldown", "seated_row", "assisted_pullup", "tricep_pushdown"], "2026-02-23": ["zercher_squat", "leg_extension", "kettlebell_rdl", "lat_pulldown", "seated_row", "tricep_pushdown", "sled_push"], "2026-02-25": ["zercher_squat", "bulgarian_split", "sled_push"], "2026-03-10": ["zercher_squat", "leg_extension", "lat_pulldown", "seated_row", "tricep_pushdown", "sled_push"], "2026-01-31": ["ssb_squat", "leg_curl_prone", "plank", "copenhagen_side_plank"], "2026-02-05": ["ssb_squat", "leg_press", "straight_arm_pulldown", "tricep_pushdown", "sled_push"], "2026-02-13": ["ssb_squat", "leg_press", "leg_extension", "straight_arm_pulldown", "plank", "copenhagen_side_plank"], "2026-02-20": ["ssb_squat", "leg_press", "leg_curl_prone", "kettlebell_rdl", "straight_arm_pulldown", "plank", "copenhagen_side_plank", "sled_push"], "2026-02-28": ["ssb_squat", "leg_press", "hip_adduction", "straight_arm_pulldown", "sled_push"], "2026-01-22": ["leg_press", "bulgarian_split", "hip_abduction", "hip_adduction", "plank", "crunch_machine", "sled_push"], "2026-01-26": ["bulgarian_split", "hip_abduction", "hip_adduction", "dumbbell_bench", "shoulder_press_machine"], "2026-02-03": ["bulgarian_split", "leg_curl_seated", "chest_press_machine", "shoulder_press_machine", "plank", "crunch_machine"], "2026-02-10": ["bulgarian_split", "leg_curl_seated", "chest_press_machine", "shoulder_press_machine", "bicep_curl_cable", "sled_push"], "2026-02-18": ["bulgarian_split", "leg_curl_seated", "kettlebell_rdl", "chest_press_machine", "floor_bench_press", "shoulder_press_machine", "bicep_curl_cable"], "2026-02-24": ["bulgarian_split", "leg_curl_seated", "hip_abduction", "kettlebell_rdl", "chest_press_machine", "bicep_curl_cable", "crunch_machine", "sled_push"], "2026-03-11": ["bulgarian_split", "rdl", "sled_push", "kettlebell_swing"], "2026-02-09": ["leg_extension", "lat_pulldown", "seated_row", "tricep_pushdown", "sled_push"], "2026-01-27": ["standing_calf", "lat_pulldown", "seated_row", "tricep_pushdown", "bicep_curl_machine"], "2026-01-30": ["standing_calf", "lat_pulldown", "barbell_row", "machine_fly", "chest_press_machine", "shoulder_press_machine", "tricep_pushdown", "bicep_curl_machine"], "2026-02-14": ["standing_calf", "floor_bench_press", "sled_push"], "2026-03-12": ["standing_calf", "machine_fly", "chest_press_machine", "shoulder_press_machine", "bicep_curl_cable", "sled_push"], "2026-03-03": ["lat_pulldown", "sled_push"], "2026-02-06": ["machine_fly", "dumbbell_bench", "plank", "crunch_machine", "sled_push"], "2026-02-12": ["machine_fly", "floor_bench_press", "shoulder_press_machine"], "2026-01-28": ["chest_press_machine"], "2026-02-07": ["floor_bench_press", "kettlebell_swing"], "2026-03-02": ["floor_bench_press"], "2026-01-24": ["shoulder_press_machine", "crunch_machine"]};
+const GROUP_ORDER  = ["腿部", "背部", "胸部", "肩部", "手臂", "核心", "髖部"];
+const GROUP_ACCENT = {"腿部": "#2196F3", "背部": "#4CAF50", "胸部": "#FF9800", "肩部": "#9C27B0", "手臂": "#3F51B5", "核心": "#FFC107", "髖部": "#795548"};
+const EXH_STYLE    = {"輕鬆": "background:#e8faf0;color:#1a7a3a", "普通": "background:#fff3e0;color:#b45309", "吃力": "background:#fff0eb;color:#c44a20", "力竭": "background:#ffebeb;color:#cc0000", "力竭（左）": "background:#ffebeb;color:#cc0000", "力竭（左腳）": "background:#ffebeb;color:#cc0000", "—": "background:#f2f2f7;color:#8e8e93"};
+const EX_MAP = Object.fromEntries(EXERCISES.map(e => [e.id, e]));
+
+</script>
+<script>
+
+// ── Calculation helpers ──────────────────────────────────────────────────────
+function calcVolume(sets) {
+  if (!sets || !sets.length) return null;
+  let t = 0;
+  for (const [w,r] of sets) { if (w==null||r==null) return null; t += w*r; }
+  return t;
+}
+function getMaxWeight(sets) {
+  const ws=(sets||[]).filter(s=>s[0]!=null&&s[0]>0).map(s=>s[0]);
+  return ws.length?Math.max(...ws):null;
+}
+function formatSets(h) {
+  if (h.sets_display) return h.sets_display;
+  const sets=h.sets||[];
+  if (!sets.length) return '-';
+  if (sets[0][0]==null) return '動作練習';
+  const parts=[]; let i=0;
+  while (i<sets.length) {
+    const [w,r]=sets[i];
+    if (w==null||r==null){parts.push('？');i++;continue;}
+    let c=1;
+    while(i+c<sets.length&&sets[i+c][0]===w&&sets[i+c][1]===r)c++;
+    const rStr=Number.isInteger(r)?String(r):r.toFixed(1);
+    parts.push(c>1?`${c}×${rStr}\u3000(${w}kg)`:`${w}kg×${rStr}`);
+    i+=c;
+  }
+  return parts.join(' / ');
+}
+function calcDaysAgo(ds) {
+  const t=new Date();t.setHours(0,0,0,0);
+  const d=new Date(ds);d.setHours(0,0,0,0);
+  return Math.round((t-d)/86400000);
+}
+function lastDate(ex){return ex.history?.length?ex.history[ex.history.length-1].date:'0000-00-00';}
+function isoDate(d){return d.toISOString().slice(0,10);}
+function dateAddDays(base,n){const d=new Date(base);d.setDate(d.getDate()+n);return d;}
+function datesInRange(centre,days){
+  const res=[];
+  for(let i=-days;i<=days;i++) res.push(isoDate(dateAddDays(new Date(centre),i)));
+  return res;
+}
+
+// ── Week strip ───────────────────────────────────────────────────────────────
+const DOW_ZH=['日','一','二','三','四','五','六'];
+let weekOffset=0;
+function buildWeekStrip(centreOffset){
+  weekOffset=centreOffset;
+  const todayD=new Date();todayD.setHours(0,0,0,0);
+  const todayStr=isoDate(todayD);
+  const startOff=centreOffset-6;
+  const days=[];
+  for(let i=0;i<14;i++) days.push(isoDate(dateAddDays(todayD,startOff+i)));
+  const label=`${days[0].slice(5)} — ${days[days.length-1].slice(5)}`;
+  document.getElementById('week-panel-label').textContent=label;
+  const strip=document.getElementById('week-strip');
+  strip.innerHTML='';
+  for(const ds of days){
+    const d=new Date(ds);
+    const exIds=DAILY_INDEX[ds]||[];
+    const isTrained=exIds.length>0;
+    const isToday=ds===todayStr;
+    const isFuture=ds>todayStr;
+    const cell=document.createElement('div');
+    cell.className='day-cell'+(isToday?' today':'')+(isTrained&&!isToday?' trained':'');
+    cell.dataset.date=ds;
+    if(isTrained||JOURNALS[ds])cell.onclick=()=>openDayModal(ds);
+    else cell.style.opacity=isFuture?'0.3':'0.55';
+    const groups=[...new Set(exIds.map(id=>EX_MAP[id]?.group).filter(Boolean))];
+    const dots=groups.map(g=>{
+      const col=isToday?'rgba(255,255,255,0.85)':(GROUP_ACCENT[g]||'#888');
+      return `<span class="day-dot" style="background:${col}" title="${g}"></span>`;
+    }).join('');
+    cell.innerHTML=`<div class="day-dow">${DOW_ZH[d.getDay()]}</div><div class="day-num">${d.getDate()}</div><div class="day-dots">${dots}</div>`;
+    strip.appendChild(cell);
+  }
+  const tidx=days.indexOf(todayStr);
+  if(tidx>=0){const cells=strip.querySelectorAll('.day-cell');if(cells[tidx])setTimeout(()=>cells[tidx].scrollIntoView({inline:'center',behavior:'smooth'}),50);}
+}
+function shiftWeek(delta){buildWeekStrip(delta===0?0:weekOffset+delta);}
+function highlightDayCell(ds){
+  document.querySelectorAll('.day-cell').forEach(c=>c.classList.remove('active-sel'));
+  const cell=document.querySelector(`.day-cell[data-date="${ds}"]`);
+  if(cell)cell.classList.add('active-sel');
+}
+
+// ── Sorting (main cards) ─────────────────────────────────────────────────────
+function sortedExercises(sortKey){
+  const exs=[...EXERCISES];
+  switch(sortKey){
+    case 'group':{const gi=Object.fromEntries(GROUP_ORDER.map((g,i)=>[g,i]));exs.sort((a,b)=>(gi[a.group]??99)-(gi[b.group]??99));return exs;}
+    case 'recent': exs.sort((a,b)=>lastDate(b).localeCompare(lastDate(a)));break;
+    case 'overdue':exs.sort((a,b)=>lastDate(a).localeCompare(lastDate(b)));break;
+    case 'maxwt':{const mw=e=>Math.max(0,...(e.history||[]).map(h=>getMaxWeight(h.sets)||0));exs.sort((a,b)=>mw(b)-mw(a));break;}
+    case 'volume':{const tv=e=>(e.history||[]).reduce((s,h)=>s+(calcVolume(h.sets)||0),0);exs.sort((a,b)=>tv(b)-tv(a));break;}
+    case 'sessions':exs.sort((a,b)=>(b.history?.length||0)-(a.history?.length||0));break;
+    case 'progress':{function pg(e){const qs=(e.history||[]).filter(h=>getMaxWeight(h.sets));if(qs.length<2)return 0;return(getMaxWeight(qs[qs.length-1].sets)||0)-(getMaxWeight(qs[0].sets)||0);}exs.sort((a,b)=>pg(b)-pg(a));break;}
+    case 'name':exs.sort((a,b)=>a.name.localeCompare(b.name,'zh-TW'));break;
+  }
+  return exs;
+}
+
+
+// ── Sparkline ────────────────────────────────────────────────────────────────
+function renderSparkline(el){
+  const raw=el.dataset.chartdata,unit=el.dataset.unit||'';
+  let data;try{data=JSON.parse(raw);}catch(e){return;}
+  if(!data||data.length<2)return;
+  const W=140,H=44,pX=6,pY=5;
+  const vals=data.map(d=>d.value);
+  const vmin=Math.min(...vals),vmax=Math.max(...vals),vr=vmax===vmin?1:vmax-vmin;
+  const n=data.length;
+  const xs=data.map((_,i)=>pX+i*(W-pX*2)/(n-1));
+  const ys=vals.map(v=>H-pY-(v-vmin)/vr*(H-pY*2));
+  const trend=vals[n-1]-vals[0];
+  const stroke=trend>0?'#34c759':trend<0?'#ff3b30':'#8e8e93';
+  const NS='http://www.w3.org/2000/svg';
+  const uid=Math.random().toString(36).slice(2,7);
+  const svg=document.createElementNS(NS,'svg');
+  svg.setAttribute('width',W);svg.setAttribute('height',H);
+  const defs=document.createElementNS(NS,'defs');
+  const grad=document.createElementNS(NS,'linearGradient');
+  grad.id='g'+uid;grad.setAttribute('x1','0');grad.setAttribute('y1','0');grad.setAttribute('x2','0');grad.setAttribute('y2','1');
+  [['0%','0.25'],['100%','0.02']].forEach(([o,op])=>{const s=document.createElementNS(NS,'stop');s.setAttribute('offset',o);s.setAttribute('stop-color',stroke);s.setAttribute('stop-opacity',op);grad.appendChild(s);});
+  defs.appendChild(grad);svg.appendChild(defs);
+  const pts=xs.map((x,i)=>`${x.toFixed(1)},${ys[i].toFixed(1)}`).join(' ');
+  const fPts=`${pX},${H-2} ${pts} ${xs[n-1].toFixed(1)},${H-2}`;
+  const poly=document.createElementNS(NS,'polygon');poly.setAttribute('points',fPts);poly.setAttribute('fill',`url(#g${uid})`);poly.setAttribute('stroke','none');svg.appendChild(poly);
+  const line=document.createElementNS(NS,'polyline');line.setAttribute('points',pts);line.setAttribute('fill','none');line.setAttribute('stroke',stroke);line.setAttribute('stroke-width','2');line.setAttribute('stroke-linecap','round');line.setAttribute('stroke-linejoin','round');svg.appendChild(line);
+  const xline=document.createElementNS(NS,'line');xline.setAttribute('y1',pY);xline.setAttribute('y2',H-pY);xline.setAttribute('stroke','rgba(120,120,130,0.4)');xline.setAttribute('stroke-width','1');xline.setAttribute('stroke-dasharray','3,2');xline.style.display='none';svg.appendChild(xline);
+  const dot=document.createElementNS(NS,'circle');dot.setAttribute('r','4');dot.setAttribute('fill',stroke);dot.setAttribute('stroke','white');dot.setAttribute('stroke-width','1.5');dot.style.display='none';svg.appendChild(dot);
+  const lDot=document.createElementNS(NS,'circle');lDot.setAttribute('cx',xs[n-1].toFixed(1));lDot.setAttribute('cy',ys[n-1].toFixed(1));lDot.setAttribute('r','3');lDot.setAttribute('fill',stroke);svg.appendChild(lDot);
+  const ov=document.createElementNS(NS,'rect');ov.setAttribute('x',0);ov.setAttribute('y',0);ov.setAttribute('width',W);ov.setAttribute('height',H);ov.setAttribute('fill','transparent');ov.style.cursor='crosshair';svg.appendChild(ov);
+  const tip=document.getElementById('spark-tooltip');
+  ov.addEventListener('mousemove',e=>{
+    const r=svg.getBoundingClientRect(),mx=e.clientX-r.left;
+    let ni=0,nd=Infinity;
+    xs.forEach((x,i)=>{const d=Math.abs(x-mx);if(d<nd){nd=d;ni=i;}});
+    const cx=xs[ni],cy=ys[ni];
+    xline.setAttribute('x1',cx.toFixed(1));xline.setAttribute('x2',cx.toFixed(1));xline.style.display='';
+    dot.setAttribute('cx',cx.toFixed(1));dot.setAttribute('cy',cy.toFixed(1));dot.style.display='';
+    tip.innerHTML=`<strong>${data[ni].date.slice(5)}</strong><br>${data[ni].value.toLocaleString()} ${unit}`;
+    tip.style.display='block';tip.style.left=(e.clientX+14)+'px';tip.style.top=(e.clientY-36)+'px';
+  });
+  ov.addEventListener('mouseleave',()=>{xline.style.display='none';dot.style.display='none';tip.style.display='none';});
+  el.appendChild(svg);
+}
+
+
+// ── Modal state ───────────────────────────────────────────────────────────────
+let MS = {
+  date: null,
+  rangeDays: 0,
+  groupBy: 'exercise',
+  sortBy:  'date-desc',
+  tab: 'range',
+  view: 'list',  // 'list' | 'exdetail'
+  drillExId: null,
+};
+
+// ── Modal tab switching ───────────────────────────────────────────────────────
+function switchModalTab(tab) {
+  MS.tab = tab;
+  document.querySelectorAll('.modal-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.modal-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('panel-'+tab).classList.add('active');
+  const rangeBar = document.getElementById('modal-range-bar');
+  rangeBar.style.display = (tab==='range'&&MS.view==='list') ? '' : 'none';
+  if (tab==='range') renderRangePanel();
+  else if (tab==='raw') renderRawPanel();
+}
+
+// ── Open modal ────────────────────────────────────────────────────────────────
+function openDayModal(date) {
+  MS.date = date; MS.rangeDays = 0; MS.view = 'list'; MS.drillExId = null;
+  document.querySelectorAll('.range-chip').forEach(c => {
+    c.classList.toggle('active', parseInt(c.dataset.days)===0);
+  });
+  document.getElementById('group-by-sel').value = MS.groupBy;
+  document.getElementById('sort-by-sel').value  = MS.sortBy;
+  document.getElementById('cmp-date-a').value = date;
+  const prev7 = isoDate(dateAddDays(new Date(date), -7));
+  document.getElementById('cmp-date-b').value = prev7;
+  updateModalHeader();
+  document.getElementById('modal-range-bar').style.display = '';
+  document.getElementById('modal-back-btn').style.display = 'none';
+  switchModalTab('range');
+  document.getElementById('day-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  highlightDayCell(date);
+}
+function closeDayModal(e) {
+  if (e && e.target !== document.getElementById('day-modal')) return;
+  document.getElementById('day-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeDayModal(); });
+
+function updateModalHeader() {
+  let title = MS.date;
+  if (MS.rangeDays > 0) {
+    const s = isoDate(dateAddDays(new Date(MS.date), -MS.rangeDays));
+    const e2 = isoDate(dateAddDays(new Date(MS.date), MS.rangeDays));
+    title = `${s} ～ ${e2}（${MS.rangeDays*2+1}天）`;
+  }
+  if (MS.view==='exdetail' && MS.drillExId) {
+    const ex = EX_MAP[MS.drillExId];
+    title = `${ex?.icon||'🏋️'} ${ex?.name||MS.drillExId} 全歷程`;
+  }
+  document.getElementById('modal-title-text').textContent = title;
+}
+
+// ── Range selector ────────────────────────────────────────────────────────────
+function setRange(days) {
+  MS.rangeDays = days;
+  document.querySelectorAll('.range-chip').forEach(c => {
+    c.classList.toggle('active', parseInt(c.dataset.days)===days);
+  });
+  updateModalHeader();
+  renderRangePanel();
+  if (MS.tab==='raw') renderRawPanel();
+}
+
+// ── Range panel — table-based collapsible groups ──────────────────────────────
+function renderRangePanel() {
+  MS.groupBy = document.getElementById('group-by-sel').value;
+  MS.sortBy  = document.getElementById('sort-by-sel').value;
+  MS.view = 'list';
+  document.getElementById('modal-back-btn').style.display = 'none';
+  document.getElementById('modal-range-bar').style.display = '';
+
+  const dates = MS.rangeDays===0 ? [MS.date] : datesInRange(MS.date, MS.rangeDays);
+  let entries = [];
+  for (const ds of dates) {
+    const exIds = DAILY_INDEX[ds] || [];
+    for (const id of exIds) {
+      const ex = EX_MAP[id]; if (!ex) continue;
+      const h = ex.history.find(h=>h.date===ds); if (!h) continue;
+      entries.push({date:ds, ex, h});
+    }
+  }
+
+  if (!entries.length) {
+    document.getElementById('panel-range').innerHTML = '<div class="no-data">此範圍內無訓練記錄</div>';
+    return;
+  }
+
+  const sortFn = {
+    'date-desc': (a,b) => b.date.localeCompare(a.date),
+    'date-asc':  (a,b) => a.date.localeCompare(b.date),
+    'vol-desc':  (a,b) => (calcVolume(b.h.sets)||0) - (calcVolume(a.h.sets)||0),
+    'wt-desc':   (a,b) => (getMaxWeight(b.h.sets)||0) - (getMaxWeight(a.h.sets)||0),
+    'name':      (a,b) => a.ex.name.localeCompare(b.ex.name,'zh-TW'),
+  }[MS.sortBy] || ((a,b)=>b.date.localeCompare(a.date));
+  entries.sort(sortFn);
+
+  // ─── Helper: build one table row ──────────────────────────────────────────
+  function exRow(date, ex, h, showDateCol, showNameCol) {
+    const vol = calcVolume(h.sets);
+    const wt  = getMaxWeight(h.sets);
+    const exhSt = EXH_STYLE[h.exhaustion]||EXH_STYLE['—']||'';
+    const volCell = vol!=null
+      ? `<span class="volume-cell">${vol.toLocaleString()} kg</span>`
+      : '<span class="volume-na">—</span>';
+    const dateCell = showDateCol
+      ? `<td class="date-cell" onclick="event.stopPropagation();openDayModal('${date}')">${date}</td>` : '';
+    const nameCell = showNameCol
+      ? `<td style="white-space:nowrap;font-weight:600;font-size:0.75rem;cursor:pointer">${ex.icon||'🏋️'} ${ex.name}</td>` : '';
+    return `<tr style="cursor:pointer" onclick="openExerciseDetail('${ex.id}','${date}')">
+      ${dateCell}${nameCell}
+      <td class="sets-cell">${formatSets(h)}</td>
+      <td>${volCell}</td>
+      <td class="feel-cell">${h.feel||''}</td>
+      <td><span class="exhaustion-badge" style="${exhSt}">${h.exhaustion||'—'}</span></td>
+      <td class="cue-cell">${h.cue||''}</td>
+    </tr>`;
+  }
+
+  // ─── Helper: wrap rows in table ───────────────────────────────────────────
+  function wrapTable(headerCols, rowsHtml) {
+    return `<div class="table-wrapper" style="border-top:none">
+      <table>
+        <thead><tr>${headerCols.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>
+    </div>`;
+  }
+
+  // ─── Helper: build collapsible group block ────────────────────────────────
+  function groupBlock(gid, headerHtml, tableHtml) {
+    const uid = 'rg-' + gid.replace(/[^a-z0-9]/gi,'_');
+    return `
+<div class="range-group-header" onclick="toggleRangeGroup('${uid}')">
+  ${headerHtml}
+  <span class="range-group-toggle" id="toggle-${uid}">▲</span>
+</div>
+<div class="range-group-body" id="${uid}">${tableHtml}</div>`;
+  }
+
+  let html = '';
+
+  if (MS.groupBy === 'exercise') {
+    const groups = {}, order = [];
+    for (const e of entries) {
+      if (!groups[e.ex.id]) { groups[e.ex.id] = []; order.push(e.ex.id); }
+      groups[e.ex.id].push(e);
+    }
+    for (const id of order) {
+      const rows = groups[id];
+      const ex = rows[0].ex;
+      const accent = GROUP_ACCENT[ex.group]||'#888';
+      const totalVol = rows.reduce((s,r)=>s+(calcVolume(r.h.sets)||0),0);
+      const maxWt = Math.max(0,...rows.map(r=>getMaxWeight(r.h.sets)||0));
+      const headerHtml = `
+        <span style="background:${accent};width:4px;height:14px;border-radius:2px;display:inline-block;flex-shrink:0"></span>
+        <span style="font-weight:700;font-size:0.82rem">${ex.icon||'🏋️'} ${ex.name}</span>
+        <span style="font-size:0.68rem;color:#8e8e93;font-weight:400;margin-left:4px">${ex.group} · ${rows.length}次</span>
+        ${maxWt?`<span style="font-size:0.68rem;background:#e8f4ff;color:#007aff;border-radius:8px;padding:1px 6px;font-weight:600">最高 ${maxWt}kg</span>`:''}
+        ${totalVol?`<span style="font-size:0.68rem;background:#e8faf0;color:#1a7a3a;border-radius:8px;padding:1px 6px;font-weight:600">累計 ${totalVol.toLocaleString()}kg</span>`:''}`;
+      const rowsHtml = rows.map(({date,ex:e,h})=>exRow(date,e,h,true,false)).join('');
+      html += groupBlock(id, headerHtml, wrapTable(['日期','重量/組次','總容量','感受度','力竭','動作提示'], rowsHtml));
+    }
+
+  } else if (MS.groupBy === 'date') {
+    const groups = {}, order = [];
+    for (const e of entries) {
+      if (!groups[e.date]) { groups[e.date] = []; order.push(e.date); }
+      groups[e.date].push(e);
+    }
+    const dateOrder = [...new Set(order)];
+    if (MS.sortBy==='date-asc') dateOrder.sort(); else dateOrder.sort((a,b)=>b.localeCompare(a));
+    for (const ds of dateOrder) {
+      const rows = groups[ds]||[];
+      const dayTotal = rows.reduce((s,r)=>s+(calcVolume(r.h.sets)||0),0);
+      const d = new Date(ds);
+      const dow = ['日','一','二','三','四','五','六'][d.getDay()];
+      const headerHtml = `
+        <span style="font-weight:700;font-size:0.82rem">📅 ${ds} <span style="font-weight:400;color:#8e8e93">（週${dow}）</span></span>
+        <span style="font-size:0.68rem;color:#8e8e93;font-weight:400;margin-left:4px">${rows.length}動作</span>
+        ${dayTotal?`<span style="font-size:0.68rem;background:#e8faf0;color:#1a7a3a;border-radius:8px;padding:1px 6px;font-weight:600">總容量 ${dayTotal.toLocaleString()}kg</span>`:''}`;
+      const rowsHtml = rows.map(({date,ex,h})=>exRow(date,ex,h,false,true)).join('');
+      html += groupBlock('d'+ds.replace(/-/g,''), headerHtml, wrapTable(['動作','重量/組次','總容量','感受度','力竭','動作提示'], rowsHtml));
+    }
+
+  } else if (MS.groupBy === 'group') {
+    const groups = {}, order = [];
+    for (const e of entries) {
+      const g = e.ex.group||'其他';
+      if (!groups[g]) { groups[g] = []; order.push(g); }
+      groups[g].push(e);
+    }
+    const gOrder = GROUP_ORDER.filter(g=>groups[g]);
+    for (const g of gOrder) {
+      const rows = groups[g]||[];
+      const accent = GROUP_ACCENT[g]||'#888';
+      const gTotal = rows.reduce((s,r)=>s+(calcVolume(r.h.sets)||0),0);
+      const headerHtml = `
+        <span style="background:${accent};width:4px;height:14px;border-radius:2px;display:inline-block;flex-shrink:0"></span>
+        <span style="font-weight:700;font-size:0.82rem">${g}</span>
+        <span style="font-size:0.68rem;color:#8e8e93;font-weight:400;margin-left:4px">${rows.length}組次</span>
+        ${gTotal?`<span style="font-size:0.68rem;background:#e8faf0;color:#1a7a3a;border-radius:8px;padding:1px 6px;font-weight:600">累計 ${gTotal.toLocaleString()}kg</span>`:''}`;
+      const rowsHtml = rows.map(({date,ex,h})=>exRow(date,ex,h,true,true)).join('');
+      html += groupBlock('g'+g, headerHtml, wrapTable(['日期','動作','重量/組次','總容量','感受度','力竭','動作提示'], rowsHtml));
+    }
+  }
+
+  document.getElementById('panel-range').innerHTML = html;
+}
+function toggleRangeGroup(uid){
+  const body=document.getElementById(uid);
+  const tog=document.getElementById('toggle-'+uid);
+  if(!body)return;
+  const open=body.style.display!=='none';
+  body.style.display=open?'none':'block';
+  if(tog)tog.textContent=open?'▼':'▲';
+}
+
+
+// ── Exercise detail drill-down ────────────────────────────────────────────────
+function openExerciseDetail(exId, focusDate) {
+  MS.view = 'exdetail'; MS.drillExId = exId;
+  updateModalHeader();
+  document.getElementById('modal-back-btn').style.display = '';
+  document.getElementById('modal-range-bar').style.display = 'none';
+
+  const ex = EX_MAP[exId];
+  if (!ex) { document.getElementById('panel-range').innerHTML='<div class="no-data">找不到動作</div>'; return; }
+
+  // Build trend HTML (inline sparklines)
+  const hist = ex.history || [];
+  const volData = hist.map(h=>[h.date,calcVolume(h.sets)]).filter(([,v])=>v!=null);
+  const wtData  = hist.map(h=>[h.date,getMaxWeight(h.sets)]).filter(([,v])=>v!=null);
+
+  let trendHtml = '';
+  function trendItem(label, pairs, unit) {
+    const vals=pairs.map(([,v])=>v);
+    const delta=vals[vals.length-1]-vals[0];
+    const dStr=(delta>=0?'+':'')+delta.toLocaleString(undefined,{maximumFractionDigits:1});
+    const dc=delta>=0?'#34c759':'#ff3b30';
+    const cj=JSON.stringify(pairs.map(([d,v])=>({'date':d,'value':v})));
+    return `<div class="trend-item">
+      <div class="trend-label">${label}</div>
+      <div class="trend-body">
+        <div class="spark-js" data-chartdata='${cj.replace(/'/g,"&apos;")}' data-unit="${unit}"></div>
+        <div class="trend-stats">
+          <div class="trend-stat"><span>首次</span><strong>${vals[0].toLocaleString()} ${unit}</strong></div>
+          <div class="trend-stat"><span>最新</span><strong>${vals[vals.length-1].toLocaleString()} ${unit}</strong></div>
+          <div class="trend-stat"><span>變化</span><strong style="color:${dc}">${dStr} ${unit}</strong></div>
+        </div>
+      </div>
+    </div>`;
+  }
+  if (volData.length>=2||wtData.length>=2) {
+    trendHtml = '<div class="trend-section ex-detail-trend">';
+    if (volData.length>=2) trendHtml += trendItem('📦 總容量趨勢', volData, 'kg');
+    if (wtData.length>=2)  trendHtml += trendItem('⚖️ 最高重量趨勢', wtData, 'kg');
+    trendHtml += '</div>';
+  }
+
+  // Notes
+  let notesHtml = '';
+  if (ex.notes?.length) {
+    notesHtml = '<div class="notes-section"><div class="notes-title">📌 動作要點</div>';
+    for (const n of ex.notes) notesHtml += `<div class="note-item">${n}</div>`;
+    notesHtml += '</div>';
+  }
+
+  // Full history table — highlight focusDate row
+  const rows = [...hist].reverse().map(h => {
+    const vol = calcVolume(h.sets);
+    const volHtml = vol!=null?`<span class="volume-cell">${vol.toLocaleString()} kg</span>`:'<span class="volume-na">—</span>';
+    const exhSt = EXH_STYLE[h.exhaustion]||EXH_STYLE['—']||'';
+    const hl = h.date===focusDate ? 'background:#fff8e1;' : '';
+    return `<tr style="${hl}">
+<td class="date-cell" onclick="openDayModal('${h.date}')" style="font-size:0.72rem">${h.date}${h.date===focusDate?' ◀':''}</td>
+<td class="sets-cell">${formatSets(h)}</td>
+<td>${volHtml}</td>
+<td class="feel-cell">${h.feel||''}</td>
+<td><span class="exhaustion-badge" style="${exhSt}">${h.exhaustion||'—'}</span></td>
+<td class="condition-cell" style="max-width:80px">${h.condition||''}</td>
+<td class="cue-cell">${h.cue||''}</td>
+</tr>`;
+  }).join('');
+
+  const totalVol = hist.reduce((s,h)=>s+(calcVolume(h.sets)||0),0);
+  const maxWt = Math.max(0,...hist.map(h=>getMaxWeight(h.sets)||0));
+
+  document.getElementById('panel-range').innerHTML = `
+<div class="ex-detail-panel">
+  ${notesHtml}
+  ${trendHtml}
+  <div class="summary-bar">
+    <div class="stat-chip">📅 <strong>${hist.length}</strong> 次</div>
+    <div class="stat-chip">⚖️ 最高 <strong>${maxWt?maxWt+' kg':'—'}</strong></div>
+    <div class="stat-chip">📦 累計 <strong>${totalVol?totalVol.toLocaleString()+' kg':'—'}</strong></div>
+  </div>
+  <div class="table-wrapper"><table>
+  <thead><tr>
+    <th>日期</th><th>重量/組次</th><th>總容量</th>
+    <th>感受度</th><th>力竭</th><th>狀態</th><th>提示</th>
+  </tr></thead>
+  <tbody>${rows}</tbody>
+  </table></div>
+</div>`;
+
+  // Render sparklines in the new content
+  document.querySelectorAll('#panel-range .spark-js').forEach(renderSparkline);
+}
+function modalGoBack() {
+  MS.view = 'list'; MS.drillExId = null;
+  updateModalHeader();
+  document.getElementById('modal-back-btn').style.display = 'none';
+  document.getElementById('modal-range-bar').style.display = '';
+  renderRangePanel();
+}
+
+
+// ── Date comparison ───────────────────────────────────────────────────────────
+function renderCompare() {
+  const dA = document.getElementById('cmp-date-a').value;
+  const dB = document.getElementById('cmp-date-b').value;
+  if (!dA || !dB) return;
+  const idsA = DAILY_INDEX[dA] || [];
+  const idsB = DAILY_INDEX[dB] || [];
+
+  function buildEntry(id, date) {
+    const ex = EX_MAP[id]; if (!ex) return null;
+    const h = ex.history.find(h=>h.date===date); if (!h) return null;
+    return { ex, h, vol: calcVolume(h.sets), wt: getMaxWeight(h.sets) };
+  }
+
+  const entriesA = idsA.map(id=>buildEntry(id,dA)).filter(Boolean);
+  const entriesB = idsB.map(id=>buildEntry(id,dB)).filter(Boolean);
+  const allIds   = [...new Set([...idsA,...idsB])];
+
+  function colHtml(entries, otherEntries, dateStr) {
+    if (!entries.length) return `<div class="no-data">無訓練記錄</div>`;
+    const otherMap = Object.fromEntries(otherEntries.map(e=>[e.ex.id,e]));
+    return entries.map(({ex,h,vol,wt}) => {
+      const other = otherMap[ex.id];
+      const matched = !!other;
+      const exhSt = EXH_STYLE[h.exhaustion]||EXH_STYLE['—']||'';
+      let deltaHtml = '';
+      if (matched && other.vol!=null && vol!=null) {
+        const dv = vol - other.vol;
+        const cls = dv>0?'compare-delta-pos':dv<0?'compare-delta-neg':'compare-delta-zero';
+        deltaHtml += `<span class="${cls}"> ${dv>0?'+':''}${dv.toLocaleString()} kg</span>`;
+      }
+      if (matched && other.wt!=null && wt!=null) {
+        const dw = wt - other.wt;
+        const cls = dw>0?'compare-delta-pos':dw<0?'compare-delta-neg':'compare-delta-zero';
+        deltaHtml += ` <span class="${cls}" style="font-size:0.65rem">(${dw>0?'+':''}${dw}kg⚖️)</span>`;
+      }
+      return `<div class="compare-ex-row ${matched?'compare-match':'compare-only'}" onclick="openExerciseDetail('${ex.id}','${dateStr}')">
+        <div class="compare-ex-name">${ex.icon||'🏋️'} ${ex.name}${deltaHtml}</div>
+        <div class="compare-ex-detail">${formatSets(h)}</div>
+        <div style="display:flex;gap:6px;align-items:center;margin-top:2px">
+          ${vol!=null?`<span class="compare-ex-vol">${vol.toLocaleString()} kg</span>`:''}
+          <span class="exhaustion-badge" style="${exhSt};font-size:0.62rem;padding:1px 5px">${h.exhaustion||'—'}</span>
+        </div>
+        ${h.feel?`<div class="compare-ex-detail" style="color:#8e8e93">${h.feel}</div>`:''}
+      </div>`;
+    }).join('');
+  }
+
+  const totalA = entriesA.reduce((s,e)=>s+(e.vol||0),0);
+  const totalB = entriesB.reduce((s,e)=>s+(e.vol||0),0);
+  const diffTotal = totalA - totalB;
+  const diffCls = diffTotal>0?'compare-delta-pos':diffTotal<0?'compare-delta-neg':'compare-delta-zero';
+
+  document.getElementById('compare-result').innerHTML = `
+<div style="padding:8px 14px;background:#f9f9fb;border-bottom:1px solid #eee;font-size:0.72rem;color:#3a3a3c">
+  <strong>A</strong> ${dA} (${entriesA.length}動作, ${totalA.toLocaleString()} kg) vs
+  <strong>B</strong> ${dB} (${entriesB.length}動作, ${totalB.toLocaleString()} kg) —
+  容量差 <span class="${diffCls}">${diffTotal>0?'+':''}${diffTotal.toLocaleString()} kg</span>
+  <span style="color:#c7c7cc;margin-left:8px">● 綠底=兩天都有, 橙底=僅此天有</span>
+</div>
+<div class="compare-grid">
+  <div class="compare-col">
+    <div class="compare-col-header">📅 A: ${dA}</div>
+    ${colHtml(entriesA, entriesB, dA)}
+  </div>
+  <div class="compare-col">
+    <div class="compare-col-header">📅 B: ${dB}</div>
+    ${colHtml(entriesB, entriesA, dB)}
+  </div>
+</div>`;
+}
+
+
+// ── Raw journal panel ─────────────────────────────────────────────────────────
+function renderRawPanel() {
+  const dates = MS.rangeDays===0 ? [MS.date] : datesInRange(MS.date, MS.rangeDays);
+  const filtered = dates.filter(d => JOURNALS[d]);
+  if (!filtered.length) {
+    document.getElementById('panel-raw').innerHTML = '<div class="no-data">此範圍無日誌記錄</div>';
+    return;
+  }
+  const html = filtered.sort((a,b)=>b.localeCompare(a)).map(ds => `
+<div style="margin:12px 14px 0">
+  <div style="font-size:0.72rem;font-weight:700;color:#007aff;margin-bottom:4px">📅 ${ds}</div>
+  <div class="raw-journal" style="margin:0">${JOURNALS[ds].replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+</div>`).join('');
+  document.getElementById('panel-raw').innerHTML = html + '<div style="height:14px"></div>';
+}
+
+
+// ── Main card builder (exercise list page) ────────────────────────────────────
+function buildTrend(ex) {
+  const volData=ex.history.map(h=>[h.date,calcVolume(h.sets)]).filter(([,v])=>v!=null);
+  const wtData =ex.history.map(h=>[h.date,getMaxWeight(h.sets)]).filter(([,v])=>v!=null);
+  if(!volData.length&&!wtData.length)return '';
+  function tItem(label,pairs,unit){
+    const vals=pairs.map(([,v])=>v);
+    const delta=vals[vals.length-1]-vals[0];
+    const dStr=(delta>=0?'+':'')+delta.toLocaleString(undefined,{maximumFractionDigits:1});
+    const dc=delta>=0?'#34c759':'#ff3b30';
+    const cj=JSON.stringify(pairs.map(([d,v])=>({'date':d,'value':v})));
+    return `<div class="trend-item"><div class="trend-label">${label}</div>
+    <div class="trend-body">
+      <div class="spark-js" data-chartdata='${cj.replace(/'/g,"&apos;")}' data-unit="${unit}"></div>
+      <div class="trend-stats">
+        <div class="trend-stat"><span>首次</span><strong>${vals[0].toLocaleString()} ${unit}</strong></div>
+        <div class="trend-stat"><span>最新</span><strong>${vals[vals.length-1].toLocaleString()} ${unit}</strong></div>
+        <div class="trend-stat"><span>變化</span><strong style="color:${dc}">${dStr} ${unit}</strong></div>
+      </div>
+    </div></div>`;
+  }
+  let h='<div class="trend-section">';
+  if(volData.length>=2)h+=tItem('📦 總容量趨勢',volData,'kg');
+  if(wtData.length>=2) h+=tItem('⚖️ 最高重量趨勢',wtData,'kg');
+  return h+'</div>';
+}
+
+function buildCard(ex){
+  const eid=ex.id,hist=ex.history||[];
+  const qHist=hist.filter(h=>calcVolume(h.sets)!=null);
+  const latestDate=hist.length?hist[hist.length-1].date:'';
+  const lw=qHist.length?getMaxWeight(qHist[qHist.length-1].sets):null;
+  const lv=qHist.length?calcVolume(qHist[qHist.length-1].sets):null;
+  const latestLabel=lw?`${lw}kg · ${(qHist[qHist.length-1].date||'').slice(5)} · Vol ${lv.toLocaleString()}`:(latestDate.slice(5)||'—');
+  const days=latestDate?calcDaysAgo(latestDate):999;
+  const dc=days<=3?'badge-days-fresh':days<=7?'badge-days-mid':'badge-days-old';
+  const dl=days===0?'今天':days+'天前';
+  const tVol=hist.reduce((s,h)=>s+(calcVolume(h.sets)||0),0);
+  const mWt=Math.max(0,...hist.map(h=>getMaxWeight(h.sets)||0));
+  let notesHtml='';
+  if(ex.notes?.length){notesHtml='<div class="notes-section"><div class="notes-title">📌 動作要點</div>';for(const n of ex.notes)notesHtml+=`<div class="note-item">${n}</div>`;notesHtml+='</div>';}
+  const trend=buildTrend(ex);
+  const rows=hist.map(h=>{
+    const vol=calcVolume(h.sets);
+    const volH=vol!=null?`<span class="volume-cell">${vol.toLocaleString()} kg</span>`:'<span class="volume-na">—</span>';
+    const exhSt=EXH_STYLE[h.exhaustion]||EXH_STYLE['—']||'';
+    return `<tr><td class="date-cell" onclick="openDayModal('${h.date}')">${h.date}</td><td class="sets-cell">${formatSets(h)}</td><td>${volH}</td><td class="feel-cell">${h.feel||''}</td><td><span class="exhaustion-badge" style="${exhSt}">${h.exhaustion||'—'}</span></td><td class="condition-cell">${h.condition||''}</td><td class="cue-cell">${h.cue||''}</td></tr>`;
+  }).join('');
+  return `<div class="card" id="card-${eid}">
+<div class="card-header" onclick="toggleCard('${eid}')">
+  <div class="card-title"><span class="card-icon">${ex.icon||'🏋️'}</span><span class="card-name">${ex.name}</span></div>
+  <div class="card-meta"><span class="badge badge-days ${dc}">${dl}</span><span class="badge badge-latest">${latestLabel}</span><span class="card-toggle" id="arrow-${eid}">▶</span></div>
+</div>
+<div class="card-body" id="body-${eid}">
+${notesHtml}${trend}
+<div class="summary-bar">
+  <div class="stat-chip">📅 <strong>${hist.length}</strong> 次</div>
+  <div class="stat-chip">⚖️ 最高 <strong>${mWt?mWt+' kg':'—'}</strong></div>
+  <div class="stat-chip">📦 累計 <strong>${tVol?tVol.toLocaleString()+' kg':'—'}</strong></div>
+</div>
+<div class="table-wrapper"><table>
+<thead><tr><th>日期</th><th>重量/組次</th><th>總容量</th><th>感受度</th><th>力竭狀況</th><th>身心狀態</th><th>動作提示</th></tr></thead>
+<tbody>${rows}</tbody></table></div>
+</div></div>`;
+}
+
+function renderAll(sortKey){
+  const container=document.getElementById('main-content');
+  const exs=sortedExercises(sortKey);
+  let html='';
+  if(sortKey==='group'){
+    const groups={};
+    for(const ex of exs){if(!groups[ex.group])groups[ex.group]=[];groups[ex.group].push(ex);}
+    for(const g of GROUP_ORDER){
+      if(!groups[g])continue;
+      const accent=GROUP_ACCENT[g]||'#888';
+      html+=`<div class="section"><div class="section-title"><span style="background:${accent};width:4px;height:18px;border-radius:2px;display:inline-block;"></span> ${g}</div>`;
+      for(const ex of groups[g])html+=buildCard(ex);
+      html+='</div>';
+    }
+  }else{
+    const lm={recent:'最近訓練優先',overdue:'最久未練優先',maxwt:'最大重量↓',volume:'累計容量↓',sessions:'訓練次數↓',progress:'重量進步幅度↓',name:'名稱字母序'};
+    html+=`<div class="section"><div class="section-title"><span style="background:#888;width:4px;height:18px;border-radius:2px;display:inline-block;"></span> 排序：${lm[sortKey]||sortKey}</div>`;
+    for(const ex of exs)html+=buildCard(ex);
+    html+='</div>';
+  }
+  container.innerHTML=html;
+  document.querySelectorAll('.spark-js').forEach(renderSparkline);
+}
+function applySortAndRender(){renderAll(document.getElementById('sort-select').value);}
+function toggleCard(id){const b=document.getElementById('body-'+id),a=document.getElementById('arrow-'+id),o=b.classList.contains('open');b.classList.toggle('open',!o);a.textContent=o?'▶':'▼';}
+function toggleAll(o){document.querySelectorAll('.card-body').forEach(b=>b.classList.toggle('open',o));document.querySelectorAll('.card-toggle').forEach(a=>a.textContent=o?'▼':'▶');}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+buildWeekStrip(0);
+renderAll('group');
+
+</script>
+<div style="text-align:center;padding:28px;color:#8e8e93;font-size:0.72rem;">
+  v6 · 外部 JSON · 時間軸 · 動作歷程 drill-down · 日期範圍 · 比較 · 動態排序
+</div>
+</body>
+</html>

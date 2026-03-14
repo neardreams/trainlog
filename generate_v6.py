@@ -7,10 +7,11 @@ from pathlib import Path
 from collections import defaultdict
 
 BASE = Path('/sessions/dazzling-zealous-davinci/mnt/Entries')
+DATA_DIR = BASE / 'trainlog' / 'data'
 
-with open(BASE / 'training_data.json', encoding='utf-8') as f:
+with open(DATA_DIR / 'training_data.json', encoding='utf-8') as f:
     DATA = json.load(f)
-with open(BASE / 'journals_raw.json', encoding='utf-8') as f:
+with open(DATA_DIR / 'journals_raw.json', encoding='utf-8') as f:
     JOURNALS = json.load(f)
 
 EXERCISES = DATA['exercises']
@@ -998,7 +999,7 @@ HTML = f"""<!DOCTYPE html>
 </body>
 </html>"""
 
-out = BASE / '訓練進度總覽_v6.html'
+out = BASE / 'trainlog' / 'index.html'
 out.write_text(HTML, encoding='utf-8')
 print(f'Done → {out}')
 print(f'  File size: {out.stat().st_size/1024:.1f} KB')

@@ -183,17 +183,35 @@ tr:hover td{background:#f0f8ff!important}
 .compare-delta-zero{color:#8e8e93}
 .compare-only{background:#fff8f0}
 .no-data{padding:24px;text-align:center;color:#8e8e93;font-size:0.82rem}
+/* ── View switcher ── */
+.view-tabs{display:flex;gap:2px;background:#f2f2f7;border-radius:20px;padding:3px;margin-right:4px}
+.view-tab{padding:5px 14px;border-radius:17px;border:none;cursor:pointer;font-size:0.78rem;font-weight:600;background:transparent;color:#8e8e93;transition:all 0.15s;white-space:nowrap}
+.view-tab.active{background:white;color:#007aff;box-shadow:0 1px 3px rgba(0,0,0,0.12)}
+/* ── Day view (inline panel) ── */
+.day-panel{background:#f2f2f7;display:none}
+.day-panel.active{display:block}
+.day-panel-hdr{display:flex;align-items:center;gap:8px;padding:10px 14px;background:white;border-bottom:1px solid #e5e5ea}
+.day-back-btn{background:#f2f2f7;border:none;border-radius:10px;cursor:pointer;font-size:0.78rem;font-weight:700;padding:5px 10px;color:#007aff}
+.day-back-btn:hover{background:#e8f0ff}
+.day-hdr-title{font-size:0.95rem;font-weight:700;flex:1;text-align:center;min-width:0}
+/* ── Exercise view wrapper ── */
+.ex-panel{display:none}
+.ex-panel.active{display:block}
 """
 
 # ── HTML structure ────────────────────────────────────────────────────────────
 HTML_BODY = """\
 <div class="page-header">
-  <h1>🏋️ 訓練進度總覽 v6</h1>
-  <p>JSON 外部資料 · 互動圖表 · 日期點擊看當日明細 · 動態排序</p>
+  <h1>🏋️ 訓練進度總覽</h1>
+  <p>JSON 外部資料 · 互動圖表 · 時間軸 · 動作歷程 drill-down</p>
 </div>
 <div class="toolbar">
-  <button class="btn btn-primary" onclick="toggleAll(true)">展開全部</button>
-  <button class="btn btn-secondary" onclick="toggleAll(false)">收合全部</button>
+  <div class="view-tabs">
+    <button class="view-tab active" id="vtab-exercise" onclick="switchMainView('exercise')">💪 動作一覽</button>
+    <button class="view-tab"        id="vtab-day"      onclick="switchMainView('day')">📅 日期記錄</button>
+  </div>
+  <button class="btn btn-secondary" id="btn-expand"   onclick="toggleAll(true)">展開全部</button>
+  <button class="btn btn-secondary" id="btn-collapse" onclick="toggleAll(false)">收合全部</button>
   <select class="sort-select" id="sort-select" onchange="applySortAndRender()">
     <option value="group">依部位分類</option>
     <option value="recent">最近訓練優先</option>
@@ -216,70 +234,68 @@ HTML_BODY = """\
   </div>
   <div class="week-strip" id="week-strip"></div>
 </div>
-<div id="main-content"></div>
-<div class="spark-tooltip" id="spark-tooltip"></div>
 
-<!-- ── Day detail modal ── -->
-<div class="modal-overlay" id="day-modal" onclick="closeDayModal(event)">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <!-- Header -->
-    <div class="modal-header">
-      <button class="modal-back" id="modal-back-btn" onclick="modalGoBack()">← 返回</button>
-      <div class="modal-title" id="modal-title-text">—</div>
-      <button class="modal-close" onclick="closeDayModal()">✕</button>
+<!-- ── Day view (inline panel, not modal) ── -->
+<div class="day-panel" id="day-panel">
+  <div class="day-panel-hdr">
+    <button class="day-back-btn" id="day-back-btn" onclick="dayGoBack()" style="display:none">← 返回動作</button>
+    <div class="day-hdr-title" id="day-hdr-title">—</div>
+  </div>
+  <div class="modal-range-bar" id="modal-range-bar">
+    <div class="range-chips" id="range-chips">
+      <span class="range-chip active" data-days="0" onclick="setRange(0)">當天</span>
+      <span class="range-chip" data-days="3"  onclick="setRange(3)">±3天</span>
+      <span class="range-chip" data-days="7"  onclick="setRange(7)">±7天</span>
+      <span class="range-chip" data-days="14" onclick="setRange(14)">±14天</span>
+      <span class="range-chip" data-days="30" onclick="setRange(30)">±30天</span>
     </div>
-    <!-- Range bar (hidden when in exercise detail view) -->
-    <div class="modal-range-bar" id="modal-range-bar">
-      <div class="range-chips" id="range-chips">
-        <span class="range-chip active" data-days="0" onclick="setRange(0)">當天</span>
-        <span class="range-chip" data-days="3"  onclick="setRange(3)">±3天</span>
-        <span class="range-chip" data-days="7"  onclick="setRange(7)">本週±7</span>
-        <span class="range-chip" data-days="14" onclick="setRange(14)">±14天</span>
-        <span class="range-chip" data-days="30" onclick="setRange(30)">±30天</span>
-      </div>
-      <span class="range-sep">|</span>
-      <div class="list-ctrl">
-        <select class="ctrl-sel" id="group-by-sel" onchange="renderRangePanel()">
-          <option value="exercise">依動作</option>
-          <option value="date">依日期</option>
-          <option value="group">依部位</option>
-        </select>
-        <select class="ctrl-sel" id="sort-by-sel" onchange="renderRangePanel()">
-          <option value="date-desc">時間↓新→舊</option>
-          <option value="date-asc">時間↑舊→新</option>
-          <option value="vol-desc">容量↓</option>
-          <option value="wt-desc">重量↓</option>
-          <option value="name">名稱</option>
-        </select>
-      </div>
-    </div>
-    <!-- Tabs -->
-    <div class="modal-tabs" id="modal-tabs">
-      <div class="modal-tab active" id="tab-range"   onclick="switchModalTab('range')">📊 訓練整理</div>
-      <div class="modal-tab"        id="tab-compare" onclick="switchModalTab('compare')">🔍 日期比較</div>
-      <div class="modal-tab"        id="tab-raw"     onclick="switchModalTab('raw')">📄 原始日誌</div>
-    </div>
-    <!-- Content -->
-    <div class="modal-content">
-      <div class="modal-panel active" id="panel-range"></div>
-      <div class="modal-panel"        id="panel-compare">
-        <div class="compare-pickers">
-          <div class="compare-picker-group">
-            <label>📅 日期 A</label>
-            <input type="date" class="date-input" id="cmp-date-a">
-          </div>
-          <div class="compare-picker-group">
-            <label>📅 日期 B</label>
-            <input type="date" class="date-input" id="cmp-date-b">
-          </div>
-          <button class="compare-btn" onclick="renderCompare()">比較</button>
-        </div>
-        <div id="compare-result"></div>
-      </div>
-      <div class="modal-panel" id="panel-raw"></div>
+    <span class="range-sep">|</span>
+    <div class="list-ctrl">
+      <select class="ctrl-sel" id="group-by-sel" onchange="renderRangePanel()">
+        <option value="exercise">依動作</option>
+        <option value="date">依日期</option>
+        <option value="group">依部位</option>
+      </select>
+      <select class="ctrl-sel" id="sort-by-sel" onchange="renderRangePanel()">
+        <option value="date-desc">時間↓新→舊</option>
+        <option value="date-asc">時間↑舊→新</option>
+        <option value="vol-desc">容量↓</option>
+        <option value="wt-desc">重量↓</option>
+        <option value="name">名稱</option>
+      </select>
     </div>
   </div>
+  <div class="modal-tabs" id="modal-tabs">
+    <div class="modal-tab active" id="tab-range"   onclick="switchDayTab('range')">📊 訓練整理</div>
+    <div class="modal-tab"        id="tab-compare" onclick="switchDayTab('compare')">🔍 日期比較</div>
+    <div class="modal-tab"        id="tab-raw"     onclick="switchDayTab('raw')">📄 原始日誌</div>
+  </div>
+  <div class="modal-content" style="min-height:60vh">
+    <div class="modal-panel active" id="panel-range"></div>
+    <div class="modal-panel"        id="panel-compare">
+      <div class="compare-pickers">
+        <div class="compare-picker-group">
+          <label>📅 日期 A</label>
+          <input type="date" class="date-input" id="cmp-date-a">
+        </div>
+        <div class="compare-picker-group">
+          <label>📅 日期 B</label>
+          <input type="date" class="date-input" id="cmp-date-b">
+        </div>
+        <button class="compare-btn" onclick="renderCompare()">比較</button>
+      </div>
+      <div id="compare-result"></div>
+    </div>
+    <div class="modal-panel" id="panel-raw"></div>
+  </div>
 </div>
+
+<!-- ── Exercise view ── -->
+<div class="ex-panel active" id="ex-panel">
+  <div id="main-content"></div>
+</div>
+
+<div class="spark-tooltip" id="spark-tooltip"></div>
 """
 
 # ── JS data block ─────────────────────────────────────────────────────────────
@@ -329,7 +345,10 @@ function calcDaysAgo(ds) {
   return Math.round((t-d)/86400000);
 }
 function lastDate(ex){return ex.history?.length?ex.history[ex.history.length-1].date:'0000-00-00';}
-function isoDate(d){return d.toISOString().slice(0,10);}
+function isoDate(d){
+  // Use local date parts to avoid UTC-shift timezone bug
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
 function dateAddDays(base,n){const d=new Date(base);d.setDate(d.getDate()+n);return d;}
 function datesInRange(centre,days){
   const res=[];
@@ -445,7 +464,8 @@ function renderSparkline(el){
 """
 
 JS_MODAL = r"""
-// ── Modal state ───────────────────────────────────────────────────────────────
+// ── View state ────────────────────────────────────────────────────────────────
+let currentMainView = 'exercise';  // 'exercise' | 'day'
 let MS = {
   date: null,
   rangeDays: 0,
@@ -456,8 +476,33 @@ let MS = {
   drillExId: null,
 };
 
-// ── Modal tab switching ───────────────────────────────────────────────────────
-function switchModalTab(tab) {
+// ── Main view switcher ────────────────────────────────────────────────────────
+function switchMainView(view, opts) {
+  currentMainView = view;
+  document.getElementById('vtab-exercise').classList.toggle('active', view==='exercise');
+  document.getElementById('vtab-day').classList.toggle('active', view==='day');
+  document.getElementById('day-panel').classList.toggle('active', view==='day');
+  document.getElementById('ex-panel').classList.toggle('active', view==='exercise');
+  // Show/hide exercise-only toolbar controls
+  const exOnly = view==='exercise';
+  document.getElementById('btn-expand').style.display   = exOnly ? '' : 'none';
+  document.getElementById('btn-collapse').style.display = exOnly ? '' : 'none';
+  document.getElementById('sort-select').style.display  = exOnly ? '' : 'none';
+  // URL param update
+  const params = new URLSearchParams(window.location.search);
+  if (view==='exercise') {
+    params.delete('date'); params.delete('exercise');
+    if (opts?.exercise) params.set('exercise', opts.exercise);
+  } else {
+    params.delete('exercise');
+    if (MS.date) params.set('date', MS.date);
+  }
+  const qs = params.toString();
+  try { history.replaceState(null, '', qs ? '?'+qs : window.location.pathname); } catch(e) {}
+}
+
+// ── Day tab switching ─────────────────────────────────────────────────────────
+function switchDayTab(tab) {
   MS.tab = tab;
   document.querySelectorAll('.modal-tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.modal-panel').forEach(p=>p.classList.remove('active'));
@@ -469,8 +514,11 @@ function switchModalTab(tab) {
   else if (tab==='raw') renderRawPanel();
 }
 
-// ── Open modal ────────────────────────────────────────────────────────────────
-function openDayModal(date) {
+// ── Open day view ─────────────────────────────────────────────────────────────
+function openDayModal(date) {  // kept as alias for backward compat
+  showDayView(date);
+}
+function showDayView(date) {
   MS.date = date; MS.rangeDays = 0; MS.view = 'list'; MS.drillExId = null;
   document.querySelectorAll('.range-chip').forEach(c => {
     c.classList.toggle('active', parseInt(c.dataset.days)===0);
@@ -480,22 +528,16 @@ function openDayModal(date) {
   document.getElementById('cmp-date-a').value = date;
   const prev7 = isoDate(dateAddDays(new Date(date), -7));
   document.getElementById('cmp-date-b').value = prev7;
-  updateModalHeader();
+  updateDayHeader();
   document.getElementById('modal-range-bar').style.display = '';
-  document.getElementById('modal-back-btn').style.display = 'none';
-  switchModalTab('range');
-  document.getElementById('day-modal').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.getElementById('day-back-btn').style.display = 'none';
+  switchMainView('day');
+  switchDayTab('range');
   highlightDayCell(date);
+  window.scrollTo({top:0, behavior:'smooth'});
 }
-function closeDayModal(e) {
-  if (e && e.target !== document.getElementById('day-modal')) return;
-  document.getElementById('day-modal').classList.remove('open');
-  document.body.style.overflow = '';
-}
-document.addEventListener('keydown', e => { if(e.key==='Escape') closeDayModal(); });
 
-function updateModalHeader() {
+function updateDayHeader() {
   let title = MS.date;
   if (MS.rangeDays > 0) {
     const s = isoDate(dateAddDays(new Date(MS.date), -MS.rangeDays));
@@ -506,8 +548,10 @@ function updateModalHeader() {
     const ex = EX_MAP[MS.drillExId];
     title = `${ex?.icon||'🏋️'} ${ex?.name||MS.drillExId} 全歷程`;
   }
-  document.getElementById('modal-title-text').textContent = title;
+  document.getElementById('day-hdr-title').textContent = title;
 }
+// legacy alias
+function updateModalHeader() { updateDayHeader(); }
 
 // ── Range selector ────────────────────────────────────────────────────────────
 function setRange(days) {
@@ -515,7 +559,7 @@ function setRange(days) {
   document.querySelectorAll('.range-chip').forEach(c => {
     c.classList.toggle('active', parseInt(c.dataset.days)===days);
   });
-  updateModalHeader();
+  updateDayHeader();
   renderRangePanel();
   if (MS.tab==='raw') renderRawPanel();
 }
@@ -525,7 +569,7 @@ function renderRangePanel() {
   MS.groupBy = document.getElementById('group-by-sel').value;
   MS.sortBy  = document.getElementById('sort-by-sel').value;
   MS.view = 'list';
-  document.getElementById('modal-back-btn').style.display = 'none';
+  document.getElementById('day-back-btn').style.display = 'none';
   document.getElementById('modal-range-bar').style.display = '';
 
   const dates = MS.rangeDays===0 ? [MS.date] : datesInRange(MS.date, MS.rangeDays);
@@ -680,8 +724,8 @@ JS_EXDETAIL = r"""
 // ── Exercise detail drill-down ────────────────────────────────────────────────
 function openExerciseDetail(exId, focusDate) {
   MS.view = 'exdetail'; MS.drillExId = exId;
-  updateModalHeader();
-  document.getElementById('modal-back-btn').style.display = '';
+  updateDayHeader();
+  document.getElementById('day-back-btn').style.display = '';
   document.getElementById('modal-range-bar').style.display = 'none';
 
   const ex = EX_MAP[exId];
@@ -767,10 +811,10 @@ function openExerciseDetail(exId, focusDate) {
   // Render sparklines in the new content
   document.querySelectorAll('#panel-range .spark-js').forEach(renderSparkline);
 }
-function modalGoBack() {
+function dayGoBack() {
   MS.view = 'list'; MS.drillExId = null;
-  updateModalHeader();
-  document.getElementById('modal-back-btn').style.display = 'none';
+  updateDayHeader();
+  document.getElementById('day-back-btn').style.display = 'none';
   document.getElementById('modal-range-bar').style.display = '';
   renderRangePanel();
 }
@@ -963,8 +1007,23 @@ function toggleCard(id){const b=document.getElementById('body-'+id),a=document.g
 function toggleAll(o){document.querySelectorAll('.card-body').forEach(b=>b.classList.toggle('open',o));document.querySelectorAll('.card-toggle').forEach(a=>a.textContent=o?'▼':'▶');}
 
 // ── Init ──────────────────────────────────────────────────────────────────────
-buildWeekStrip(0);
-renderAll('group');
+(function init() {
+  buildWeekStrip(0);
+  renderAll('group');
+  const params = new URLSearchParams(window.location.search);
+  const dateParam  = params.get('date');
+  const exParam    = params.get('exercise');
+  if (dateParam) {
+    showDayView(dateParam);
+  } else if (exParam) {
+    switchMainView('exercise', { exercise: exParam });
+    const card = document.getElementById('card-' + exParam);
+    if (card) {
+      toggleCard(exParam);
+      setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+    }
+  }
+})();
 """
 
 # ── Assemble & write ───────────────────────────────────────────────────────────

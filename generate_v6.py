@@ -6,8 +6,8 @@ import json
 from pathlib import Path
 from collections import defaultdict
 
-BASE = Path('/sessions/dazzling-zealous-davinci/mnt/Entries')
-DATA_DIR = BASE / 'trainlog' / 'data'
+BASE = Path(__file__).resolve().parent
+DATA_DIR = BASE / 'data'
 
 with open(DATA_DIR / 'training_data.json', encoding='utf-8') as f:
     DATA = json.load(f)
@@ -1058,7 +1058,7 @@ HTML = f"""<!DOCTYPE html>
 </body>
 </html>"""
 
-out = BASE / 'trainlog' / 'index.html'
+out = BASE / 'index.html'
 out.write_text(HTML, encoding='utf-8')
 print(f'Done → {out}')
 print(f'  File size: {out.stat().st_size/1024:.1f} KB')

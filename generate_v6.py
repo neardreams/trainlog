@@ -24,6 +24,11 @@ daily_index = defaultdict(list)
 for ex in EXERCISES:
     for h in ex['history']:
         daily_index[h['date']].append(ex['id'])
+        # 顯示用的單位資訊（只注入到 HTML，不寫回 JSON）
+        if ex.get('rep_unit'):
+            h['_unit'] = ex['rep_unit']      # 例：秒、米
+        if ex.get('zero_label'):
+            h['_zero'] = ex['zero_label']    # 重量 0 時顯示：空重／自重／空槓
 
 EXERCISES_JS  = json.dumps(EXERCISES,  ensure_ascii=False)
 JOURNALS_JS   = json.dumps(JOURNALS,   ensure_ascii=False)
@@ -326,18 +331,34 @@ function formatSets(h) {
   if (h.sets_display) return h.sets_display;
   const sets=h.sets||[];
   if (!sets.length) return '-';
-  if (sets[0][0]==null) return '動作練習';
+  const unit=h._unit||'';
+  if (sets[0][0]==null && !unit) return '動作練習';
   const parts=[]; let i=0;
   while (i<sets.length) {
     const [w,r]=sets[i];
-    if (w==null||r==null){parts.push('？');i++;continue;}
+    if (r==null||(w==null&&!unit)){parts.push('？');i++;continue;}
     let c=1;
     while(i+c<sets.length&&sets[i+c][0]===w&&sets[i+c][1]===r)c++;
-    const rStr=Number.isInteger(r)?String(r):r.toFixed(1);
-    parts.push(c>1?`${c}×${rStr}\u3000(${w}kg)`:`${w}kg×${rStr}`);
+    const rStr=(Number.isInteger(r)?String(r):r.toFixed(1))+unit;
+    const wStr=w==null?'':(w===0&&h._zero?h._zero:`${w}kg`);
+    if(!wStr) parts.push(c>1?`${c}×${rStr}`:rStr);
+    else parts.push(c>1?`${c}×${rStr}　(${wStr})`:`${wStr}×${rStr}`);
     i+=c;
   }
   return parts.join(' / ');
+}
+// ── 有氧（kind: cardio）：以時間／距離取代重量與容量 ──
+function isCardio(ex){return !!ex&&ex.kind==='cardio';}
+function cardioCell(h){
+  const bits=[];
+  if(h.minutes!=null)bits.push(`${h.minutes} 分`);
+  if(h.distance_km!=null)bits.push(`${h.distance_km} km`);
+  return bits.length?`<span class="volume-cell">${bits.join(' · ')}</span>`:'<span class="volume-na">—</span>';
+}
+function cardioTotals(hist){
+  const mins=hist.reduce((s,h)=>s+(h.minutes||0),0);
+  const km=hist.reduce((s,h)=>s+(h.distance_km||0),0);
+  return {mins:Math.round(mins*10)/10,km:Math.round(km*10)/10};
 }
 function calcDaysAgo(ds) {
   const t=new Date();t.setHours(0,0,0,0);
@@ -602,7 +623,7 @@ function renderRangePanel() {
     const vol = calcVolume(h.sets);
     const wt  = getMaxWeight(h.sets);
     const exhSt = EXH_STYLE[h.exhaustion]||EXH_STYLE['—']||'';
-    const volCell = vol!=null
+    const volCell = isCardio(ex) ? cardioCell(h) : vol!=null
       ? `<span class="volume-cell">${vol.toLocaleString()} kg</span>`
       : '<span class="volume-na">—</span>';
     const dateCell = showDateCol
@@ -733,8 +754,11 @@ function openExerciseDetail(exId, focusDate) {
 
   // Build trend HTML (inline sparklines)
   const hist = ex.history || [];
-  const volData = hist.map(h=>[h.date,calcVolume(h.sets)]).filter(([,v])=>v!=null);
-  const wtData  = hist.map(h=>[h.date,getMaxWeight(h.sets)]).filter(([,v])=>v!=null);
+  const cardio = isCardio(ex);
+  const volData = cardio ? hist.filter(h=>h.minutes!=null).map(h=>[h.date,h.minutes])
+                         : hist.map(h=>[h.date,calcVolume(h.sets)]).filter(([,v])=>v!=null);
+  const wtData  = cardio ? hist.filter(h=>h.distance_km!=null).map(h=>[h.date,h.distance_km])
+                         : hist.map(h=>[h.date,getMaxWeight(h.sets)]).filter(([,v])=>v!=null);
 
   let trendHtml = '';
   function trendItem(label, pairs, unit) {
@@ -757,8 +781,8 @@ function openExerciseDetail(exId, focusDate) {
   }
   if (volData.length>=2||wtData.length>=2) {
     trendHtml = '<div class="trend-section ex-detail-trend">';
-    if (volData.length>=2) trendHtml += trendItem('📦 總容量趨勢', volData, 'kg');
-    if (wtData.length>=2)  trendHtml += trendItem('⚖️ 最高重量趨勢', wtData, 'kg');
+    if (volData.length>=2) trendHtml += cardio ? trendItem('⏱️ 時間趨勢', volData, '分') : trendItem('📦 總容量趨勢', volData, 'kg');
+    if (wtData.length>=2)  trendHtml += cardio ? trendItem('📏 距離趨勢', wtData, 'km') : trendItem('⚖️ 最高重量趨勢', wtData, 'kg');
     trendHtml += '</div>';
   }
 
@@ -773,7 +797,7 @@ function openExerciseDetail(exId, focusDate) {
   // Full history table — highlight focusDate row
   const rows = [...hist].reverse().map(h => {
     const vol = calcVolume(h.sets);
-    const volHtml = vol!=null?`<span class="volume-cell">${vol.toLocaleString()} kg</span>`:'<span class="volume-na">—</span>';
+    const volHtml = cardio ? cardioCell(h) : vol!=null?`<span class="volume-cell">${vol.toLocaleString()} kg</span>`:'<span class="volume-na">—</span>';
     const exhSt = EXH_STYLE[h.exhaustion]||EXH_STYLE['—']||'';
     const hl = h.date===focusDate ? 'background:#fff8e1;' : '';
     return `<tr style="${hl}">
@@ -789,6 +813,12 @@ function openExerciseDetail(exId, focusDate) {
 
   const totalVol = hist.reduce((s,h)=>s+(calcVolume(h.sets)||0),0);
   const maxWt = Math.max(0,...hist.map(h=>getMaxWeight(h.sets)||0));
+  const ct = cardioTotals(hist);
+  const chips = cardio
+    ? `<div class="stat-chip">⏱️ 累計 <strong>${ct.mins?ct.mins.toLocaleString()+' 分':'—'}</strong></div>`
+      + (ct.km?`<div class="stat-chip">📏 累計 <strong>${ct.km} km</strong></div>`:'')
+    : `<div class="stat-chip">⚖️ 最高 <strong>${maxWt?maxWt+' kg':'—'}</strong></div>
+    <div class="stat-chip">📦 累計 <strong>${totalVol?totalVol.toLocaleString()+' kg':'—'}</strong></div>`;
 
   document.getElementById('panel-range').innerHTML = `
 <div class="ex-detail-panel">
@@ -796,8 +826,7 @@ function openExerciseDetail(exId, focusDate) {
   ${trendHtml}
   <div class="summary-bar">
     <div class="stat-chip">📅 <strong>${hist.length}</strong> 次</div>
-    <div class="stat-chip">⚖️ 最高 <strong>${maxWt?maxWt+' kg':'—'}</strong></div>
-    <div class="stat-chip">📦 累計 <strong>${totalVol?totalVol.toLocaleString()+' kg':'—'}</strong></div>
+    ${chips}
   </div>
   <div class="table-wrapper"><table>
   <thead><tr>
@@ -915,8 +944,11 @@ function renderRawPanel() {
 JS_CARDBUILDER = r"""
 // ── Main card builder (exercise list page) ────────────────────────────────────
 function buildTrend(ex) {
-  const volData=ex.history.map(h=>[h.date,calcVolume(h.sets)]).filter(([,v])=>v!=null);
-  const wtData =ex.history.map(h=>[h.date,getMaxWeight(h.sets)]).filter(([,v])=>v!=null);
+  const cardio=isCardio(ex);
+  const volData=cardio?ex.history.filter(h=>h.minutes!=null).map(h=>[h.date,h.minutes])
+                      :ex.history.map(h=>[h.date,calcVolume(h.sets)]).filter(([,v])=>v!=null);
+  const wtData =cardio?ex.history.filter(h=>h.distance_km!=null).map(h=>[h.date,h.distance_km])
+                      :ex.history.map(h=>[h.date,getMaxWeight(h.sets)]).filter(([,v])=>v!=null);
   if(!volData.length&&!wtData.length)return '';
   function tItem(label,pairs,unit){
     const vals=pairs.map(([,v])=>v);
@@ -935,8 +967,8 @@ function buildTrend(ex) {
     </div></div>`;
   }
   let h='<div class="trend-section">';
-  if(volData.length>=2)h+=tItem('📦 總容量趨勢',volData,'kg');
-  if(wtData.length>=2) h+=tItem('⚖️ 最高重量趨勢',wtData,'kg');
+  if(volData.length>=2)h+=cardio?tItem('⏱️ 時間趨勢',volData,'分'):tItem('📦 總容量趨勢',volData,'kg');
+  if(wtData.length>=2) h+=cardio?tItem('📏 距離趨勢',wtData,'km'):tItem('⚖️ 最高重量趨勢',wtData,'kg');
   return h+'</div>';
 }
 
@@ -946,7 +978,11 @@ function buildCard(ex){
   const latestDate=hist.length?hist[hist.length-1].date:'';
   const lw=qHist.length?getMaxWeight(qHist[qHist.length-1].sets):null;
   const lv=qHist.length?calcVolume(qHist[qHist.length-1].sets):null;
-  const latestLabel=lw?`${lw}kg · ${(qHist[qHist.length-1].date||'').slice(5)} · Vol ${lv.toLocaleString()}`:(latestDate.slice(5)||'—');
+  const cardio=isCardio(ex);
+  const lastH=hist.length?hist[hist.length-1]:null;
+  const latestLabel=cardio
+    ?(lastH?`${lastH.minutes!=null?lastH.minutes+' 分 · ':''}${latestDate.slice(5)}`:'—')
+    :(lw?`${lw}kg · ${(qHist[qHist.length-1].date||'').slice(5)} · Vol ${lv.toLocaleString()}`:(latestDate.slice(5)||'—'));
   const days=latestDate?calcDaysAgo(latestDate):999;
   const dc=days<=3?'badge-days-fresh':days<=7?'badge-days-mid':'badge-days-old';
   const dl=days===0?'今天':days+'天前';
@@ -957,7 +993,7 @@ function buildCard(ex){
   const trend=buildTrend(ex);
   const rows=hist.map(h=>{
     const vol=calcVolume(h.sets);
-    const volH=vol!=null?`<span class="volume-cell">${vol.toLocaleString()} kg</span>`:'<span class="volume-na">—</span>';
+    const volH=cardio?cardioCell(h):vol!=null?`<span class="volume-cell">${vol.toLocaleString()} kg</span>`:'<span class="volume-na">—</span>';
     const exhSt=EXH_STYLE[h.exhaustion]||EXH_STYLE['—']||'';
     return `<tr><td class="date-cell" onclick="openDayModal('${h.date}')">${h.date}</td><td class="sets-cell">${formatSets(h)}</td><td>${volH}</td><td class="feel-cell">${h.feel||''}</td><td><span class="exhaustion-badge" style="${exhSt}">${h.exhaustion||'—'}</span></td><td class="condition-cell">${h.condition||''}</td><td class="cue-cell">${h.cue||''}</td></tr>`;
   }).join('');
@@ -970,8 +1006,9 @@ function buildCard(ex){
 ${notesHtml}${trend}
 <div class="summary-bar">
   <div class="stat-chip">📅 <strong>${hist.length}</strong> 次</div>
-  <div class="stat-chip">⚖️ 最高 <strong>${mWt?mWt+' kg':'—'}</strong></div>
-  <div class="stat-chip">📦 累計 <strong>${tVol?tVol.toLocaleString()+' kg':'—'}</strong></div>
+  ${cardio?(()=>{const ct=cardioTotals(hist);return `<div class="stat-chip">⏱️ 累計 <strong>${ct.mins?ct.mins.toLocaleString()+' 分':'—'}</strong></div>`+(ct.km?`<div class="stat-chip">📏 累計 <strong>${ct.km} km</strong></div>`:'');})()
+  :`<div class="stat-chip">⚖️ 最高 <strong>${mWt?mWt+' kg':'—'}</strong></div>
+  <div class="stat-chip">📦 累計 <strong>${tVol?tVol.toLocaleString()+' kg':'—'}</strong></div>`}
 </div>
 <div class="table-wrapper"><table>
 <thead><tr><th>日期</th><th>重量/組次</th><th>總容量</th><th>感受度</th><th>力竭狀況</th><th>身心狀態</th><th>動作提示</th></tr></thead>

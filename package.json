@@ -1,0 +1,36 @@
+{
+  "name": "trainlog",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.14.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build:tokens": "pnpm --filter @trainlog/tokens build",
+    "predev": "pnpm build:tokens",
+    "dev": "pnpm --filter web dev",
+    "prebuild": "pnpm build:tokens",
+    "build": "pnpm --filter web build",
+    "postbuild": "node tools/check-licenses.mjs --out apps/web/dist/third-party-licenses.txt",
+    "pretypecheck": "pnpm build:tokens",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "pretest": "pnpm build:tokens",
+    "test": "pnpm -r --if-present test",
+    "test:e2e": "pnpm --filter web test:e2e",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "validate:data": "pnpm --filter @trainlog/core validate:data",
+    "licenses:check": "node tools/check-licenses.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.0",
+    "eslint": "^10.13.0",
+    "eslint-plugin-react-hooks": "^7.0.0",
+    "eslint-plugin-import-x": "^4.16.0",
+    "globals": "^16.0.0",
+    "prettier": "^3.9.10",
+    "typescript": "catalog:",
+    "typescript-eslint": "^8.72.0"
+  }
+}

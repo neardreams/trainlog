@@ -1,0 +1,24 @@
+{
+  "name": "@trainlog/tokens",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "設計 token：唯一來源 src/tokens.json → CSS 變數、Tailwind v4 @theme、NativeWind 用 CSS 與 Tailwind v3 preset、TS 物件",
+  "exports": {
+    ".": "./dist/tokens.ts",
+    "./tokens.css": "./dist/tokens.css",
+    "./theme.css": "./dist/theme.css",
+    "./nativewind.css": "./dist/nativewind.css",
+    "./tailwind-v3-preset": "./dist/tailwind-v3-preset.cjs"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

@@ -25,7 +25,7 @@ TrainLogs/
 ├── Apple日誌條目/
 │   ├── Entries/           ← Apple Journal HTML（YYYY-MM-DD.html）
 │   └── Resources/         ← 圖片等（.heic）
-└── trainlog/              ← GitHub Pages repo (neardreams/trainlog)
+└── trainlog/              ← 程式碼 repo (neardreams/trainlog)，網站由 Cloudflare 部署
     ├── data/
     │   ├── journals_raw.json      ← 日誌純文字（腳本維護）
     │   ├── training_data.json     ← 結構化訓練數據（LLM 維護）
@@ -33,7 +33,7 @@ TrainLogs/
     │   └── .pending_updates.json  ← 待確認的舊條目更新（暫存）
     ├── scripts/
     │   └── sync_journals.py       ← 核心解析腳本
-    ├── generate_v6.py             ← HTML 生成器
+    ├── generate_v6.py             ← 舊版 HTML 生成器（已停用）
     └── index.html                 ← GitHub Pages 頁面
 ```
 
@@ -130,22 +130,39 @@ python3 <trainlog>/scripts/sync_journals.py \
 - 預設格式無法表達時（例：「最重 85kg（教練課）」「4×10（槓高 7）」），在 history 加 `sets_display` 覆寫顯示文字
 - 有氧要記（分類「有氧」，exercise 設 `"kind": "cardio"`）：跑步機、操場跑、飛輪課、樓梯機、風扇車 HIIT、團體有氧課。history 用 `sets: []`、`minutes`（總分鐘，不知道就 `null`）、`distance_km`（可選）、`sets_display`（例：「35 分 · 4 km/h · 坡度 4 · 心率 ~130」）
 
-### Step 3: 重新生成 index.html
+### Step 3: 驗證資料
 
 ```bash
-cd <trainlog> && python3 generate_v6.py
+cd <trainlog> && pnpm validate:data
 ```
+
+失敗時依錯誤訊息修正 `training_data.json`，**驗證沒通過不得進行下一步**。
+（網頁開頁時直接讀 `data/*.json`，不需要再產生 HTML；`generate_v6.py` 是舊版，已停用。）
 
 ### Step 4: Git commit + push
 
 ```bash
 cd <trainlog>
-git add data/journals_raw.json data/training_data.json data/.sync_hashes.json index.html
+git add data/journals_raw.json data/training_data.json data/.sync_hashes.json
 git commit -m "sync: 更新日誌 $(date +%Y-%m-%d)"
 git push origin main
 ```
 
 不要 commit `.pending_updates.json`。
+
+### Step 5: 部署到 Cloudflare
+
+網站在 https://trainlog.x-hu.com（GitHub 只作為程式碼倉庫，不使用 GitHub Pages）。push 後執行：
+
+```bash
+cd <trainlog>
+pnpm build
+npx wrangler deploy
+```
+
+`pnpm build` 會把網頁與 `data/` 的兩個 JSON 輸出到 `apps/web/dist/`，只有這個目錄會被公開。
+部署後確認網站已更新：`curl -s https://trainlog.x-hu.com/data/training_data.json | grep -c "<最新日期>"`（大於 0 即可）。
+若已在 Cloudflare 控制台把 Worker 連上 GitHub（push 自動部署），這一步可省略。
 
 ---
 

@@ -1,0 +1,25 @@
+packages:
+  - apps/*
+  - packages/*
+
+# Expo SDK 58 綁定 React 19.3.0 / React Native 0.88；全 workspace 統一版本
+catalog:
+  react: 19.3.0
+  react-dom: 19.3.0
+  '@types/react': ^19.1.1
+  '@types/react-dom': ^19.1.1
+  '@types/node': ^24.0.0
+  typescript: 6.0.3
+  zod: ^4.6.7
+  date-fns: ^4.4.0
+  vitest: ^5.0.5
+
+nodeLinker: hoisted
+shellEmulator: true
+
+# 允許／拒絕執行安裝腳本的套件（pnpm 預設全部擋下）
+allowBuilds:
+  unrs-resolver: false
+  esbuild: true
+minimumReleaseAgeExclude:
+  - lucide-react@1.61.0

@@ -1,0 +1,14 @@
+{
+  // Cloudflare Workers 靜態資產部署：https://trainlog.x-hu.com
+  // 建置指令：pnpm install && pnpm build（輸出 apps/web/dist，只含網頁、data/ 的兩個 JSON 與授權清單）
+  // 部署指令：npx wrangler deploy
+  // 只公開 apps/web/dist/，不要把整個 repo 當成靜態目錄（data/ 其他檔案、SKILL.md、腳本都不能被公開存取）。
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "trainlog",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": false,
+  "routes": [{ "pattern": "trainlog.x-hu.com", "custom_domain": true }],
+  "assets": {
+    "directory": "./apps/web/dist",
+  },
+}

@@ -1,0 +1,13 @@
+# 只對新程式碼統一 LF，舊檔（index.html、generate_v6.py、data/）維持原狀
+apps/** text=auto eol=lf
+packages/** text=auto eol=lf
+tools/** text=auto eol=lf
+*.json text=auto eol=lf
+*.yaml text=auto eol=lf
+*.jsonc text=auto eol=lf
+eslint.config.js text eol=lf
+.prettierrc text eol=lf
+.prettierignore text eol=lf
+data/** -text
+*.png binary
+*.woff2 binary

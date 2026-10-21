@@ -1,6 +1,6 @@
 # trainlog
 
-個人訓練進度追蹤儀表板，以 GitHub Pages 靜態部署。
+個人訓練進度追蹤儀表板。GitHub 只存放程式碼，網站部署在 Cloudflare（push 到 `main` 後自動建置部署）。
 
 ## 功能
 - 各肌群訓練進度卡片（含 sparkline 趨勢圖）
@@ -12,9 +12,12 @@
 ## 更新流程
 
 1. 編輯 `data/training_data.json` 或 `data/journals_raw.json`
-2. 執行 `python3 generate_v6.py`（會產生新的 `index.html`）
-3. `git add -A && git commit -m "update" && git push`
+2. 執行 `pnpm validate:data` 確認資料格式正確
+3. `git add` 資料檔後 commit、push，再執行下方的部署指令
 
-## Live
+## 部署
 
-https://&lt;YOUR_USERNAME&gt;.github.io/trainlog/
+- 網址：https://trainlog.x-hu.com（Cloudflare Workers 自訂網域）
+- 設定檔：`wrangler.jsonc`
+- 部署：`pnpm build && npx wrangler deploy`
+- 只公開 `apps/web/dist/`（網頁、`training_data.json`、`journals_raw.json`、授權清單），repo 其他檔案不會被公開

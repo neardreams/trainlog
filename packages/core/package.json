@@ -1,0 +1,25 @@
+{
+  "name": "@trainlog/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "領域模型、資料 schema、計算邏輯（純函式）與資料來源介面；網頁、App、日後的後端共用",
+  "exports": {
+    ".": "./src/index.ts",
+    "./raw": "./src/schema/raw.ts"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json",
+    "validate:data": "tsx src/cli/validate-data.ts"
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "tsx": "^4.23.15",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

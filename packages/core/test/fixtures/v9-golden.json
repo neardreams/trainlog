@@ -1,0 +1,7883 @@
+{
+ "today": "2026-10-21",
+ "perExercise": [
+  {
+   "id": "zercher_squat",
+   "last": "2026-07-17",
+   "status": "old",
+   "daysAgo": 96,
+   "vol": [
+    null,
+    1150,
+    2200,
+    null,
+    null,
+    2300,
+    2400,
+    null,
+    1900,
+    2040,
+    1800,
+    1680,
+    1230
+   ],
+   "maxWt": [
+    null,
+    50,
+    70,
+    null,
+    null,
+    60,
+    60,
+    null,
+    50,
+    60,
+    45,
+    60,
+    65
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "ssb_squat",
+   "last": "2026-03-28",
+   "status": "old",
+   "daysAgo": 207,
+   "vol": [
+    null,
+    2000,
+    2200,
+    2600,
+    2800,
+    2200,
+    1790,
+    1680
+   ],
+   "maxWt": [
+    40,
+    50,
+    55,
+    65,
+    75,
+    55,
+    70,
+    60
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "leg_press",
+   "last": "2026-08-13",
+   "status": "old",
+   "daysAgo": 69,
+   "vol": [
+    1800,
+    2400,
+    2800,
+    3200,
+    3250,
+    3200,
+    3380,
+    1800,
+    2400,
+    2800,
+    2800,
+    3200,
+    3200,
+    2600,
+    3880,
+    3800,
+    2380
+   ],
+   "maxWt": [
+    60,
+    60,
+    70,
+    80,
+    85,
+    80,
+    90,
+    60,
+    60,
+    70,
+    70,
+    80,
+    80,
+    90,
+    100,
+    100,
+    90
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "bulgarian_split",
+   "last": "2026-10-19",
+   "status": "7",
+   "daysAgo": 2,
+   "vol": [
+    450,
+    null,
+    400,
+    400,
+    null,
+    500,
+    600,
+    null,
+    null,
+    300,
+    null,
+    450,
+    400,
+    500,
+    null,
+    null,
+    450
+   ],
+   "maxWt": [
+    15,
+    7.5,
+    10,
+    10,
+    null,
+    12.5,
+    15,
+    null,
+    null,
+    7.5,
+    null,
+    15,
+    10,
+    12.5,
+    4,
+    null,
+    15
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "leg_extension",
+   "last": "2026-10-19",
+   "status": "7",
+   "daysAgo": 2,
+   "vol": [
+    1596,
+    1350,
+    640,
+    1560,
+    590,
+    1630,
+    1914,
+    null,
+    1660,
+    1400,
+    1280,
+    1280,
+    960,
+    1280,
+    1520,
+    1520,
+    null,
+    1020,
+    760,
+    1280,
+    1280,
+    1292
+   ],
+   "maxWt": [
+    38,
+    45,
+    23,
+    52,
+    59,
+    59,
+    72,
+    null,
+    45,
+    38,
+    45,
+    32,
+    32,
+    32,
+    38,
+    38,
+    null,
+    38,
+    38,
+    32,
+    32,
+    38
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "leg_curl_seated",
+   "last": "2026-08-06",
+   "status": "old",
+   "daysAgo": 76,
+   "vol": [
+    1235,
+    1140,
+    1210,
+    1420,
+    1420,
+    null,
+    1140,
+    890,
+    960,
+    750,
+    640,
+    750,
+    580,
+    540,
+    590,
+    594,
+    594
+   ],
+   "maxWt": [
+    38,
+    38,
+    45,
+    52,
+    52,
+    null,
+    32,
+    32,
+    32,
+    25,
+    32,
+    32,
+    18,
+    18,
+    25,
+    18,
+    18
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "leg_curl_prone",
+   "last": "2026-10-02",
+   "status": "30",
+   "daysAgo": 19,
+   "vol": [
+    900,
+    640,
+    640,
+    null,
+    590,
+    540,
+    null,
+    540,
+    556
+   ],
+   "maxWt": [
+    30,
+    23,
+    23,
+    null,
+    23,
+    18,
+    null,
+    18,
+    25
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "hip_abduction",
+   "last": "2026-03-13",
+   "status": "old",
+   "daysAgo": 222,
+   "vol": [
+    1520,
+    1350,
+    1596,
+    1350,
+    1560
+   ],
+   "maxWt": [
+    38,
+    45,
+    38,
+    45,
+    52
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "hip_adduction",
+   "last": "2026-09-28",
+   "status": "30",
+   "daysAgo": 23,
+   "vol": [
+    1064,
+    1190,
+    1350,
+    1420,
+    1350,
+    1350
+   ],
+   "maxWt": [
+    38,
+    45,
+    45,
+    52,
+    45,
+    45
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "standing_calf",
+   "last": "2026-07-15",
+   "status": "old",
+   "daysAgo": 98,
+   "vol": [
+    2545,
+    2240,
+    2240,
+    3040,
+    3600,
+    1800,
+    4780,
+    2380,
+    2790
+   ],
+   "maxWt": [
+    32,
+    32,
+    32,
+    38,
+    45,
+    45,
+    120,
+    93,
+    93
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "kettlebell_rdl",
+   "last": "2026-02-24",
+   "status": "old",
+   "daysAgo": 239,
+   "vol": [
+    720,
+    960,
+    960,
+    960,
+    640
+   ],
+   "maxWt": [
+    24,
+    32,
+    32,
+    32,
+    32
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "rdl",
+   "last": "2026-10-16",
+   "status": "7",
+   "daysAgo": 5,
+   "vol": [
+    null,
+    null,
+    720,
+    null,
+    1620,
+    1800,
+    1140,
+    1200,
+    2240,
+    null,
+    900,
+    900,
+    1100,
+    1200,
+    470,
+    2160,
+    null,
+    840
+   ],
+   "maxWt": [
+    null,
+    30,
+    40,
+    null,
+    50,
+    50,
+    50,
+    50,
+    70,
+    null,
+    60,
+    50,
+    50,
+    70,
+    110,
+    90,
+    null,
+    70
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "lat_pulldown",
+   "last": "2026-08-26",
+   "status": "old",
+   "daysAgo": 56,
+   "vol": [
+    1140,
+    1170,
+    960,
+    1350,
+    1350,
+    1350,
+    1620,
+    1350,
+    1648,
+    2300,
+    1800,
+    1800,
+    1350,
+    1350,
+    1800,
+    1800,
+    null,
+    1800,
+    null,
+    1800,
+    1800,
+    1940,
+    1850,
+    1940,
+    2040,
+    1730,
+    1500,
+    1800,
+    1940,
+    1210,
+    1560
+   ],
+   "maxWt": [
+    38,
+    45,
+    32,
+    45,
+    45,
+    45,
+    45,
+    45,
+    59,
+    52,
+    45,
+    45,
+    45,
+    45,
+    45,
+    45,
+    null,
+    45,
+    null,
+    45,
+    45,
+    52,
+    50,
+    52,
+    45,
+    52,
+    45,
+    45,
+    52,
+    45,
+    52
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "seated_row",
+   "last": "2026-10-12",
+   "status": "30",
+   "daysAgo": 9,
+   "vol": [
+    1140,
+    960,
+    1140,
+    1350,
+    1350,
+    1350,
+    1558,
+    1490,
+    1800,
+    1350,
+    1140,
+    1140,
+    1140,
+    1520,
+    450,
+    1350,
+    1800,
+    1730,
+    1800,
+    1940,
+    2010,
+    1350,
+    1800
+   ],
+   "maxWt": [
+    38,
+    32,
+    38,
+    45,
+    45,
+    45,
+    59,
+    52,
+    45,
+    45,
+    38,
+    38,
+    38,
+    38,
+    45,
+    45,
+    45,
+    45,
+    45,
+    52,
+    52,
+    45,
+    45
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "assisted_pullup",
+   "last": "2026-10-19",
+   "status": "7",
+   "daysAgo": 2,
+   "vol": [
+    null,
+    null,
+    1920,
+    2000,
+    1920,
+    2560,
+    2410,
+    2260,
+    2360,
+    1540,
+    2080,
+    2481,
+    2596,
+    null,
+    2210,
+    1570,
+    2160,
+    1728,
+    2070,
+    1670,
+    1098,
+    1394,
+    2592,
+    null,
+    1620,
+    1500,
+    1600,
+    1260,
+    1350
+   ],
+   "maxWt": [
+    null,
+    null,
+    64,
+    68,
+    64,
+    64,
+    64,
+    59,
+    59,
+    54,
+    54,
+    64,
+    59,
+    null,
+    59,
+    54,
+    54,
+    54,
+    69,
+    59,
+    45,
+    52,
+    54,
+    null,
+    54,
+    50,
+    50,
+    45,
+    45
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "straight_arm_pulldown",
+   "last": "2026-10-19",
+   "status": "7",
+   "daysAgo": 2,
+   "vol": [
+    790,
+    1000,
+    1000,
+    1000,
+    1182,
+    1168,
+    1210,
+    750,
+    1140,
+    960,
+    1210,
+    960,
+    1280,
+    960,
+    570,
+    826,
+    900,
+    960,
+    1064,
+    800,
+    960
+   ],
+   "maxWt": [
+    25,
+    25,
+    25,
+    25,
+    32,
+    32,
+    32,
+    25,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    25,
+    32,
+    38,
+    32,
+    32
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "barbell_row",
+   "last": "2026-09-11",
+   "status": "old",
+   "daysAgo": 40,
+   "vol": [
+    900,
+    null,
+    1600,
+    1500,
+    1700
+   ],
+   "maxWt": [
+    30,
+    30,
+    40,
+    50,
+    50
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "machine_fly",
+   "last": "2026-08-14",
+   "status": "old",
+   "daysAgo": 68,
+   "vol": [
+    1280,
+    1400,
+    1315,
+    1280,
+    null,
+    1520,
+    1850,
+    2280,
+    1140,
+    1292,
+    1540,
+    1660,
+    1710,
+    1112,
+    1280
+   ],
+   "maxWt": [
+    32,
+    38,
+    45,
+    45,
+    null,
+    38,
+    32,
+    38,
+    38,
+    38,
+    42,
+    45,
+    38,
+    38,
+    45
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "chest_press_machine",
+   "last": "2026-10-13",
+   "status": "30",
+   "daysAgo": 8,
+   "vol": [
+    null,
+    750,
+    1280,
+    1520,
+    1660,
+    1940,
+    1660,
+    1940,
+    1800,
+    1800,
+    1520,
+    1520,
+    1520,
+    1020,
+    1690,
+    1340,
+    2090,
+    1710,
+    960,
+    1870,
+    1940,
+    2061,
+    1110,
+    885,
+    1144,
+    1560,
+    1560,
+    1711,
+    1523
+   ],
+   "maxWt": [
+    null,
+    25,
+    32,
+    38,
+    45,
+    52,
+    45,
+    52,
+    45,
+    52,
+    38,
+    38,
+    38,
+    25,
+    32,
+    38,
+    38,
+    38,
+    32,
+    52,
+    52,
+    59,
+    59,
+    59,
+    52,
+    52,
+    52,
+    59,
+    59
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "floor_bench_press",
+   "last": "2026-03-21",
+   "status": "old",
+   "daysAgo": 214,
+   "vol": [
+    null,
+    1400,
+    810,
+    1340,
+    1500,
+    1900,
+    null,
+    1320
+   ],
+   "maxWt": [
+    null,
+    40,
+    45,
+    50,
+    50,
+    50,
+    null,
+    55
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "dumbbell_bench",
+   "last": "2026-02-06",
+   "status": "old",
+   "daysAgo": 257,
+   "vol": [
+    600,
+    750
+   ],
+   "maxWt": [
+    20,
+    25
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "shoulder_press_machine",
+   "last": "2026-08-27",
+   "status": "old",
+   "daysAgo": 55,
+   "vol": [
+    null,
+    540,
+    792,
+    750,
+    960,
+    400,
+    960,
+    960,
+    1140,
+    750,
+    495,
+    680,
+    890,
+    800,
+    850,
+    870
+   ],
+   "maxWt": [
+    null,
+    18,
+    18,
+    25,
+    32,
+    10,
+    32,
+    32,
+    32,
+    25,
+    11,
+    25,
+    32,
+    25,
+    25,
+    32
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "tricep_pushdown",
+   "last": "2026-10-19",
+   "status": "7",
+   "daysAgo": 2,
+   "vol": [
+    null,
+    752,
+    750,
+    1660,
+    1020,
+    820,
+    750,
+    820,
+    820,
+    null,
+    750,
+    750,
+    750,
+    750,
+    750,
+    1000,
+    1280,
+    1280,
+    1280,
+    320,
+    1280,
+    960,
+    null,
+    1210,
+    1160,
+    1259,
+    1189,
+    820,
+    826,
+    890,
+    1200,
+    960,
+    960,
+    640,
+    1024,
+    1140,
+    912,
+    988
+   ],
+   "maxWt": [
+    38,
+    38,
+    25,
+    38,
+    38,
+    32,
+    25,
+    32,
+    32,
+    null,
+    25,
+    25,
+    25,
+    25,
+    25,
+    25,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    null,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    25,
+    32,
+    32,
+    32,
+    32,
+    38,
+    32,
+    38
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "bicep_curl_cable",
+   "last": "2026-10-08",
+   "status": "30",
+   "daysAgo": 13,
+   "vol": [
+    null,
+    750,
+    750,
+    750,
+    750,
+    750,
+    null,
+    750,
+    750,
+    750,
+    750,
+    750,
+    890,
+    1140,
+    1210,
+    960,
+    960,
+    1280,
+    1280,
+    1280,
+    1280,
+    1280,
+    1260,
+    750,
+    1625,
+    1500,
+    1280,
+    1152,
+    1280,
+    1064
+   ],
+   "maxWt": [
+    null,
+    25,
+    25,
+    25,
+    25,
+    25,
+    null,
+    25,
+    25,
+    25,
+    25,
+    25,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    38,
+    25,
+    25,
+    25,
+    32,
+    32,
+    45,
+    38
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "bicep_curl_machine",
+   "last": "2026-01-30",
+   "status": "old",
+   "daysAgo": 264,
+   "vol": [
+    730,
+    466
+   ],
+   "maxWt": [
+    25,
+    25
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "plank",
+   "last": "2026-09-15",
+   "status": "old",
+   "daysAgo": 36,
+   "vol": [
+    0,
+    1200,
+    300,
+    1800,
+    null,
+    1800,
+    null,
+    null,
+    2400,
+    2400,
+    2400,
+    2700,
+    3600,
+    4800,
+    1600,
+    2400
+   ],
+   "maxWt": [
+    null,
+    5,
+    10,
+    10,
+    null,
+    10,
+    null,
+    null,
+    15,
+    15,
+    15,
+    15,
+    20,
+    20,
+    10,
+    20
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "crunch_machine",
+   "last": "2026-09-08",
+   "status": "old",
+   "daysAgo": 43,
+   "vol": [
+    750,
+    null,
+    1080,
+    400,
+    960,
+    1080,
+    1140,
+    1400,
+    864
+   ],
+   "maxWt": [
+    25,
+    10,
+    38,
+    10,
+    32,
+    38,
+    38,
+    38,
+    32
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "copenhagen_side_plank",
+   "last": "2026-10-01",
+   "status": "30",
+   "daysAgo": 20,
+   "vol": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "maxWt": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "sled_push",
+   "last": "2026-03-13",
+   "status": "old",
+   "daysAgo": 222,
+   "vol": [
+    32,
+    40,
+    56,
+    140,
+    148,
+    160,
+    110,
+    108,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    184,
+    1440
+   ],
+   "maxWt": [
+    16,
+    24,
+    32,
+    35,
+    39,
+    40,
+    40,
+    39,
+    40,
+    40,
+    40,
+    40,
+    40,
+    40,
+    48,
+    48
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "kettlebell_swing",
+   "last": "2026-03-11",
+   "status": "old",
+   "daysAgo": 224,
+   "vol": [
+    160,
+    720
+   ],
+   "maxWt": [
+    8,
+    12
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "seated_calf_machine",
+   "last": "2026-09-02",
+   "status": "old",
+   "daysAgo": 49,
+   "vol": [
+    1200,
+    1600,
+    1200,
+    1200,
+    2000,
+    1200,
+    1400,
+    1350
+   ],
+   "maxWt": [
+    40,
+    40,
+    40,
+    40,
+    50,
+    40,
+    40,
+    30
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "single_leg_rdl",
+   "last": "2026-10-12",
+   "status": "30",
+   "daysAgo": 9,
+   "vol": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    225,
+    300,
+    375
+   ],
+   "maxWt": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    7.5,
+    10,
+    12.5
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "hex_bar_deadlift",
+   "last": "2026-03-19",
+   "status": "old",
+   "daysAgo": 216,
+   "vol": [
+    null,
+    885.6000000000001
+   ],
+   "maxWt": [
+    null,
+    49.2
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "barbell_incline_pushup",
+   "last": "2026-05-26",
+   "status": "old",
+   "daysAgo": 148,
+   "vol": [
+    null,
+    0,
+    0,
+    0,
+    0
+   ],
+   "maxWt": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "bench_press",
+   "last": "2026-10-06",
+   "status": "30",
+   "daysAgo": 15,
+   "vol": [
+    null,
+    1580,
+    720,
+    1200,
+    1255,
+    null,
+    1200,
+    null,
+    null,
+    1360,
+    1460,
+    null,
+    1410,
+    1597.5,
+    1290,
+    470,
+    815,
+    720,
+    1695,
+    1090,
+    940,
+    895,
+    1550,
+    1320,
+    1020,
+    1320,
+    1320,
+    null,
+    1440,
+    1380
+   ],
+   "maxWt": [
+    null,
+    35,
+    40,
+    40,
+    45,
+    null,
+    50,
+    null,
+    null,
+    60,
+    55,
+    62.5,
+    62.5,
+    62.5,
+    65,
+    70,
+    70,
+    40,
+    52.5,
+    50,
+    65,
+    70,
+    50,
+    55,
+    60,
+    55,
+    55,
+    null,
+    60,
+    60
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "back_squat",
+   "last": "2026-10-19",
+   "status": "7",
+   "daysAgo": 2,
+   "vol": [
+    null,
+    null,
+    2040,
+    null,
+    2435,
+    null,
+    1760,
+    null,
+    2880,
+    2880,
+    null,
+    2120,
+    null,
+    2055,
+    null,
+    1615,
+    null,
+    2190,
+    null,
+    1520,
+    1710,
+    1045,
+    1095,
+    690,
+    900,
+    1260,
+    1860,
+    null,
+    2160,
+    null,
+    1800,
+    500,
+    null,
+    1080
+   ],
+   "maxWt": [
+    null,
+    45,
+    70,
+    null,
+    75,
+    null,
+    80,
+    85,
+    90,
+    90,
+    null,
+    95,
+    100,
+    100,
+    102.5,
+    85,
+    null,
+    100,
+    null,
+    95,
+    95,
+    120,
+    110,
+    80,
+    100,
+    120,
+    120,
+    null,
+    90,
+    null,
+    100,
+    100,
+    null,
+    90
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "deadlift",
+   "last": "2026-09-09",
+   "status": "old",
+   "daysAgo": 42,
+   "vol": [
+    null,
+    1710,
+    null,
+    1695,
+    1440,
+    1080,
+    930,
+    1715,
+    2130,
+    null
+   ],
+   "maxWt": [
+    85,
+    75,
+    null,
+    85,
+    80,
+    90,
+    80,
+    105,
+    110,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "hack_squat",
+   "last": "2026-10-12",
+   "status": "30",
+   "daysAgo": 9,
+   "vol": [
+    null,
+    1200,
+    1200,
+    1200,
+    120,
+    1900,
+    800,
+    1200,
+    1200,
+    null,
+    1200,
+    1200
+   ],
+   "maxWt": [
+    20,
+    30,
+    40,
+    40,
+    20,
+    50,
+    30,
+    40,
+    40,
+    null,
+    40,
+    40
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "leg_press_45",
+   "last": "2026-06-25",
+   "status": "old",
+   "daysAgo": 118,
+   "vol": [
+    null
+   ],
+   "maxWt": [
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "split_squat",
+   "last": "2026-07-15",
+   "status": "old",
+   "daysAgo": 98,
+   "vol": [
+    75,
+    null,
+    175,
+    null,
+    null
+   ],
+   "maxWt": [
+    7.5,
+    null,
+    10,
+    null,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "walking_lunge",
+   "last": "2026-09-14",
+   "status": "old",
+   "daysAgo": 37,
+   "vol": [
+    300,
+    450
+   ],
+   "maxWt": [
+    5,
+    7.5
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "leg_extension_single",
+   "last": "2026-10-16",
+   "status": "7",
+   "daysAgo": 5,
+   "vol": [
+    400,
+    350,
+    690,
+    450,
+    770,
+    892.5,
+    960,
+    1100,
+    900,
+    1150
+   ],
+   "maxWt": [
+    15,
+    15,
+    20,
+    15,
+    17.5,
+    17.5,
+    20,
+    25,
+    30,
+    25
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "leg_curl_standing_single",
+   "last": "2026-10-12",
+   "status": "30",
+   "daysAgo": 9,
+   "vol": [
+    250,
+    150,
+    280,
+    50,
+    0,
+    125,
+    112.5,
+    85,
+    85,
+    80,
+    67.5,
+    30,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "maxWt": [
+    10,
+    10,
+    10,
+    5,
+    null,
+    5,
+    3.75,
+    2.5,
+    2.5,
+    2.5,
+    2.5,
+    2.5,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "standing_calf_single",
+   "last": "2026-08-29",
+   "status": "old",
+   "daysAgo": 53,
+   "vol": [
+    564
+   ],
+   "maxWt": [
+    25
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "single_leg_calf_raise",
+   "last": "2026-10-12",
+   "status": "30",
+   "daysAgo": 9,
+   "vol": [
+    null,
+    null,
+    0,
+    0
+   ],
+   "maxWt": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "reverse_nordic",
+   "last": "2026-10-16",
+   "status": "7",
+   "daysAgo": 5,
+   "vol": [
+    0,
+    0
+   ],
+   "maxWt": [
+    null,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "hip_thrust",
+   "last": "2026-04-22",
+   "status": "old",
+   "daysAgo": 182,
+   "vol": [
+    null,
+    300,
+    600,
+    null
+   ],
+   "maxWt": [
+    null,
+    10,
+    20,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "single_leg_hip_thrust",
+   "last": "2026-10-14",
+   "status": "7",
+   "daysAgo": 7,
+   "vol": [
+    null,
+    250,
+    null
+   ],
+   "maxWt": [
+    7.5,
+    12.5,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "floor_hip_thrust",
+   "last": "2026-10-14",
+   "status": "7",
+   "daysAgo": 7,
+   "vol": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "maxWt": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "glute_bridge_single",
+   "last": "2026-10-09",
+   "status": "30",
+   "daysAgo": 12,
+   "vol": [
+    null,
+    0
+   ],
+   "maxWt": [
+    null,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "panatta_hip_thrust",
+   "last": "2026-09-22",
+   "status": "30",
+   "daysAgo": 29,
+   "vol": [
+    1700
+   ],
+   "maxWt": [
+    55
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "airplane",
+   "last": "2026-05-01",
+   "status": "old",
+   "daysAgo": 173,
+   "vol": [
+    0,
+    0,
+    null,
+    180
+   ],
+   "maxWt": [
+    null,
+    null,
+    null,
+    6
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "panatta_high_row",
+   "last": "2026-10-16",
+   "status": "7",
+   "daysAgo": 5,
+   "vol": [
+    800,
+    990,
+    1150,
+    null,
+    1050,
+    1440,
+    1080,
+    1200,
+    1200,
+    1200,
+    1080,
+    900,
+    1080,
+    1350
+   ],
+   "maxWt": [
+    20,
+    25,
+    30,
+    null,
+    35,
+    30,
+    30,
+    25,
+    30,
+    30,
+    30,
+    30,
+    30,
+    35
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "panatta_super_rowing",
+   "last": "2026-09-28",
+   "status": "30",
+   "daysAgo": 23,
+   "vol": [
+    700,
+    600,
+    800,
+    1160,
+    1220,
+    900,
+    600,
+    850,
+    1020,
+    900,
+    800,
+    750,
+    900
+   ],
+   "maxWt": [
+    20,
+    20,
+    25,
+    30,
+    30,
+    25,
+    25,
+    25,
+    30,
+    25,
+    30,
+    25,
+    25
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "panatta_tbar_row",
+   "last": "2026-08-13",
+   "status": "old",
+   "daysAgo": 69,
+   "vol": [
+    350,
+    700,
+    1200,
+    400,
+    750,
+    300,
+    600
+   ],
+   "maxWt": [
+    15,
+    30,
+    30,
+    20,
+    25,
+    15,
+    20
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "db_row_single",
+   "last": "2026-10-19",
+   "status": "7",
+   "daysAgo": 2,
+   "vol": [
+    640,
+    680,
+    680,
+    640,
+    960,
+    720
+   ],
+   "maxWt": [
+    20,
+    20,
+    20,
+    20,
+    20,
+    20
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "single_arm_seated_row",
+   "last": "2026-09-14",
+   "status": "old",
+   "daysAgo": 37,
+   "vol": [
+    1216
+   ],
+   "maxWt": [
+    38
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "incline_db_press",
+   "last": "2026-10-17",
+   "status": "7",
+   "daysAgo": 4,
+   "vol": [
+    null,
+    200,
+    150,
+    375,
+    300,
+    600,
+    735,
+    600,
+    640,
+    600,
+    800,
+    800,
+    600
+   ],
+   "maxWt": [
+    null,
+    10,
+    7.5,
+    7.5,
+    10,
+    15,
+    15,
+    20,
+    20,
+    20,
+    20,
+    20,
+    20
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "assisted_dip",
+   "last": "2026-10-03",
+   "status": "30",
+   "daysAgo": 18,
+   "vol": [
+    null,
+    2410,
+    2190,
+    2140,
+    1876,
+    1620,
+    1280,
+    1170,
+    1450
+   ],
+   "maxWt": [
+    null,
+    64,
+    73,
+    64,
+    54,
+    54,
+    64,
+    45,
+    50
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "multi_flight_fly",
+   "last": "2026-08-18",
+   "status": "old",
+   "daysAgo": 64,
+   "vol": [
+    2200,
+    1900,
+    1600,
+    1600,
+    2250,
+    1850,
+    2530
+   ],
+   "maxWt": [
+    50,
+    50,
+    50,
+    55,
+    60,
+    55,
+    55
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "cable_fly",
+   "last": "2026-10-15",
+   "status": "7",
+   "daysAgo": 6,
+   "vol": [
+    870,
+    975,
+    750,
+    180,
+    506,
+    990
+   ],
+   "maxWt": [
+    18,
+    25,
+    25,
+    18,
+    11,
+    18
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "machine_incline_press",
+   "last": "2026-08-14",
+   "status": "old",
+   "daysAgo": 68,
+   "vol": [
+    100
+   ],
+   "maxWt": [
+    5
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "cable_station_press",
+   "last": "2026-04-08",
+   "status": "old",
+   "daysAgo": 196,
+   "vol": [
+    null
+   ],
+   "maxWt": [
+    97
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "powersmith_incline",
+   "last": "2026-09-29",
+   "status": "30",
+   "daysAgo": 22,
+   "vol": [
+    240,
+    230
+   ],
+   "maxWt": [
+    5,
+    5
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "powersmith_bench",
+   "last": "2026-10-17",
+   "status": "7",
+   "daysAgo": 4,
+   "vol": [
+    390
+   ],
+   "maxWt": [
+    15
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "overhead_press",
+   "last": "2026-10-17",
+   "status": "7",
+   "daysAgo": 4,
+   "vol": [
+    null,
+    500,
+    600,
+    750,
+    600,
+    790,
+    700,
+    650
+   ],
+   "maxWt": [
+    null,
+    20,
+    15,
+    20,
+    20,
+    20,
+    25,
+    25
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "kneeling_press",
+   "last": "2026-05-02",
+   "status": "old",
+   "daysAgo": 172,
+   "vol": [
+    600,
+    null
+   ],
+   "maxWt": [
+    20,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "landmine_press",
+   "last": "2026-07-16",
+   "status": "old",
+   "daysAgo": 97,
+   "vol": [
+    null,
+    850
+   ],
+   "maxWt": [
+    null,
+    22.5
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "db_lateral_raise",
+   "last": "2026-10-17",
+   "status": "7",
+   "daysAgo": 4,
+   "vol": [
+    null,
+    100,
+    150,
+    150,
+    192.5,
+    112.5,
+    150,
+    185,
+    180,
+    275,
+    245,
+    230,
+    195
+   ],
+   "maxWt": [
+    null,
+    2.5,
+    5,
+    5,
+    5,
+    2.5,
+    2.5,
+    5,
+    5,
+    7.5,
+    5,
+    5,
+    5
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "machine_lateral_raise",
+   "last": "2026-10-15",
+   "status": "7",
+   "daysAgo": 6,
+   "vol": [
+    550,
+    null,
+    650,
+    540,
+    1000,
+    1125,
+    1300,
+    825,
+    540,
+    220,
+    1500,
+    1075,
+    810,
+    1500
+   ],
+   "maxWt": [
+    11,
+    null,
+    18,
+    18,
+    32,
+    25,
+    32,
+    25,
+    18,
+    11,
+    25,
+    25,
+    18,
+    25
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "multi_flight_lateral",
+   "last": "2026-06-30",
+   "status": "old",
+   "daysAgo": 113,
+   "vol": [
+    800
+   ],
+   "maxWt": [
+    20
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "reverse_fly_machine",
+   "last": "2026-10-16",
+   "status": "7",
+   "daysAgo": 5,
+   "vol": [
+    750,
+    1270,
+    1280,
+    1520,
+    1650,
+    1590,
+    1210,
+    960,
+    1248,
+    1672,
+    1216,
+    1024,
+    null,
+    960,
+    1672
+   ],
+   "maxWt": [
+    25,
+    38,
+    32,
+    38,
+    38,
+    45,
+    45,
+    32,
+    45,
+    38,
+    38,
+    32,
+    32,
+    32,
+    38
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "multi_flight_reverse_fly",
+   "last": "2026-07-04",
+   "status": "old",
+   "daysAgo": 109,
+   "vol": [
+    400
+   ],
+   "maxWt": [
+    20
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "cable_reverse_fly",
+   "last": "2026-09-15",
+   "status": "old",
+   "daysAgo": 36,
+   "vol": [
+    495,
+    473,
+    795,
+    88,
+    462
+   ],
+   "maxWt": [
+    11,
+    11,
+    18,
+    11,
+    11
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "db_reverse_fly",
+   "last": "2026-09-02",
+   "status": "old",
+   "daysAgo": 49,
+   "vol": [
+    110
+   ],
+   "maxWt": [
+    5
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "cable_lateral_raise",
+   "last": "2026-10-17",
+   "status": "7",
+   "daysAgo": 4,
+   "vol": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    44,
+    0,
+    0,
+    0,
+    0,
+    55,
+    0
+   ],
+   "maxWt": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    11,
+    null,
+    null,
+    null,
+    null,
+    11,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "cable_front_raise",
+   "last": "2026-08-12",
+   "status": "old",
+   "daysAgo": 70,
+   "vol": [
+    110
+   ],
+   "maxWt": [
+    11
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "cable_y_raise",
+   "last": "2026-07-10",
+   "status": "old",
+   "daysAgo": 103,
+   "vol": [
+    null,
+    0,
+    0,
+    0
+   ],
+   "maxWt": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "face_pull",
+   "last": "2026-10-19",
+   "status": "7",
+   "daysAgo": 2,
+   "vol": [
+    null,
+    540,
+    540,
+    540,
+    540,
+    540,
+    540,
+    720,
+    720,
+    632,
+    null,
+    null,
+    440,
+    396,
+    495,
+    396,
+    396,
+    330,
+    330,
+    396,
+    396
+   ],
+   "maxWt": [
+    18,
+    18,
+    18,
+    18,
+    18,
+    18,
+    18,
+    18,
+    18,
+    25,
+    null,
+    null,
+    11,
+    11,
+    11,
+    11,
+    11,
+    11,
+    11,
+    11,
+    11
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "arm_bar",
+   "last": "2026-04-18",
+   "status": "old",
+   "daysAgo": 186,
+   "vol": [
+    null
+   ],
+   "maxWt": [
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "shifting_press",
+   "last": "2026-04-22",
+   "status": "old",
+   "daysAgo": 182,
+   "vol": [
+    null
+   ],
+   "maxWt": [
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "loaded_lunge_reach",
+   "last": "2026-05-02",
+   "status": "old",
+   "daysAgo": 172,
+   "vol": [
+    null
+   ],
+   "maxWt": [
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "windmill",
+   "last": "2026-09-23",
+   "status": "30",
+   "daysAgo": 28,
+   "vol": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "maxWt": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "brachialis_curl",
+   "last": "2026-04-10",
+   "status": "old",
+   "daysAgo": 194,
+   "vol": [
+    null,
+    300
+   ],
+   "maxWt": [
+    null,
+    10
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "ez_curl",
+   "last": "2026-10-06",
+   "status": "30",
+   "daysAgo": 15,
+   "vol": [
+    1000,
+    680
+   ],
+   "maxWt": [
+    20,
+    20
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "ez_preacher_curl",
+   "last": "2026-10-08",
+   "status": "30",
+   "daysAgo": 13,
+   "vol": [
+    610
+   ],
+   "maxWt": [
+    22
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "hammer_curl",
+   "last": "2026-10-17",
+   "status": "7",
+   "daysAgo": 4,
+   "vol": [
+    370
+   ],
+   "maxWt": [
+    10
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "ez_skull_crusher",
+   "last": "2026-10-06",
+   "status": "30",
+   "daysAgo": 15,
+   "vol": [
+    600,
+    450
+   ],
+   "maxWt": [
+    10,
+    15
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "db_skull_crusher",
+   "last": "2026-10-17",
+   "status": "7",
+   "daysAgo": 4,
+   "vol": [
+    240,
+    285,
+    277.5,
+    277.5
+   ],
+   "maxWt": [
+    7.5,
+    5,
+    7.5,
+    7.5
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "rdl_hold",
+   "last": "2026-05-26",
+   "status": "old",
+   "daysAgo": 148,
+   "vol": [
+    8800,
+    5600,
+    5200,
+    6800,
+    6400
+   ],
+   "maxWt": [
+    80,
+    80,
+    80,
+    60,
+    60
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "cable_wrist_ulnar",
+   "last": "2026-09-18",
+   "status": "old",
+   "daysAgo": 33,
+   "vol": [
+    0,
+    620,
+    165,
+    720,
+    796,
+    null,
+    0
+   ],
+   "maxWt": [
+    null,
+    18,
+    11,
+    18,
+    18,
+    null,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "cable_wrist_radial",
+   "last": "2026-09-18",
+   "status": "old",
+   "daysAgo": 33,
+   "vol": [
+    0,
+    572,
+    760,
+    1170,
+    1080,
+    0
+   ],
+   "maxWt": [
+    null,
+    11,
+    18,
+    18,
+    18,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "cable_supination",
+   "last": "2026-10-01",
+   "status": "30",
+   "daysAgo": 20,
+   "vol": [
+    495,
+    275,
+    880,
+    880,
+    275,
+    0,
+    330
+   ],
+   "maxWt": [
+    11,
+    11,
+    11,
+    11,
+    11,
+    null,
+    11
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "cable_pronation",
+   "last": "2026-09-21",
+   "status": "30",
+   "daysAgo": 30,
+   "vol": [
+    0,
+    660,
+    605,
+    880,
+    0,
+    0
+   ],
+   "maxWt": [
+    null,
+    11,
+    11,
+    11,
+    null,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "oblique_crunch_machine",
+   "last": "2026-10-09",
+   "status": "30",
+   "daysAgo": 12,
+   "vol": [
+    0,
+    0,
+    0
+   ],
+   "maxWt": [
+    null,
+    null,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "v_crunch",
+   "last": "2026-05-02",
+   "status": "old",
+   "daysAgo": 172,
+   "vol": [
+    null
+   ],
+   "maxWt": [
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "cable_belly_press",
+   "last": "2026-05-16",
+   "status": "old",
+   "daysAgo": 158,
+   "vol": [
+    null
+   ],
+   "maxWt": [
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "dead_bug",
+   "last": "2026-09-05",
+   "status": "old",
+   "daysAgo": 46,
+   "vol": [
+    null
+   ],
+   "maxWt": [
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "pallof_press",
+   "last": "2026-10-17",
+   "status": "7",
+   "daysAgo": 4,
+   "vol": [
+    330,
+    495,
+    220,
+    360
+   ],
+   "maxWt": [
+    11,
+    11,
+    11,
+    18
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "side_plank_hip_flexion",
+   "last": "2026-04-23",
+   "status": "old",
+   "daysAgo": 181,
+   "vol": [
+    null,
+    0,
+    0,
+    0
+   ],
+   "maxWt": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "serratus_side_plank",
+   "last": "2026-05-25",
+   "status": "old",
+   "daysAgo": 149,
+   "vol": [
+    null,
+    null
+   ],
+   "maxWt": [
+    null,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "side_plank_clamshell",
+   "last": "2026-10-12",
+   "status": "30",
+   "daysAgo": 9,
+   "vol": [
+    null,
+    null
+   ],
+   "maxWt": [
+    null,
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  },
+  {
+   "id": "treadmill",
+   "last": "2026-09-07",
+   "status": "old",
+   "daysAgo": 44,
+   "vol": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "maxWt": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "cardio": {
+    "mins": 1105,
+    "km": 0
+   }
+  },
+  {
+   "id": "track_run",
+   "last": "2026-10-03",
+   "status": "30",
+   "daysAgo": 18,
+   "vol": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "maxWt": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "cardio": {
+    "mins": 159,
+    "km": 17.2
+   }
+  },
+  {
+   "id": "spin_class",
+   "last": "2026-09-17",
+   "status": "old",
+   "daysAgo": 34,
+   "vol": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "maxWt": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "cardio": {
+    "mins": 100,
+    "km": 0
+   }
+  },
+  {
+   "id": "stair_climber",
+   "last": "2026-10-13",
+   "status": "30",
+   "daysAgo": 8,
+   "vol": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "maxWt": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "cardio": {
+    "mins": 165,
+    "km": 0
+   }
+  },
+  {
+   "id": "fan_bike_hiit",
+   "last": "2026-07-07",
+   "status": "old",
+   "daysAgo": 106,
+   "vol": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "maxWt": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "cardio": {
+    "mins": 28,
+    "km": 0
+   }
+  },
+  {
+   "id": "step_aerobics",
+   "last": "2026-09-11",
+   "status": "old",
+   "daysAgo": 40,
+   "vol": [
+    null
+   ],
+   "maxWt": [
+    null
+   ],
+   "cardio": {
+    "mins": 0,
+    "km": 0
+   }
+  }
+ ],
+ "sorted": {
+  "group": [
+   "zercher_squat",
+   "ssb_squat",
+   "leg_press",
+   "bulgarian_split",
+   "leg_extension",
+   "leg_curl_seated",
+   "leg_curl_prone",
+   "hip_abduction",
+   "hip_adduction",
+   "standing_calf",
+   "kettlebell_rdl",
+   "rdl",
+   "seated_calf_machine",
+   "single_leg_rdl",
+   "hex_bar_deadlift",
+   "back_squat",
+   "deadlift",
+   "hack_squat",
+   "leg_press_45",
+   "split_squat",
+   "walking_lunge",
+   "leg_extension_single",
+   "leg_curl_standing_single",
+   "standing_calf_single",
+   "single_leg_calf_raise",
+   "reverse_nordic",
+   "lat_pulldown",
+   "seated_row",
+   "assisted_pullup",
+   "straight_arm_pulldown",
+   "barbell_row",
+   "panatta_high_row",
+   "panatta_super_rowing",
+   "panatta_tbar_row",
+   "db_row_single",
+   "single_arm_seated_row",
+   "machine_fly",
+   "chest_press_machine",
+   "floor_bench_press",
+   "dumbbell_bench",
+   "barbell_incline_pushup",
+   "bench_press",
+   "incline_db_press",
+   "assisted_dip",
+   "multi_flight_fly",
+   "cable_fly",
+   "machine_incline_press",
+   "cable_station_press",
+   "powersmith_incline",
+   "powersmith_bench",
+   "shoulder_press_machine",
+   "overhead_press",
+   "kneeling_press",
+   "landmine_press",
+   "db_lateral_raise",
+   "machine_lateral_raise",
+   "multi_flight_lateral",
+   "reverse_fly_machine",
+   "multi_flight_reverse_fly",
+   "cable_reverse_fly",
+   "db_reverse_fly",
+   "cable_lateral_raise",
+   "cable_front_raise",
+   "cable_y_raise",
+   "face_pull",
+   "arm_bar",
+   "shifting_press",
+   "loaded_lunge_reach",
+   "windmill",
+   "tricep_pushdown",
+   "bicep_curl_cable",
+   "bicep_curl_machine",
+   "brachialis_curl",
+   "ez_curl",
+   "ez_preacher_curl",
+   "hammer_curl",
+   "ez_skull_crusher",
+   "db_skull_crusher",
+   "rdl_hold",
+   "cable_wrist_ulnar",
+   "cable_wrist_radial",
+   "cable_supination",
+   "cable_pronation",
+   "plank",
+   "crunch_machine",
+   "copenhagen_side_plank",
+   "oblique_crunch_machine",
+   "v_crunch",
+   "cable_belly_press",
+   "dead_bug",
+   "pallof_press",
+   "side_plank_hip_flexion",
+   "serratus_side_plank",
+   "side_plank_clamshell",
+   "sled_push",
+   "kettlebell_swing",
+   "hip_thrust",
+   "single_leg_hip_thrust",
+   "floor_hip_thrust",
+   "glute_bridge_single",
+   "panatta_hip_thrust",
+   "airplane",
+   "treadmill",
+   "track_run",
+   "spin_class",
+   "stair_climber",
+   "fan_bike_hiit",
+   "step_aerobics"
+  ],
+  "recent": [
+   "bulgarian_split",
+   "leg_extension",
+   "assisted_pullup",
+   "straight_arm_pulldown",
+   "tricep_pushdown",
+   "back_squat",
+   "db_row_single",
+   "face_pull",
+   "incline_db_press",
+   "powersmith_bench",
+   "overhead_press",
+   "db_lateral_raise",
+   "cable_lateral_raise",
+   "hammer_curl",
+   "db_skull_crusher",
+   "pallof_press",
+   "rdl",
+   "leg_extension_single",
+   "reverse_nordic",
+   "panatta_high_row",
+   "reverse_fly_machine",
+   "cable_fly",
+   "machine_lateral_raise",
+   "single_leg_hip_thrust",
+   "floor_hip_thrust",
+   "chest_press_machine",
+   "stair_climber",
+   "seated_row",
+   "single_leg_rdl",
+   "hack_squat",
+   "leg_curl_standing_single",
+   "single_leg_calf_raise",
+   "side_plank_clamshell",
+   "glute_bridge_single",
+   "oblique_crunch_machine",
+   "bicep_curl_cable",
+   "ez_preacher_curl",
+   "bench_press",
+   "ez_curl",
+   "ez_skull_crusher",
+   "assisted_dip",
+   "track_run",
+   "leg_curl_prone",
+   "copenhagen_side_plank",
+   "cable_supination",
+   "powersmith_incline",
+   "hip_adduction",
+   "panatta_super_rowing",
+   "windmill",
+   "panatta_hip_thrust",
+   "cable_pronation",
+   "cable_wrist_ulnar",
+   "cable_wrist_radial",
+   "spin_class",
+   "plank",
+   "cable_reverse_fly",
+   "walking_lunge",
+   "single_arm_seated_row",
+   "barbell_row",
+   "step_aerobics",
+   "deadlift",
+   "crunch_machine",
+   "treadmill",
+   "dead_bug",
+   "seated_calf_machine",
+   "db_reverse_fly",
+   "standing_calf_single",
+   "shoulder_press_machine",
+   "lat_pulldown",
+   "multi_flight_fly",
+   "machine_fly",
+   "machine_incline_press",
+   "leg_press",
+   "panatta_tbar_row",
+   "cable_front_raise",
+   "leg_curl_seated",
+   "zercher_squat",
+   "landmine_press",
+   "standing_calf",
+   "split_squat",
+   "cable_y_raise",
+   "fan_bike_hiit",
+   "multi_flight_reverse_fly",
+   "multi_flight_lateral",
+   "leg_press_45",
+   "barbell_incline_pushup",
+   "rdl_hold",
+   "serratus_side_plank",
+   "cable_belly_press",
+   "kneeling_press",
+   "loaded_lunge_reach",
+   "v_crunch",
+   "airplane",
+   "side_plank_hip_flexion",
+   "hip_thrust",
+   "shifting_press",
+   "arm_bar",
+   "brachialis_curl",
+   "cable_station_press",
+   "ssb_squat",
+   "floor_bench_press",
+   "hex_bar_deadlift",
+   "hip_abduction",
+   "sled_push",
+   "kettlebell_swing",
+   "kettlebell_rdl",
+   "dumbbell_bench",
+   "bicep_curl_machine"
+  ],
+  "overdue": [
+   "bicep_curl_machine",
+   "dumbbell_bench",
+   "kettlebell_rdl",
+   "kettlebell_swing",
+   "hip_abduction",
+   "sled_push",
+   "hex_bar_deadlift",
+   "floor_bench_press",
+   "ssb_squat",
+   "cable_station_press",
+   "brachialis_curl",
+   "arm_bar",
+   "hip_thrust",
+   "shifting_press",
+   "side_plank_hip_flexion",
+   "airplane",
+   "kneeling_press",
+   "loaded_lunge_reach",
+   "v_crunch",
+   "cable_belly_press",
+   "serratus_side_plank",
+   "barbell_incline_pushup",
+   "rdl_hold",
+   "leg_press_45",
+   "multi_flight_lateral",
+   "multi_flight_reverse_fly",
+   "fan_bike_hiit",
+   "cable_y_raise",
+   "standing_calf",
+   "split_squat",
+   "landmine_press",
+   "zercher_squat",
+   "leg_curl_seated",
+   "cable_front_raise",
+   "leg_press",
+   "panatta_tbar_row",
+   "machine_fly",
+   "machine_incline_press",
+   "multi_flight_fly",
+   "lat_pulldown",
+   "shoulder_press_machine",
+   "standing_calf_single",
+   "seated_calf_machine",
+   "db_reverse_fly",
+   "dead_bug",
+   "treadmill",
+   "crunch_machine",
+   "deadlift",
+   "barbell_row",
+   "step_aerobics",
+   "walking_lunge",
+   "single_arm_seated_row",
+   "plank",
+   "cable_reverse_fly",
+   "spin_class",
+   "cable_wrist_ulnar",
+   "cable_wrist_radial",
+   "cable_pronation",
+   "panatta_hip_thrust",
+   "windmill",
+   "hip_adduction",
+   "panatta_super_rowing",
+   "powersmith_incline",
+   "copenhagen_side_plank",
+   "cable_supination",
+   "leg_curl_prone",
+   "assisted_dip",
+   "track_run",
+   "bench_press",
+   "ez_curl",
+   "ez_skull_crusher",
+   "bicep_curl_cable",
+   "ez_preacher_curl",
+   "glute_bridge_single",
+   "oblique_crunch_machine",
+   "seated_row",
+   "single_leg_rdl",
+   "hack_squat",
+   "leg_curl_standing_single",
+   "single_leg_calf_raise",
+   "side_plank_clamshell",
+   "chest_press_machine",
+   "stair_climber",
+   "single_leg_hip_thrust",
+   "floor_hip_thrust",
+   "cable_fly",
+   "machine_lateral_raise",
+   "rdl",
+   "leg_extension_single",
+   "reverse_nordic",
+   "panatta_high_row",
+   "reverse_fly_machine",
+   "incline_db_press",
+   "powersmith_bench",
+   "overhead_press",
+   "db_lateral_raise",
+   "cable_lateral_raise",
+   "hammer_curl",
+   "db_skull_crusher",
+   "pallof_press",
+   "bulgarian_split",
+   "leg_extension",
+   "assisted_pullup",
+   "straight_arm_pulldown",
+   "tricep_pushdown",
+   "back_squat",
+   "db_row_single",
+   "face_pull"
+  ],
+  "maxwt": [
+   "standing_calf",
+   "back_squat",
+   "rdl",
+   "deadlift",
+   "leg_press",
+   "cable_station_press",
+   "rdl_hold",
+   "ssb_squat",
+   "assisted_dip",
+   "leg_extension",
+   "zercher_squat",
+   "bench_press",
+   "assisted_pullup",
+   "multi_flight_fly",
+   "lat_pulldown",
+   "seated_row",
+   "chest_press_machine",
+   "floor_bench_press",
+   "panatta_hip_thrust",
+   "leg_curl_seated",
+   "hip_abduction",
+   "hip_adduction",
+   "barbell_row",
+   "seated_calf_machine",
+   "hack_squat",
+   "hex_bar_deadlift",
+   "sled_push",
+   "machine_fly",
+   "bicep_curl_cable",
+   "reverse_fly_machine",
+   "straight_arm_pulldown",
+   "tricep_pushdown",
+   "crunch_machine",
+   "single_arm_seated_row",
+   "panatta_high_row",
+   "kettlebell_rdl",
+   "shoulder_press_machine",
+   "machine_lateral_raise",
+   "leg_curl_prone",
+   "leg_extension_single",
+   "panatta_super_rowing",
+   "panatta_tbar_row",
+   "dumbbell_bench",
+   "bicep_curl_machine",
+   "standing_calf_single",
+   "cable_fly",
+   "overhead_press",
+   "face_pull",
+   "landmine_press",
+   "ez_preacher_curl",
+   "plank",
+   "hip_thrust",
+   "db_row_single",
+   "incline_db_press",
+   "kneeling_press",
+   "multi_flight_lateral",
+   "multi_flight_reverse_fly",
+   "ez_curl",
+   "cable_reverse_fly",
+   "cable_wrist_ulnar",
+   "cable_wrist_radial",
+   "pallof_press",
+   "bulgarian_split",
+   "powersmith_bench",
+   "ez_skull_crusher",
+   "single_leg_rdl",
+   "single_leg_hip_thrust",
+   "kettlebell_swing",
+   "cable_lateral_raise",
+   "cable_front_raise",
+   "cable_supination",
+   "cable_pronation",
+   "split_squat",
+   "leg_curl_standing_single",
+   "brachialis_curl",
+   "hammer_curl",
+   "walking_lunge",
+   "db_lateral_raise",
+   "db_skull_crusher",
+   "airplane",
+   "machine_incline_press",
+   "powersmith_incline",
+   "db_reverse_fly",
+   "copenhagen_side_plank",
+   "barbell_incline_pushup",
+   "leg_press_45",
+   "single_leg_calf_raise",
+   "reverse_nordic",
+   "floor_hip_thrust",
+   "glute_bridge_single",
+   "cable_y_raise",
+   "arm_bar",
+   "shifting_press",
+   "loaded_lunge_reach",
+   "windmill",
+   "oblique_crunch_machine",
+   "v_crunch",
+   "cable_belly_press",
+   "dead_bug",
+   "side_plank_hip_flexion",
+   "serratus_side_plank",
+   "side_plank_clamshell",
+   "treadmill",
+   "track_run",
+   "spin_class",
+   "stair_climber",
+   "fan_bike_hiit",
+   "step_aerobics"
+  ],
+  "volume": [
+   "leg_press",
+   "assisted_pullup",
+   "lat_pulldown",
+   "chest_press_machine",
+   "back_squat",
+   "tricep_pushdown",
+   "rdl_hold",
+   "seated_row",
+   "bench_press",
+   "bicep_curl_cable",
+   "plank",
+   "leg_extension",
+   "standing_calf",
+   "straight_arm_pulldown",
+   "machine_fly",
+   "reverse_fly_machine",
+   "zercher_squat",
+   "rdl",
+   "ssb_squat",
+   "panatta_high_row",
+   "leg_curl_seated",
+   "assisted_dip",
+   "multi_flight_fly",
+   "shoulder_press_machine",
+   "machine_lateral_raise",
+   "hack_squat",
+   "panatta_super_rowing",
+   "seated_calf_machine",
+   "deadlift",
+   "face_pull",
+   "floor_bench_press",
+   "hip_adduction",
+   "crunch_machine",
+   "leg_extension_single",
+   "hip_abduction",
+   "incline_db_press",
+   "barbell_row",
+   "overhead_press",
+   "bulgarian_split",
+   "leg_curl_prone",
+   "db_row_single",
+   "panatta_tbar_row",
+   "cable_fly",
+   "kettlebell_rdl",
+   "cable_wrist_radial",
+   "cable_supination",
+   "sled_push",
+   "cable_reverse_fly",
+   "cable_wrist_ulnar",
+   "db_lateral_raise",
+   "cable_pronation",
+   "panatta_hip_thrust",
+   "ez_curl",
+   "pallof_press",
+   "dumbbell_bench",
+   "leg_curl_standing_single",
+   "single_arm_seated_row",
+   "bicep_curl_machine",
+   "db_skull_crusher",
+   "ez_skull_crusher",
+   "single_leg_rdl",
+   "hip_thrust",
+   "hex_bar_deadlift",
+   "kettlebell_swing",
+   "landmine_press",
+   "multi_flight_lateral",
+   "walking_lunge",
+   "ez_preacher_curl",
+   "kneeling_press",
+   "standing_calf_single",
+   "powersmith_incline",
+   "multi_flight_reverse_fly",
+   "powersmith_bench",
+   "hammer_curl",
+   "brachialis_curl",
+   "split_squat",
+   "single_leg_hip_thrust",
+   "airplane",
+   "db_reverse_fly",
+   "cable_front_raise",
+   "machine_incline_press",
+   "cable_lateral_raise",
+   "copenhagen_side_plank",
+   "barbell_incline_pushup",
+   "leg_press_45",
+   "single_leg_calf_raise",
+   "reverse_nordic",
+   "floor_hip_thrust",
+   "glute_bridge_single",
+   "cable_station_press",
+   "cable_y_raise",
+   "arm_bar",
+   "shifting_press",
+   "loaded_lunge_reach",
+   "windmill",
+   "oblique_crunch_machine",
+   "v_crunch",
+   "cable_belly_press",
+   "dead_bug",
+   "side_plank_hip_flexion",
+   "serratus_side_plank",
+   "side_plank_clamshell",
+   "treadmill",
+   "track_run",
+   "spin_class",
+   "stair_climber",
+   "fan_bike_hiit",
+   "step_aerobics"
+  ],
+  "sessions": [
+   "treadmill",
+   "tricep_pushdown",
+   "back_squat",
+   "lat_pulldown",
+   "bicep_curl_cable",
+   "bench_press",
+   "assisted_pullup",
+   "chest_press_machine",
+   "seated_row",
+   "leg_extension",
+   "straight_arm_pulldown",
+   "face_pull",
+   "rdl",
+   "leg_press",
+   "bulgarian_split",
+   "leg_curl_seated",
+   "leg_curl_standing_single",
+   "shoulder_press_machine",
+   "plank",
+   "sled_push",
+   "machine_fly",
+   "copenhagen_side_plank",
+   "reverse_fly_machine",
+   "panatta_high_row",
+   "machine_lateral_raise",
+   "zercher_squat",
+   "panatta_super_rowing",
+   "incline_db_press",
+   "db_lateral_raise",
+   "cable_lateral_raise",
+   "hack_squat",
+   "deadlift",
+   "leg_extension_single",
+   "leg_curl_prone",
+   "standing_calf",
+   "crunch_machine",
+   "single_leg_rdl",
+   "assisted_dip",
+   "ssb_squat",
+   "floor_bench_press",
+   "seated_calf_machine",
+   "overhead_press",
+   "panatta_tbar_row",
+   "multi_flight_fly",
+   "cable_wrist_ulnar",
+   "cable_supination",
+   "stair_climber",
+   "fan_bike_hiit",
+   "hip_adduction",
+   "db_row_single",
+   "cable_fly",
+   "windmill",
+   "cable_wrist_radial",
+   "cable_pronation",
+   "spin_class",
+   "hip_abduction",
+   "kettlebell_rdl",
+   "barbell_row",
+   "barbell_incline_pushup",
+   "split_squat",
+   "floor_hip_thrust",
+   "cable_reverse_fly",
+   "rdl_hold",
+   "single_leg_calf_raise",
+   "hip_thrust",
+   "airplane",
+   "cable_y_raise",
+   "db_skull_crusher",
+   "pallof_press",
+   "side_plank_hip_flexion",
+   "track_run",
+   "single_leg_hip_thrust",
+   "oblique_crunch_machine",
+   "dumbbell_bench",
+   "bicep_curl_machine",
+   "kettlebell_swing",
+   "hex_bar_deadlift",
+   "walking_lunge",
+   "reverse_nordic",
+   "glute_bridge_single",
+   "powersmith_incline",
+   "kneeling_press",
+   "landmine_press",
+   "brachialis_curl",
+   "ez_curl",
+   "ez_skull_crusher",
+   "serratus_side_plank",
+   "side_plank_clamshell",
+   "leg_press_45",
+   "standing_calf_single",
+   "panatta_hip_thrust",
+   "single_arm_seated_row",
+   "machine_incline_press",
+   "cable_station_press",
+   "powersmith_bench",
+   "multi_flight_lateral",
+   "multi_flight_reverse_fly",
+   "db_reverse_fly",
+   "cable_front_raise",
+   "arm_bar",
+   "shifting_press",
+   "loaded_lunge_reach",
+   "ez_preacher_curl",
+   "hammer_curl",
+   "v_crunch",
+   "cable_belly_press",
+   "dead_bug",
+   "step_aerobics"
+  ],
+  "progress": [
+   "standing_calf",
+   "back_squat",
+   "rdl",
+   "chest_press_machine",
+   "sled_push",
+   "leg_press",
+   "bench_press",
+   "deadlift",
+   "ssb_squat",
+   "barbell_row",
+   "hack_squat",
+   "zercher_squat",
+   "floor_bench_press",
+   "plank",
+   "panatta_high_row",
+   "hip_abduction",
+   "lat_pulldown",
+   "shoulder_press_machine",
+   "machine_lateral_raise",
+   "machine_fly",
+   "bicep_curl_cable",
+   "reverse_fly_machine",
+   "leg_extension_single",
+   "hip_thrust",
+   "incline_db_press",
+   "kettlebell_rdl",
+   "hip_adduction",
+   "seated_row",
+   "straight_arm_pulldown",
+   "crunch_machine",
+   "cable_wrist_radial",
+   "pallof_press",
+   "dumbbell_bench",
+   "single_leg_rdl",
+   "single_leg_hip_thrust",
+   "panatta_super_rowing",
+   "panatta_tbar_row",
+   "multi_flight_fly",
+   "overhead_press",
+   "ez_skull_crusher",
+   "kettlebell_swing",
+   "split_squat",
+   "walking_lunge",
+   "db_lateral_raise",
+   "bulgarian_split",
+   "leg_extension",
+   "tricep_pushdown",
+   "bicep_curl_machine",
+   "copenhagen_side_plank",
+   "hex_bar_deadlift",
+   "barbell_incline_pushup",
+   "leg_press_45",
+   "standing_calf_single",
+   "single_leg_calf_raise",
+   "reverse_nordic",
+   "floor_hip_thrust",
+   "glute_bridge_single",
+   "panatta_hip_thrust",
+   "airplane",
+   "db_row_single",
+   "single_arm_seated_row",
+   "cable_fly",
+   "machine_incline_press",
+   "cable_station_press",
+   "powersmith_incline",
+   "powersmith_bench",
+   "kneeling_press",
+   "landmine_press",
+   "multi_flight_lateral",
+   "multi_flight_reverse_fly",
+   "cable_reverse_fly",
+   "db_reverse_fly",
+   "cable_lateral_raise",
+   "cable_front_raise",
+   "cable_y_raise",
+   "arm_bar",
+   "shifting_press",
+   "loaded_lunge_reach",
+   "windmill",
+   "brachialis_curl",
+   "ez_curl",
+   "ez_preacher_curl",
+   "hammer_curl",
+   "db_skull_crusher",
+   "cable_wrist_ulnar",
+   "cable_supination",
+   "cable_pronation",
+   "oblique_crunch_machine",
+   "v_crunch",
+   "cable_belly_press",
+   "dead_bug",
+   "side_plank_hip_flexion",
+   "serratus_side_plank",
+   "side_plank_clamshell",
+   "treadmill",
+   "track_run",
+   "spin_class",
+   "stair_climber",
+   "fan_bike_hiit",
+   "step_aerobics",
+   "leg_curl_prone",
+   "face_pull",
+   "leg_curl_standing_single",
+   "seated_calf_machine",
+   "assisted_dip",
+   "assisted_pullup",
+   "leg_curl_seated",
+   "rdl_hold"
+  ],
+  "name": [
+   "leg_press_45",
+   "bicep_curl_machine",
+   "incline_db_press",
+   "hex_bar_deadlift",
+   "walking_lunge",
+   "reverse_nordic",
+   "floor_bench_press",
+   "landmine_press",
+   "dead_bug",
+   "hip_adduction",
+   "hip_abduction",
+   "seated_row",
+   "brachialis_curl",
+   "seated_calf_machine",
+   "leg_curl_seated",
+   "leg_extension",
+   "leg_press",
+   "side_plank_clamshell",
+   "bench_press",
+   "straight_arm_pulldown",
+   "machine_lateral_raise",
+   "shoulder_press_machine",
+   "shifting_press",
+   "hack_squat",
+   "bulgarian_split",
+   "loaded_lunge_reach",
+   "back_squat",
+   "leg_curl_prone",
+   "fan_bike_hiit",
+   "machine_fly",
+   "spin_class",
+   "airplane",
+   "db_reverse_fly",
+   "barbell_row",
+   "copenhagen_side_plank",
+   "multi_flight_reverse_fly",
+   "windmill",
+   "multi_flight_fly",
+   "multi_flight_lateral",
+   "leg_curl_standing_single",
+   "standing_calf",
+   "chest_press_machine",
+   "serratus_side_plank",
+   "side_plank_hip_flexion",
+   "split_squat",
+   "dumbbell_bench",
+   "db_lateral_raise",
+   "single_leg_hip_thrust",
+   "hip_thrust",
+   "crunch_machine",
+   "sled_push",
+   "oblique_crunch_machine",
+   "single_arm_seated_row",
+   "db_row_single",
+   "hammer_curl",
+   "single_leg_rdl",
+   "standing_calf_single",
+   "single_leg_calf_raise",
+   "leg_extension_single",
+   "glute_bridge_single",
+   "arm_bar",
+   "kettlebell_rdl",
+   "kettlebell_swing",
+   "plank",
+   "treadmill",
+   "step_aerobics",
+   "lat_pulldown",
+   "cable_belly_press",
+   "kneeling_press",
+   "barbell_incline_pushup",
+   "overhead_press",
+   "deadlift",
+   "zercher_squat",
+   "stair_climber",
+   "reverse_fly_machine",
+   "db_skull_crusher",
+   "floor_hip_thrust",
+   "assisted_pullup",
+   "assisted_dip",
+   "track_run",
+   "cable_station_press",
+   "panatta_hip_thrust",
+   "pallof_press",
+   "cable_y_raise",
+   "cable_reverse_fly",
+   "cable_wrist_ulnar",
+   "cable_wrist_radial",
+   "cable_fly",
+   "cable_front_raise",
+   "cable_pronation",
+   "cable_supination",
+   "face_pull",
+   "cable_lateral_raise",
+   "bicep_curl_cable",
+   "tricep_pushdown",
+   "ez_preacher_curl",
+   "ez_curl",
+   "ez_skull_crusher",
+   "machine_incline_press",
+   "panatta_high_row",
+   "panatta_super_rowing",
+   "panatta_tbar_row",
+   "powersmith_incline",
+   "powersmith_bench",
+   "rdl_hold",
+   "rdl",
+   "ssb_squat",
+   "v_crunch"
+  ]
+ },
+ "prEvents": [
+  {
+   "id": "pallof_press",
+   "date": "2026-10-17",
+   "from": 11,
+   "to": 18
+  },
+  {
+   "id": "single_leg_rdl",
+   "date": "2026-10-12",
+   "from": 10,
+   "to": 12.5
+  },
+  {
+   "id": "db_lateral_raise",
+   "date": "2026-10-06",
+   "from": 5,
+   "to": 7.5
+  },
+  {
+   "id": "ez_skull_crusher",
+   "date": "2026-10-06",
+   "from": 10,
+   "to": 15
+  },
+  {
+   "id": "single_leg_rdl",
+   "date": "2026-10-05",
+   "from": 7.5,
+   "to": 10
+  },
+  {
+   "id": "leg_extension_single",
+   "date": "2026-10-02",
+   "from": 25,
+   "to": 30
+  },
+  {
+   "id": "bicep_curl_cable",
+   "date": "2026-10-01",
+   "from": 38,
+   "to": 45
+  },
+  {
+   "id": "incline_db_press",
+   "date": "2026-10-01",
+   "from": 15,
+   "to": 20
+  },
+  {
+   "id": "overhead_press",
+   "date": "2026-10-01",
+   "from": 20,
+   "to": 25
+  },
+  {
+   "id": "straight_arm_pulldown",
+   "date": "2026-09-30",
+   "from": 32,
+   "to": 38
+  },
+  {
+   "id": "cable_fly",
+   "date": "2026-09-15",
+   "from": 18,
+   "to": 25
+  },
+  {
+   "id": "walking_lunge",
+   "date": "2026-09-14",
+   "from": 5,
+   "to": 7.5
+  },
+  {
+   "id": "panatta_high_row",
+   "date": "2026-09-07",
+   "from": 30,
+   "to": 35
+  },
+  {
+   "id": "chest_press_machine",
+   "date": "2026-09-02",
+   "from": 52,
+   "to": 59
+  },
+  {
+   "id": "leg_extension_single",
+   "date": "2026-09-02",
+   "from": 20,
+   "to": 25
+  },
+  {
+   "id": "face_pull",
+   "date": "2026-08-29",
+   "from": 18,
+   "to": 25
+  },
+  {
+   "id": "deadlift",
+   "date": "2026-08-28",
+   "from": 105,
+   "to": 110
+  },
+  {
+   "id": "rdl",
+   "date": "2026-08-21",
+   "from": 70,
+   "to": 110
+  },
+  {
+   "id": "deadlift",
+   "date": "2026-08-19",
+   "from": 90,
+   "to": 105
+  },
+  {
+   "id": "panatta_super_rowing",
+   "date": "2026-08-19",
+   "from": 25,
+   "to": 30
+  },
+  {
+   "id": "cable_reverse_fly",
+   "date": "2026-08-18",
+   "from": 11,
+   "to": 18
+  },
+  {
+   "id": "barbell_row",
+   "date": "2026-08-17",
+   "from": 40,
+   "to": 50
+  },
+  {
+   "id": "panatta_high_row",
+   "date": "2026-08-17",
+   "from": 25,
+   "to": 30
+  },
+  {
+   "id": "panatta_super_rowing",
+   "date": "2026-08-13",
+   "from": 20,
+   "to": 25
+  },
+  {
+   "id": "cable_wrist_radial",
+   "date": "2026-08-12",
+   "from": 11,
+   "to": 18
+  },
+  {
+   "id": "leg_extension_single",
+   "date": "2026-08-10",
+   "from": 15,
+   "to": 20
+  },
+  {
+   "id": "panatta_high_row",
+   "date": "2026-08-10",
+   "from": 20,
+   "to": 25
+  },
+  {
+   "id": "assisted_pullup",
+   "date": "2026-08-06",
+   "from": 68,
+   "to": 69
+  },
+  {
+   "id": "multi_flight_fly",
+   "date": "2026-07-18",
+   "from": 55,
+   "to": 60
+  },
+  {
+   "id": "hack_squat",
+   "date": "2026-07-17",
+   "from": 40,
+   "to": 50
+  },
+  {
+   "id": "incline_db_press",
+   "date": "2026-07-16",
+   "from": 10,
+   "to": 15
+  },
+  {
+   "id": "multi_flight_fly",
+   "date": "2026-07-16",
+   "from": 50,
+   "to": 55
+  },
+  {
+   "id": "reverse_fly_machine",
+   "date": "2026-07-16",
+   "from": 38,
+   "to": 45
+  },
+  {
+   "id": "barbell_row",
+   "date": "2026-07-13",
+   "from": 30,
+   "to": 40
+  },
+  {
+   "id": "machine_lateral_raise",
+   "date": "2026-07-07",
+   "from": 18,
+   "to": 32
+  },
+  {
+   "id": "back_squat",
+   "date": "2026-07-06",
+   "from": 102.5,
+   "to": 120
+  },
+  {
+   "id": "single_leg_hip_thrust",
+   "date": "2026-07-06",
+   "from": 7.5,
+   "to": 12.5
+  },
+  {
+   "id": "panatta_tbar_row",
+   "date": "2026-07-06",
+   "from": 15,
+   "to": 30
+  },
+  {
+   "id": "reverse_fly_machine",
+   "date": "2026-07-04",
+   "from": 25,
+   "to": 38
+  },
+  {
+   "id": "assisted_dip",
+   "date": "2026-07-02",
+   "from": 64,
+   "to": 73
+  },
+  {
+   "id": "db_lateral_raise",
+   "date": "2026-07-02",
+   "from": 2.5,
+   "to": 5
+  },
+  {
+   "id": "machine_lateral_raise",
+   "date": "2026-06-30",
+   "from": 11,
+   "to": 18
+  },
+  {
+   "id": "hack_squat",
+   "date": "2026-06-29",
+   "from": 30,
+   "to": 40
+  },
+  {
+   "id": "hack_squat",
+   "date": "2026-06-27",
+   "from": 20,
+   "to": 30
+  },
+  {
+   "id": "leg_press",
+   "date": "2026-06-22",
+   "from": 90,
+   "to": 100
+  },
+  {
+   "id": "deadlift",
+   "date": "2026-06-22",
+   "from": 85,
+   "to": 90
+  },
+  {
+   "id": "back_squat",
+   "date": "2026-06-03",
+   "from": 100,
+   "to": 102.5
+  },
+  {
+   "id": "bicep_curl_cable",
+   "date": "2026-06-02",
+   "from": 32,
+   "to": 38
+  },
+  {
+   "id": "bench_press",
+   "date": "2026-06-02",
+   "from": 65,
+   "to": 70
+  },
+  {
+   "id": "split_squat",
+   "date": "2026-06-01",
+   "from": 7.5,
+   "to": 10
+  },
+  {
+   "id": "bench_press",
+   "date": "2026-05-28",
+   "from": 62.5,
+   "to": 65
+  },
+  {
+   "id": "back_squat",
+   "date": "2026-05-27",
+   "from": 95,
+   "to": 100
+  },
+  {
+   "id": "back_squat",
+   "date": "2026-05-25",
+   "from": 90,
+   "to": 95
+  },
+  {
+   "id": "bench_press",
+   "date": "2026-05-16",
+   "from": 60,
+   "to": 62.5
+  },
+  {
+   "id": "back_squat",
+   "date": "2026-05-11",
+   "from": 85,
+   "to": 90
+  },
+  {
+   "id": "bench_press",
+   "date": "2026-05-05",
+   "from": 50,
+   "to": 60
+  },
+  {
+   "id": "rdl",
+   "date": "2026-05-01",
+   "from": 50,
+   "to": 70
+  },
+  {
+   "id": "back_squat",
+   "date": "2026-04-30",
+   "from": 80,
+   "to": 85
+  },
+  {
+   "id": "plank",
+   "date": "2026-04-28",
+   "from": 15,
+   "to": 20
+  },
+  {
+   "id": "back_squat",
+   "date": "2026-04-25",
+   "from": 75,
+   "to": 80
+  },
+  {
+   "id": "seated_calf_machine",
+   "date": "2026-04-24",
+   "from": 40,
+   "to": 50
+  },
+  {
+   "id": "bench_press",
+   "date": "2026-04-22",
+   "from": 45,
+   "to": 50
+  },
+  {
+   "id": "bicep_curl_cable",
+   "date": "2026-04-21",
+   "from": 25,
+   "to": 32
+  },
+  {
+   "id": "back_squat",
+   "date": "2026-04-20",
+   "from": 70,
+   "to": 75
+  },
+  {
+   "id": "hip_thrust",
+   "date": "2026-04-20",
+   "from": 10,
+   "to": 20
+  },
+  {
+   "id": "back_squat",
+   "date": "2026-04-17",
+   "from": 45,
+   "to": 70
+  },
+  {
+   "id": "assisted_pullup",
+   "date": "2026-04-16",
+   "from": 64,
+   "to": 68
+  },
+  {
+   "id": "bench_press",
+   "date": "2026-04-14",
+   "from": 40,
+   "to": 45
+  },
+  {
+   "id": "bench_press",
+   "date": "2026-04-08",
+   "from": 35,
+   "to": 40
+  },
+  {
+   "id": "rdl",
+   "date": "2026-03-26",
+   "from": 40,
+   "to": 50
+  },
+  {
+   "id": "floor_bench_press",
+   "date": "2026-03-21",
+   "from": 50,
+   "to": 55
+  },
+  {
+   "id": "leg_press",
+   "date": "2026-03-20",
+   "from": 85,
+   "to": 90
+  },
+  {
+   "id": "rdl",
+   "date": "2026-03-19",
+   "from": 30,
+   "to": 40
+  },
+  {
+   "id": "hip_adduction",
+   "date": "2026-03-18",
+   "from": 45,
+   "to": 52
+  },
+  {
+   "id": "leg_extension",
+   "date": "2026-03-16",
+   "from": 59,
+   "to": 72
+  },
+  {
+   "id": "lat_pulldown",
+   "date": "2026-03-16",
+   "from": 45,
+   "to": 59
+  },
+  {
+   "id": "seated_row",
+   "date": "2026-03-16",
+   "from": 45,
+   "to": 59
+  },
+  {
+   "id": "hip_abduction",
+   "date": "2026-03-13",
+   "from": 45,
+   "to": 52
+  },
+  {
+   "id": "straight_arm_pulldown",
+   "date": "2026-03-13",
+   "from": 25,
+   "to": 32
+  },
+  {
+   "id": "standing_calf",
+   "date": "2026-03-12",
+   "from": 45,
+   "to": 120
+  },
+  {
+   "id": "sled_push",
+   "date": "2026-03-12",
+   "from": 40,
+   "to": 48
+  },
+  {
+   "id": "kettlebell_swing",
+   "date": "2026-03-11",
+   "from": 8,
+   "to": 12
+  },
+  {
+   "id": "ssb_squat",
+   "date": "2026-02-28",
+   "from": 65,
+   "to": 75
+  },
+  {
+   "id": "leg_press",
+   "date": "2026-02-28",
+   "from": 80,
+   "to": 85
+  },
+  {
+   "id": "chest_press_machine",
+   "date": "2026-02-24",
+   "from": 45,
+   "to": 52
+  },
+  {
+   "id": "leg_extension",
+   "date": "2026-02-23",
+   "from": 52,
+   "to": 59
+  },
+  {
+   "id": "ssb_squat",
+   "date": "2026-02-20",
+   "from": 55,
+   "to": 65
+  },
+  {
+   "id": "leg_press",
+   "date": "2026-02-20",
+   "from": 70,
+   "to": 80
+  },
+  {
+   "id": "leg_curl_seated",
+   "date": "2026-02-18",
+   "from": 45,
+   "to": 52
+  },
+  {
+   "id": "kettlebell_rdl",
+   "date": "2026-02-18",
+   "from": 24,
+   "to": 32
+  },
+  {
+   "id": "chest_press_machine",
+   "date": "2026-02-18",
+   "from": 38,
+   "to": 45
+  },
+  {
+   "id": "floor_bench_press",
+   "date": "2026-02-18",
+   "from": 45,
+   "to": 50
+  },
+  {
+   "id": "leg_extension",
+   "date": "2026-02-17",
+   "from": 45,
+   "to": 52
+  },
+  {
+   "id": "seated_row",
+   "date": "2026-02-17",
+   "from": 38,
+   "to": 45
+  },
+  {
+   "id": "standing_calf",
+   "date": "2026-02-14",
+   "from": 38,
+   "to": 45
+  },
+  {
+   "id": "floor_bench_press",
+   "date": "2026-02-14",
+   "from": 40,
+   "to": 45
+  },
+  {
+   "id": "sled_push",
+   "date": "2026-02-14",
+   "from": 39,
+   "to": 40
+  },
+  {
+   "id": "ssb_squat",
+   "date": "2026-02-13",
+   "from": 50,
+   "to": 55
+  },
+  {
+   "id": "leg_press",
+   "date": "2026-02-13",
+   "from": 60,
+   "to": 70
+  },
+  {
+   "id": "plank",
+   "date": "2026-02-13",
+   "from": 10,
+   "to": 15
+  },
+  {
+   "id": "machine_fly",
+   "date": "2026-02-12",
+   "from": 38,
+   "to": 45
+  },
+  {
+   "id": "standing_calf",
+   "date": "2026-02-11",
+   "from": 32,
+   "to": 38
+  },
+  {
+   "id": "leg_curl_seated",
+   "date": "2026-02-10",
+   "from": 38,
+   "to": 45
+  },
+  {
+   "id": "chest_press_machine",
+   "date": "2026-02-10",
+   "from": 32,
+   "to": 38
+  },
+  {
+   "id": "shoulder_press_machine",
+   "date": "2026-02-10",
+   "from": 25,
+   "to": 32
+  },
+  {
+   "id": "sled_push",
+   "date": "2026-02-10",
+   "from": 35,
+   "to": 39
+  },
+  {
+   "id": "leg_extension",
+   "date": "2026-02-09",
+   "from": 38,
+   "to": 45
+  },
+  {
+   "id": "sled_push",
+   "date": "2026-02-09",
+   "from": 32,
+   "to": 35
+  },
+  {
+   "id": "machine_fly",
+   "date": "2026-02-06",
+   "from": 32,
+   "to": 38
+  },
+  {
+   "id": "dumbbell_bench",
+   "date": "2026-02-06",
+   "from": 20,
+   "to": 25
+  },
+  {
+   "id": "sled_push",
+   "date": "2026-02-06",
+   "from": 24,
+   "to": 32
+  },
+  {
+   "id": "ssb_squat",
+   "date": "2026-02-05",
+   "from": 40,
+   "to": 50
+  },
+  {
+   "id": "sled_push",
+   "date": "2026-02-05",
+   "from": 16,
+   "to": 24
+  },
+  {
+   "id": "chest_press_machine",
+   "date": "2026-02-03",
+   "from": 25,
+   "to": 32
+  },
+  {
+   "id": "shoulder_press_machine",
+   "date": "2026-02-03",
+   "from": 18,
+   "to": 25
+  },
+  {
+   "id": "crunch_machine",
+   "date": "2026-02-03",
+   "from": 25,
+   "to": 38
+  },
+  {
+   "id": "zercher_squat",
+   "date": "2026-02-02",
+   "from": 50,
+   "to": 70
+  },
+  {
+   "id": "plank",
+   "date": "2026-01-31",
+   "from": 5,
+   "to": 10
+  },
+  {
+   "id": "lat_pulldown",
+   "date": "2026-01-30",
+   "from": 38,
+   "to": 45
+  },
+  {
+   "id": "hip_abduction",
+   "date": "2026-01-26",
+   "from": 38,
+   "to": 45
+  },
+  {
+   "id": "hip_adduction",
+   "date": "2026-01-26",
+   "from": 38,
+   "to": 45
+  }
+ ],
+ "days": {
+  "2026-01-22": {
+   "sets": 21,
+   "vol": 5616,
+   "groups": [
+    "腿部",
+    "核心",
+    "髖部"
+   ]
+  },
+  "2026-01-24": {
+   "sets": 2,
+   "vol": 0,
+   "groups": [
+    "肩部",
+    "核心"
+   ]
+  },
+  "2026-01-26": {
+   "sets": 16,
+   "vol": 3680,
+   "groups": [
+    "腿部",
+    "胸部",
+    "肩部"
+   ]
+  },
+  "2026-01-27": {
+   "sets": 16,
+   "vol": 5555,
+   "groups": [
+    "腿部",
+    "背部",
+    "手臂"
+   ]
+  },
+  "2026-01-28": {
+   "sets": 1,
+   "vol": 0,
+   "groups": [
+    "腿部",
+    "胸部"
+   ]
+  },
+  "2026-01-29": {
+   "sets": 16,
+   "vol": 6777,
+   "groups": [
+    "腿部",
+    "核心"
+   ]
+  },
+  "2026-01-30": {
+   "sets": 25,
+   "vol": 8350,
+   "groups": [
+    "腿部",
+    "背部",
+    "胸部",
+    "肩部",
+    "手臂"
+   ]
+  },
+  "2026-01-31": {
+   "sets": 7,
+   "vol": 1200,
+   "groups": [
+    "腿部",
+    "核心"
+   ]
+  },
+  "2026-02-02": {
+   "sets": 16,
+   "vol": 7110,
+   "groups": [
+    "腿部",
+    "背部",
+    "手臂"
+   ]
+  },
+  "2026-02-03": {
+   "sets": 20,
+   "vol": 6450,
+   "groups": [
+    "腿部",
+    "胸部",
+    "肩部",
+    "核心"
+   ]
+  },
+  "2026-02-04": {
+   "sets": 0,
+   "vol": 0,
+   "groups": [
+    "背部",
+    "手臂",
+    "核心"
+   ]
+  },
+  "2026-02-05": {
+   "sets": 19,
+   "vol": 6890,
+   "groups": [
+    "腿部",
+    "背部",
+    "手臂",
+    "髖部"
+   ]
+  },
+  "2026-02-06": {
+   "sets": 16,
+   "vol": 4406,
+   "groups": [
+    "胸部",
+    "核心",
+    "髖部"
+   ]
+  },
+  "2026-02-07": {
+   "sets": 2,
+   "vol": 160,
+   "groups": [
+    "胸部",
+    "核心",
+    "髖部"
+   ]
+  },
+  "2026-02-09": {
+   "sets": 13,
+   "vol": 5000,
+   "groups": [
+    "腿部",
+    "背部",
+    "手臂",
+    "髖部"
+   ]
+  },
+  "2026-02-10": {
+   "sets": 19,
+   "vol": 4988,
+   "groups": [
+    "腿部",
+    "胸部",
+    "肩部",
+    "手臂",
+    "髖部"
+   ]
+  },
+  "2026-02-11": {
+   "sets": 5,
+   "vol": 3040,
+   "groups": [
+    "腿部",
+    "核心"
+   ]
+  },
+  "2026-02-12": {
+   "sets": 12,
+   "vol": 3115,
+   "groups": [
+    "胸部",
+    "肩部"
+   ]
+  },
+  "2026-02-13": {
+   "sets": 21,
+   "vol": 9040,
+   "groups": [
+    "腿部",
+    "背部",
+    "核心"
+   ]
+  },
+  "2026-02-14": {
+   "sets": 8,
+   "vol": 4570,
+   "groups": [
+    "腿部",
+    "胸部",
+    "髖部"
+   ]
+  },
+  "2026-02-17": {
+   "sets": 26,
+   "vol": 9900,
+   "groups": [
+    "腿部",
+    "背部",
+    "手臂"
+   ]
+  },
+  "2026-02-18": {
+   "sets": 24,
+   "vol": 7590,
+   "groups": [
+    "腿部",
+    "胸部",
+    "肩部",
+    "手臂"
+   ]
+  },
+  "2026-02-20": {
+   "sets": 26,
+   "vol": 10910,
+   "groups": [
+    "腿部",
+    "背部",
+    "核心",
+    "髖部"
+   ]
+  },
+  "2026-02-23": {
+   "sets": 19,
+   "vol": 7508,
+   "groups": [
+    "腿部",
+    "背部",
+    "手臂",
+    "髖部"
+   ]
+  },
+  "2026-02-24": {
+   "sets": 23,
+   "vol": 7740,
+   "groups": [
+    "腿部",
+    "胸部",
+    "手臂",
+    "核心",
+    "髖部"
+   ]
+  },
+  "2026-02-25": {
+   "sets": 3,
+   "vol": 80,
+   "groups": [
+    "腿部",
+    "髖部"
+   ]
+  },
+  "2026-02-28": {
+   "sets": 16,
+   "vol": 8480,
+   "groups": [
+    "腿部",
+    "背部",
+    "髖部"
+   ]
+  },
+  "2026-03-02": {
+   "sets": 3,
+   "vol": 1500,
+   "groups": [
+    "胸部"
+   ]
+  },
+  "2026-03-03": {
+   "sets": 5,
+   "vol": 1700,
+   "groups": [
+    "背部",
+    "髖部"
+   ]
+  },
+  "2026-03-10": {
+   "sets": 17,
+   "vol": 7130,
+   "groups": [
+    "腿部",
+    "背部",
+    "手臂",
+    "髖部"
+   ]
+  },
+  "2026-03-11": {
+   "sets": 6,
+   "vol": 800,
+   "groups": [
+    "腿部",
+    "髖部"
+   ]
+  },
+  "2026-03-12": {
+   "sets": 20,
+   "vol": 9614,
+   "groups": [
+    "腿部",
+    "胸部",
+    "肩部",
+    "手臂",
+    "髖部"
+   ]
+  },
+  "2026-03-13": {
+   "sets": 22,
+   "vol": 10222,
+   "groups": [
+    "腿部",
+    "背部",
+    "核心",
+    "髖部"
+   ]
+  },
+  "2026-03-14": {
+   "sets": 11,
+   "vol": 5500,
+   "groups": [
+    "腿部",
+    "胸部",
+    "核心"
+   ]
+  },
+  "2026-03-16": {
+   "sets": 20,
+   "vol": 7980,
+   "groups": [
+    "腿部",
+    "背部",
+    "手臂"
+   ]
+  },
+  "2026-03-17": {
+   "sets": 15,
+   "vol": 4970,
+   "groups": [
+    "腿部",
+    "胸部",
+    "肩部",
+    "手臂"
+   ]
+  },
+  "2026-03-18": {
+   "sets": 6,
+   "vol": 2310,
+   "groups": [
+    "腿部",
+    "胸部",
+    "手臂"
+   ]
+  },
+  "2026-03-19": {
+   "sets": 14,
+   "vol": 3505.6000000000004,
+   "groups": [
+    "腿部"
+   ]
+  },
+  "2026-03-20": {
+   "sets": 22,
+   "vol": 7678,
+   "groups": [
+    "腿部",
+    "背部",
+    "手臂",
+    "核心"
+   ]
+  },
+  "2026-03-21": {
+   "sets": 3,
+   "vol": 1320,
+   "groups": [
+    "腿部",
+    "胸部"
+   ]
+  },
+  "2026-03-23": {
+   "sets": 15,
+   "vol": 6200,
+   "groups": [
+    "腿部",
+    "背部",
+    "手臂"
+   ]
+  },
+  "2026-03-24": {
+   "sets": 12,
+   "vol": 5000,
+   "groups": [
+    "腿部",
+    "胸部"
+   ]
+  },
+  "2026-03-25": {
+   "sets": 6,
+   "vol": 1710,
+   "groups": [
+    "腿部",
+    "胸部",
+    "手臂"
+   ]
+  },
+  "2026-03-26": {
+   "sets": 15,
+   "vol": 3360,
+   "groups": [
+    "腿部",
+    "核心"
+   ]
+  },
+  "2026-03-27": {
+   "sets": 11,
+   "vol": 4250,
+   "groups": [
+    "背部",
+    "胸部",
+    "手臂"
+   ]
+  },
+  "2026-03-28": {
+   "sets": 4,
+   "vol": 1680,
+   "groups": [
+    "腿部"
+   ]
+  },
+  "2026-03-31": {
+   "sets": 11,
+   "vol": 4350,
+   "groups": [
+    "背部",
+    "手臂"
+   ]
+  },
+  "2026-04-01": {
+   "sets": 0,
+   "vol": 0,
+   "groups": [
+    "腿部",
+    "核心",
+    "髖部"
+   ]
+  },
+  "2026-04-07": {
+   "sets": 20,
+   "vol": 7160,
+   "groups": [
+    "腿部",
+    "背部",
+    "手臂",
+    "髖部",
+    "有氧"
+   ]
+  },
+  "2026-04-08": {
+   "sets": 7,
+   "vol": 720,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂",
+    "髖部",
+    "有氧"
+   ]
+  },
+  "2026-04-09": {
+   "sets": 10,
+   "vol": 4350,
+   "groups": [
+    "腿部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-04-10": {
+   "sets": 13,
+   "vol": 2710,
+   "groups": [
+    "背部",
+    "胸部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-04-11": {
+   "sets": 3,
+   "vol": 1200,
+   "groups": [
+    "腿部",
+    "有氧"
+   ]
+  },
+  "2026-04-13": {
+   "sets": 17,
+   "vol": 1530,
+   "groups": [
+    "腿部",
+    "肩部",
+    "核心",
+    "髖部",
+    "有氧"
+   ]
+  },
+  "2026-04-14": {
+   "sets": 10,
+   "vol": 3805,
+   "groups": [
+    "胸部",
+    "肩部",
+    "有氧"
+   ]
+  },
+  "2026-04-15": {
+   "sets": 6,
+   "vol": 1280,
+   "groups": [
+    "腿部",
+    "肩部",
+    "有氧"
+   ]
+  },
+  "2026-04-16": {
+   "sets": 16,
+   "vol": 6380,
+   "groups": [
+    "腿部",
+    "背部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-04-17": {
+   "sets": 17,
+   "vol": 7890,
+   "groups": [
+    "腿部",
+    "核心",
+    "有氧"
+   ]
+  },
+  "2026-04-18": {
+   "sets": 6,
+   "vol": 1500,
+   "groups": [
+    "腿部",
+    "背部",
+    "胸部",
+    "肩部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-04-20": {
+   "sets": 10,
+   "vol": 3035,
+   "groups": [
+    "腿部",
+    "核心",
+    "髖部",
+    "有氧"
+   ]
+  },
+  "2026-04-21": {
+   "sets": 12,
+   "vol": 4520,
+   "groups": [
+    "背部",
+    "手臂",
+    "核心",
+    "有氧"
+   ]
+  },
+  "2026-04-22": {
+   "sets": 4,
+   "vol": 1200,
+   "groups": [
+    "腿部",
+    "胸部",
+    "肩部",
+    "髖部"
+   ]
+  },
+  "2026-04-23": {
+   "sets": 14,
+   "vol": 12800,
+   "groups": [
+    "腿部",
+    "手臂",
+    "核心",
+    "有氧"
+   ]
+  },
+  "2026-04-24": {
+   "sets": 24,
+   "vol": 7510,
+   "groups": [
+    "腿部",
+    "背部",
+    "胸部",
+    "肩部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-04-25": {
+   "sets": 13,
+   "vol": 9850,
+   "groups": [
+    "腿部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-04-27": {
+   "sets": 15,
+   "vol": 4550,
+   "groups": [
+    "腿部",
+    "背部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-04-28": {
+   "sets": 15,
+   "vol": 6120,
+   "groups": [
+    "胸部",
+    "手臂",
+    "核心",
+    "有氧"
+   ]
+  },
+  "2026-04-30": {
+   "sets": 11,
+   "vol": 3420,
+   "groups": [
+    "腿部",
+    "背部",
+    "肩部",
+    "髖部",
+    "有氧"
+   ]
+  },
+  "2026-05-01": {
+   "sets": 17,
+   "vol": 10960,
+   "groups": [
+    "腿部",
+    "手臂",
+    "髖部",
+    "有氧"
+   ]
+  },
+  "2026-05-02": {
+   "sets": 6,
+   "vol": 1500,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂",
+    "核心",
+    "有氧"
+   ]
+  },
+  "2026-05-04": {
+   "sets": 22,
+   "vol": 6600,
+   "groups": [
+    "腿部",
+    "背部",
+    "肩部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-05-05": {
+   "sets": 11,
+   "vol": 8160,
+   "groups": [
+    "胸部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-05-07": {
+   "sets": 0,
+   "vol": 0,
+   "groups": [
+    "腿部",
+    "背部",
+    "有氧"
+   ]
+  },
+  "2026-05-11": {
+   "sets": 16,
+   "vol": 8640,
+   "groups": [
+    "腿部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-05-12": {
+   "sets": 16,
+   "vol": 5990,
+   "groups": [
+    "背部",
+    "胸部",
+    "有氧"
+   ]
+  },
+  "2026-05-13": {
+   "sets": 5,
+   "vol": 1400,
+   "groups": [
+    "腿部",
+    "肩部",
+    "核心",
+    "有氧"
+   ]
+  },
+  "2026-05-15": {
+   "sets": 16,
+   "vol": 7950,
+   "groups": [
+    "腿部",
+    "背部",
+    "肩部",
+    "有氧"
+   ]
+  },
+  "2026-05-16": {
+   "sets": 7,
+   "vol": 0,
+   "groups": [
+    "背部",
+    "胸部",
+    "核心",
+    "有氧"
+   ]
+  },
+  "2026-05-18": {
+   "sets": 15,
+   "vol": 4910,
+   "groups": [
+    "腿部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-05-19": {
+   "sets": 19,
+   "vol": 6230,
+   "groups": [
+    "背部",
+    "胸部",
+    "肩部",
+    "有氧"
+   ]
+  },
+  "2026-05-20": {
+   "sets": 12,
+   "vol": 4080,
+   "groups": [
+    "腿部",
+    "胸部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-05-25": {
+   "sets": 21,
+   "vol": 6680,
+   "groups": [
+    "腿部",
+    "背部",
+    "胸部",
+    "手臂",
+    "核心",
+    "有氧"
+   ]
+  },
+  "2026-05-26": {
+   "sets": 15,
+   "vol": 8497.5,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-05-27": {
+   "sets": 2,
+   "vol": 75,
+   "groups": [
+    "腿部",
+    "有氧"
+   ]
+  },
+  "2026-05-28": {
+   "sets": 21,
+   "vol": 6860,
+   "groups": [
+    "背部",
+    "胸部",
+    "肩部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-05-29": {
+   "sets": 15,
+   "vol": 9695,
+   "groups": [
+    "腿部",
+    "核心",
+    "有氧"
+   ]
+  },
+  "2026-05-30": {
+   "sets": 14,
+   "vol": 3500,
+   "groups": [
+    "腿部",
+    "背部",
+    "胸部",
+    "肩部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-06-01": {
+   "sets": 14,
+   "vol": 5070,
+   "groups": [
+    "腿部",
+    "背部",
+    "有氧"
+   ]
+  },
+  "2026-06-02": {
+   "sets": 21,
+   "vol": 5610,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂",
+    "核心",
+    "有氧"
+   ]
+  },
+  "2026-06-03": {
+   "sets": 12,
+   "vol": 5020,
+   "groups": [
+    "腿部",
+    "背部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-06-04": {
+   "sets": 6,
+   "vol": 1415,
+   "groups": [
+    "胸部",
+    "肩部",
+    "有氧"
+   ]
+  },
+  "2026-06-08": {
+   "sets": 17,
+   "vol": 7745,
+   "groups": [
+    "腿部",
+    "背部",
+    "有氧"
+   ]
+  },
+  "2026-06-10": {
+   "sets": 12,
+   "vol": 4550,
+   "groups": [
+    "腿部",
+    "背部",
+    "胸部",
+    "肩部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-06-11": {
+   "sets": 7,
+   "vol": 1540,
+   "groups": [
+    "腿部",
+    "肩部",
+    "有氧"
+   ]
+  },
+  "2026-06-16": {
+   "sets": 22,
+   "vol": 7510,
+   "groups": [
+    "腿部",
+    "背部",
+    "胸部",
+    "肩部",
+    "有氧"
+   ]
+  },
+  "2026-06-17": {
+   "sets": 3,
+   "vol": 0,
+   "groups": [
+    "腿部",
+    "肩部"
+   ]
+  },
+  "2026-06-20": {
+   "sets": 19,
+   "vol": 9220,
+   "groups": [
+    "腿部",
+    "背部",
+    "胸部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-06-22": {
+   "sets": 19,
+   "vol": 9921,
+   "groups": [
+    "腿部",
+    "背部",
+    "有氧"
+   ]
+  },
+  "2026-06-25": {
+   "sets": 9,
+   "vol": 4096,
+   "groups": [
+    "腿部",
+    "背部"
+   ]
+  },
+  "2026-06-27": {
+   "sets": 15,
+   "vol": 5382,
+   "groups": [
+    "腿部",
+    "背部",
+    "胸部",
+    "肩部",
+    "手臂"
+   ]
+  },
+  "2026-06-29": {
+   "sets": 15,
+   "vol": 9010,
+   "groups": [
+    "腿部",
+    "背部",
+    "有氧"
+   ]
+  },
+  "2026-06-30": {
+   "sets": 21,
+   "vol": 4909,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂"
+   ]
+  },
+  "2026-07-01": {
+   "sets": 11,
+   "vol": 5260,
+   "groups": [
+    "腿部",
+    "背部",
+    "髖部"
+   ]
+  },
+  "2026-07-02": {
+   "sets": 27,
+   "vol": 7060,
+   "groups": [
+    "胸部",
+    "肩部",
+    "有氧"
+   ]
+  },
+  "2026-07-03": {
+   "sets": 24,
+   "vol": 8410,
+   "groups": [
+    "腿部",
+    "背部"
+   ]
+  },
+  "2026-07-04": {
+   "sets": 32,
+   "vol": 7579,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-07-06": {
+   "sets": 22,
+   "vol": 5955,
+   "groups": [
+    "腿部",
+    "背部",
+    "髖部"
+   ]
+  },
+  "2026-07-07": {
+   "sets": 24,
+   "vol": 7650,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-07-08": {
+   "sets": 10,
+   "vol": 3480,
+   "groups": [
+    "腿部",
+    "背部",
+    "有氧"
+   ]
+  },
+  "2026-07-10": {
+   "sets": 22,
+   "vol": 8535,
+   "groups": [
+    "胸部",
+    "肩部"
+   ]
+  },
+  "2026-07-13": {
+   "sets": 22,
+   "vol": 6373,
+   "groups": [
+    "腿部",
+    "背部"
+   ]
+  },
+  "2026-07-14": {
+   "sets": 27,
+   "vol": 8246,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂"
+   ]
+  },
+  "2026-07-15": {
+   "sets": 22,
+   "vol": 8726,
+   "groups": [
+    "腿部",
+    "背部",
+    "手臂",
+    "髖部"
+   ]
+  },
+  "2026-07-16": {
+   "sets": 25,
+   "vol": 6024.5,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂"
+   ]
+  },
+  "2026-07-17": {
+   "sets": 25,
+   "vol": 6060,
+   "groups": [
+    "腿部",
+    "背部"
+   ]
+  },
+  "2026-07-18": {
+   "sets": 25,
+   "vol": 9600,
+   "groups": [
+    "腿部",
+    "胸部",
+    "肩部"
+   ]
+  },
+  "2026-08-06": {
+   "sets": 14,
+   "vol": 4004,
+   "groups": [
+    "腿部",
+    "背部"
+   ]
+  },
+  "2026-08-07": {
+   "sets": 13,
+   "vol": 4310,
+   "groups": [
+    "胸部",
+    "肩部"
+   ]
+  },
+  "2026-08-10": {
+   "sets": 22,
+   "vol": 4330,
+   "groups": [
+    "腿部",
+    "背部",
+    "有氧"
+   ]
+  },
+  "2026-08-12": {
+   "sets": 25,
+   "vol": 5012,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂"
+   ]
+  },
+  "2026-08-13": {
+   "sets": 22,
+   "vol": 6830,
+   "groups": [
+    "腿部",
+    "背部"
+   ]
+  },
+  "2026-08-14": {
+   "sets": 30,
+   "vol": 7265.5,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂"
+   ]
+  },
+  "2026-08-17": {
+   "sets": 25,
+   "vol": 5845,
+   "groups": [
+    "腿部",
+    "背部",
+    "核心"
+   ]
+  },
+  "2026-08-18": {
+   "sets": 28,
+   "vol": 5610,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂"
+   ]
+  },
+  "2026-08-19": {
+   "sets": 19,
+   "vol": 4187.5,
+   "groups": [
+    "腿部",
+    "背部",
+    "核心"
+   ]
+  },
+  "2026-08-20": {
+   "sets": 26,
+   "vol": 5106,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂"
+   ]
+  },
+  "2026-08-21": {
+   "sets": 17,
+   "vol": 3805.5,
+   "groups": [
+    "腿部",
+    "背部"
+   ]
+  },
+  "2026-08-26": {
+   "sets": 19,
+   "vol": 5685,
+   "groups": [
+    "腿部",
+    "背部"
+   ]
+  },
+  "2026-08-27": {
+   "sets": 32,
+   "vol": 9058,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂"
+   ]
+  },
+  "2026-08-28": {
+   "sets": 16,
+   "vol": 4310,
+   "groups": [
+    "腿部",
+    "背部",
+    "核心"
+   ]
+  },
+  "2026-08-29": {
+   "sets": 24,
+   "vol": 5251,
+   "groups": [
+    "腿部",
+    "胸部",
+    "肩部",
+    "手臂"
+   ]
+  },
+  "2026-09-02": {
+   "sets": 33,
+   "vol": 9267.5,
+   "groups": [
+    "腿部",
+    "背部",
+    "胸部",
+    "肩部"
+   ]
+  },
+  "2026-09-05": {
+   "sets": 2,
+   "vol": 1110,
+   "groups": [
+    "腿部",
+    "背部",
+    "胸部",
+    "核心",
+    "髖部"
+   ]
+  },
+  "2026-09-06": {
+   "sets": 0,
+   "vol": 0,
+   "groups": [
+    "有氧"
+   ]
+  },
+  "2026-09-07": {
+   "sets": 13,
+   "vol": 4090,
+   "groups": [
+    "腿部",
+    "背部",
+    "有氧"
+   ]
+  },
+  "2026-09-08": {
+   "sets": 26,
+   "vol": 9145,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂",
+    "核心",
+    "有氧"
+   ]
+  },
+  "2026-09-09": {
+   "sets": 0,
+   "vol": 0,
+   "groups": [
+    "腿部",
+    "肩部",
+    "有氧"
+   ]
+  },
+  "2026-09-11": {
+   "sets": 13,
+   "vol": 4592,
+   "groups": [
+    "腿部",
+    "背部",
+    "有氧"
+   ]
+  },
+  "2026-09-12": {
+   "sets": 0,
+   "vol": 0,
+   "groups": [
+    "有氧"
+   ]
+  },
+  "2026-09-13": {
+   "sets": 0,
+   "vol": 0,
+   "groups": [
+    "有氧"
+   ]
+  },
+  "2026-09-14": {
+   "sets": 14,
+   "vol": 3106,
+   "groups": [
+    "腿部",
+    "背部",
+    "有氧"
+   ]
+  },
+  "2026-09-15": {
+   "sets": 23,
+   "vol": 7557,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂",
+    "核心",
+    "有氧"
+   ]
+  },
+  "2026-09-16": {
+   "sets": 9,
+   "vol": 2100,
+   "groups": [
+    "腿部",
+    "背部",
+    "手臂",
+    "核心",
+    "有氧"
+   ]
+  },
+  "2026-09-17": {
+   "sets": 13,
+   "vol": 3030,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-09-18": {
+   "sets": 22,
+   "vol": 3275,
+   "groups": [
+    "背部",
+    "肩部",
+    "手臂"
+   ]
+  },
+  "2026-09-21": {
+   "sets": 23,
+   "vol": 4672,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂"
+   ]
+  },
+  "2026-09-22": {
+   "sets": 11,
+   "vol": 3700,
+   "groups": [
+    "背部",
+    "髖部"
+   ]
+  },
+  "2026-09-23": {
+   "sets": 8,
+   "vol": 2200,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂"
+   ]
+  },
+  "2026-09-24": {
+   "sets": 24,
+   "vol": 4960,
+   "groups": [
+    "背部",
+    "肩部",
+    "手臂",
+    "核心"
+   ]
+  },
+  "2026-09-28": {
+   "sets": 15,
+   "vol": 5130,
+   "groups": [
+    "腿部",
+    "背部",
+    "有氧"
+   ]
+  },
+  "2026-09-29": {
+   "sets": 20,
+   "vol": 5317,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-09-30": {
+   "sets": 7,
+   "vol": 2414,
+   "groups": [
+    "腿部",
+    "背部",
+    "肩部",
+    "有氧"
+   ]
+  },
+  "2026-10-01": {
+   "sets": 26,
+   "vol": 5546,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂",
+    "核心"
+   ]
+  },
+  "2026-10-02": {
+   "sets": 18,
+   "vol": 4841,
+   "groups": [
+    "腿部",
+    "背部"
+   ]
+  },
+  "2026-10-03": {
+   "sets": 27,
+   "vol": 6240,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂",
+    "核心",
+    "有氧"
+   ]
+  },
+  "2026-10-05": {
+   "sets": 9,
+   "vol": 2060,
+   "groups": [
+    "腿部",
+    "背部"
+   ]
+  },
+  "2026-10-06": {
+   "sets": 25,
+   "vol": 4313,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂",
+    "核心",
+    "有氧"
+   ]
+  },
+  "2026-10-07": {
+   "sets": 1,
+   "vol": 500,
+   "groups": [
+    "腿部",
+    "有氧"
+   ]
+  },
+  "2026-10-08": {
+   "sets": 25,
+   "vol": 4866,
+   "groups": [
+    "腿部",
+    "胸部",
+    "肩部",
+    "手臂",
+    "核心",
+    "髖部"
+   ]
+  },
+  "2026-10-09": {
+   "sets": 28,
+   "vol": 5470,
+   "groups": [
+    "腿部",
+    "背部",
+    "肩部",
+    "核心",
+    "髖部"
+   ]
+  },
+  "2026-10-12": {
+   "sets": 20,
+   "vol": 4975,
+   "groups": [
+    "腿部",
+    "背部",
+    "核心"
+   ]
+  },
+  "2026-10-13": {
+   "sets": 17,
+   "vol": 2993,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂",
+    "有氧"
+   ]
+  },
+  "2026-10-14": {
+   "sets": 6,
+   "vol": 1900,
+   "groups": [
+    "腿部",
+    "背部",
+    "髖部"
+   ]
+  },
+  "2026-10-15": {
+   "sets": 19,
+   "vol": 3797.5,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂"
+   ]
+  },
+  "2026-10-16": {
+   "sets": 21,
+   "vol": 5972,
+   "groups": [
+    "腿部",
+    "背部",
+    "肩部"
+   ]
+  },
+  "2026-10-17": {
+   "sets": 25,
+   "vol": 3238.5,
+   "groups": [
+    "胸部",
+    "肩部",
+    "手臂",
+    "核心"
+   ]
+  },
+  "2026-10-19": {
+   "sets": 23,
+   "vol": 7236,
+   "groups": [
+    "腿部",
+    "背部",
+    "肩部",
+    "手臂"
+   ]
+  }
+ },
+ "dashboard": {
+  "7": {
+   "wk": 1,
+   "lwk": 3,
+   "cur": [
+    "2026-10-15",
+    "2026-10-16",
+    "2026-10-17",
+    "2026-10-19"
+   ],
+   "prev": [
+    "2026-10-08",
+    "2026-10-09",
+    "2026-10-12",
+    "2026-10-13",
+    "2026-10-14"
+   ],
+   "vC": 20244,
+   "vP": 20204,
+   "prC": [
+    {
+     "id": "pallof_press",
+     "date": "2026-10-17",
+     "from": 11,
+     "to": 18
+    }
+   ],
+   "prP": 1,
+   "streak": 12,
+   "bal": [
+    {
+     "g": "腿部",
+     "n": 17,
+     "since": 2
+    },
+    {
+     "g": "背部",
+     "n": 17,
+     "since": 2
+    },
+    {
+     "g": "胸部",
+     "n": 14,
+     "since": 4
+    },
+    {
+     "g": "肩部",
+     "n": 26,
+     "since": 2
+    },
+    {
+     "g": "手臂",
+     "n": 12,
+     "since": 2
+    },
+    {
+     "g": "核心",
+     "n": 2,
+     "since": 4
+    },
+    {
+     "g": "髖部",
+     "n": 0,
+     "since": 7
+    },
+    {
+     "g": "有氧",
+     "n": 0,
+     "since": 8
+    }
+   ],
+   "ex": {
+    "普通": 17,
+    "吃力": 8,
+    "力竭": 2,
+    "輕鬆": 1
+   },
+   "exTot": 28,
+   "neg": [
+    "treadmill",
+    "lat_pulldown",
+    "leg_press",
+    "leg_curl_seated",
+    "shoulder_press_machine",
+    "plank"
+   ],
+   "recent": [
+    "2026-10-19",
+    "2026-10-17",
+    "2026-10-16",
+    "2026-10-15",
+    "2026-10-14",
+    "2026-10-13"
+   ],
+   "ysLen": 167,
+   "best": 8,
+   "wks": 43,
+   "kspark": {
+    "days": [
+     2,
+     4,
+     5,
+     4,
+     3,
+     6,
+     5,
+     4,
+     6,
+     5,
+     6,
+     1
+    ],
+    "vol": [
+     8314,
+     23437.5,
+     24554,
+     24304,
+     10377.5,
+     17827,
+     19068,
+     15532,
+     29488,
+     17209,
+     22876,
+     7236
+    ],
+    "pr": [
+     1,
+     4,
+     6,
+     2,
+     2,
+     1,
+     2,
+     0,
+     5,
+     3,
+     2,
+     0
+    ]
+   }
+  },
+  "30": {
+   "wk": 1,
+   "lwk": 3,
+   "cur": [
+    "2026-09-22",
+    "2026-09-23",
+    "2026-09-24",
+    "2026-09-28",
+    "2026-09-29",
+    "2026-09-30",
+    "2026-10-01",
+    "2026-10-02",
+    "2026-10-03",
+    "2026-10-05",
+    "2026-10-06",
+    "2026-10-07",
+    "2026-10-08",
+    "2026-10-09",
+    "2026-10-12",
+    "2026-10-13",
+    "2026-10-14",
+    "2026-10-15",
+    "2026-10-16",
+    "2026-10-17",
+    "2026-10-19"
+   ],
+   "prev": [
+    "2026-08-26",
+    "2026-08-27",
+    "2026-08-28",
+    "2026-08-29",
+    "2026-09-02",
+    "2026-09-05",
+    "2026-09-06",
+    "2026-09-07",
+    "2026-09-08",
+    "2026-09-09",
+    "2026-09-11",
+    "2026-09-12",
+    "2026-09-13",
+    "2026-09-14",
+    "2026-09-15",
+    "2026-09-16",
+    "2026-09-17",
+    "2026-09-18",
+    "2026-09-21"
+   ],
+   "vC": 87669,
+   "vP": 76248.5,
+   "prC": [
+    {
+     "id": "pallof_press",
+     "date": "2026-10-17",
+     "from": 11,
+     "to": 18
+    },
+    {
+     "id": "single_leg_rdl",
+     "date": "2026-10-12",
+     "from": 10,
+     "to": 12.5
+    },
+    {
+     "id": "db_lateral_raise",
+     "date": "2026-10-06",
+     "from": 5,
+     "to": 7.5
+    },
+    {
+     "id": "ez_skull_crusher",
+     "date": "2026-10-06",
+     "from": 10,
+     "to": 15
+    },
+    {
+     "id": "single_leg_rdl",
+     "date": "2026-10-05",
+     "from": 7.5,
+     "to": 10
+    },
+    {
+     "id": "leg_extension_single",
+     "date": "2026-10-02",
+     "from": 25,
+     "to": 30
+    },
+    {
+     "id": "bicep_curl_cable",
+     "date": "2026-10-01",
+     "from": 38,
+     "to": 45
+    },
+    {
+     "id": "incline_db_press",
+     "date": "2026-10-01",
+     "from": 15,
+     "to": 20
+    },
+    {
+     "id": "overhead_press",
+     "date": "2026-10-01",
+     "from": 20,
+     "to": 25
+    },
+    {
+     "id": "straight_arm_pulldown",
+     "date": "2026-09-30",
+     "from": 32,
+     "to": 38
+    }
+   ],
+   "prP": 7,
+   "streak": 12,
+   "bal": [
+    {
+     "g": "腿部",
+     "n": 61,
+     "since": 2
+    },
+    {
+     "g": "背部",
+     "n": 83,
+     "since": 2
+    },
+    {
+     "g": "胸部",
+     "n": 59,
+     "since": 4
+    },
+    {
+     "g": "肩部",
+     "n": 90,
+     "since": 2
+    },
+    {
+     "g": "手臂",
+     "n": 62,
+     "since": 2
+    },
+    {
+     "g": "核心",
+     "n": 20,
+     "since": 4
+    },
+    {
+     "g": "髖部",
+     "n": 12,
+     "since": 7
+    },
+    {
+     "g": "有氧",
+     "n": 7,
+     "since": 8
+    }
+   ],
+   "ex": {
+    "普通": 70,
+    "吃力": 44,
+    "—": 13,
+    "力竭": 10,
+    "輕鬆": 4
+   },
+   "exTot": 141,
+   "neg": [
+    "treadmill",
+    "lat_pulldown",
+    "leg_press",
+    "leg_curl_seated",
+    "shoulder_press_machine",
+    "plank"
+   ],
+   "recent": [
+    "2026-10-19",
+    "2026-10-17",
+    "2026-10-16",
+    "2026-10-15",
+    "2026-10-14",
+    "2026-10-13"
+   ],
+   "ysLen": 167,
+   "best": 8,
+   "wks": 43,
+   "kspark": {
+    "days": [
+     2,
+     4,
+     5,
+     4,
+     3,
+     6,
+     5,
+     4,
+     6,
+     5,
+     6,
+     1
+    ],
+    "vol": [
+     8314,
+     23437.5,
+     24554,
+     24304,
+     10377.5,
+     17827,
+     19068,
+     15532,
+     29488,
+     17209,
+     22876,
+     7236
+    ],
+    "pr": [
+     1,
+     4,
+     6,
+     2,
+     2,
+     1,
+     2,
+     0,
+     5,
+     3,
+     2,
+     0
+    ]
+   }
+  },
+  "90": {
+   "wk": 1,
+   "lwk": 3,
+   "cur": [
+    "2026-08-06",
+    "2026-08-07",
+    "2026-08-10",
+    "2026-08-12",
+    "2026-08-13",
+    "2026-08-14",
+    "2026-08-17",
+    "2026-08-18",
+    "2026-08-19",
+    "2026-08-20",
+    "2026-08-21",
+    "2026-08-26",
+    "2026-08-27",
+    "2026-08-28",
+    "2026-08-29",
+    "2026-09-02",
+    "2026-09-05",
+    "2026-09-06",
+    "2026-09-07",
+    "2026-09-08",
+    "2026-09-09",
+    "2026-09-11",
+    "2026-09-12",
+    "2026-09-13",
+    "2026-09-14",
+    "2026-09-15",
+    "2026-09-16",
+    "2026-09-17",
+    "2026-09-18",
+    "2026-09-21",
+    "2026-09-22",
+    "2026-09-23",
+    "2026-09-24",
+    "2026-09-28",
+    "2026-09-29",
+    "2026-09-30",
+    "2026-10-01",
+    "2026-10-02",
+    "2026-10-03",
+    "2026-10-05",
+    "2026-10-06",
+    "2026-10-07",
+    "2026-10-08",
+    "2026-10-09",
+    "2026-10-12",
+    "2026-10-13",
+    "2026-10-14",
+    "2026-10-15",
+    "2026-10-16",
+    "2026-10-17",
+    "2026-10-19"
+   ],
+   "prev": [
+    "2026-04-25",
+    "2026-04-27",
+    "2026-04-28",
+    "2026-04-30",
+    "2026-05-01",
+    "2026-05-02",
+    "2026-05-04",
+    "2026-05-05",
+    "2026-05-07",
+    "2026-05-11",
+    "2026-05-12",
+    "2026-05-13",
+    "2026-05-15",
+    "2026-05-16",
+    "2026-05-18",
+    "2026-05-19",
+    "2026-05-20",
+    "2026-05-25",
+    "2026-05-26",
+    "2026-05-27",
+    "2026-05-28",
+    "2026-05-29",
+    "2026-05-30",
+    "2026-06-01",
+    "2026-06-02",
+    "2026-06-03",
+    "2026-06-04",
+    "2026-06-08",
+    "2026-06-10",
+    "2026-06-11",
+    "2026-06-16",
+    "2026-06-17",
+    "2026-06-20",
+    "2026-06-22",
+    "2026-06-25",
+    "2026-06-27",
+    "2026-06-29",
+    "2026-06-30",
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-03",
+    "2026-07-04",
+    "2026-07-06",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-10",
+    "2026-07-13",
+    "2026-07-14",
+    "2026-07-15",
+    "2026-07-16",
+    "2026-07-17",
+    "2026-07-18"
+   ],
+   "vC": 220223,
+   "vP": 305624,
+   "prC": [
+    {
+     "id": "pallof_press",
+     "date": "2026-10-17",
+     "from": 11,
+     "to": 18
+    },
+    {
+     "id": "single_leg_rdl",
+     "date": "2026-10-12",
+     "from": 10,
+     "to": 12.5
+    },
+    {
+     "id": "db_lateral_raise",
+     "date": "2026-10-06",
+     "from": 5,
+     "to": 7.5
+    },
+    {
+     "id": "ez_skull_crusher",
+     "date": "2026-10-06",
+     "from": 10,
+     "to": 15
+    },
+    {
+     "id": "single_leg_rdl",
+     "date": "2026-10-05",
+     "from": 7.5,
+     "to": 10
+    },
+    {
+     "id": "leg_extension_single",
+     "date": "2026-10-02",
+     "from": 25,
+     "to": 30
+    },
+    {
+     "id": "bicep_curl_cable",
+     "date": "2026-10-01",
+     "from": 38,
+     "to": 45
+    },
+    {
+     "id": "incline_db_press",
+     "date": "2026-10-01",
+     "from": 15,
+     "to": 20
+    },
+    {
+     "id": "overhead_press",
+     "date": "2026-10-01",
+     "from": 20,
+     "to": 25
+    },
+    {
+     "id": "straight_arm_pulldown",
+     "date": "2026-09-30",
+     "from": 32,
+     "to": 38
+    },
+    {
+     "id": "cable_fly",
+     "date": "2026-09-15",
+     "from": 18,
+     "to": 25
+    },
+    {
+     "id": "walking_lunge",
+     "date": "2026-09-14",
+     "from": 5,
+     "to": 7.5
+    },
+    {
+     "id": "panatta_high_row",
+     "date": "2026-09-07",
+     "from": 30,
+     "to": 35
+    },
+    {
+     "id": "chest_press_machine",
+     "date": "2026-09-02",
+     "from": 52,
+     "to": 59
+    },
+    {
+     "id": "leg_extension_single",
+     "date": "2026-09-02",
+     "from": 20,
+     "to": 25
+    },
+    {
+     "id": "face_pull",
+     "date": "2026-08-29",
+     "from": 18,
+     "to": 25
+    },
+    {
+     "id": "deadlift",
+     "date": "2026-08-28",
+     "from": 105,
+     "to": 110
+    },
+    {
+     "id": "rdl",
+     "date": "2026-08-21",
+     "from": 70,
+     "to": 110
+    },
+    {
+     "id": "deadlift",
+     "date": "2026-08-19",
+     "from": 90,
+     "to": 105
+    },
+    {
+     "id": "panatta_super_rowing",
+     "date": "2026-08-19",
+     "from": 25,
+     "to": 30
+    },
+    {
+     "id": "cable_reverse_fly",
+     "date": "2026-08-18",
+     "from": 11,
+     "to": 18
+    },
+    {
+     "id": "barbell_row",
+     "date": "2026-08-17",
+     "from": 40,
+     "to": 50
+    },
+    {
+     "id": "panatta_high_row",
+     "date": "2026-08-17",
+     "from": 25,
+     "to": 30
+    },
+    {
+     "id": "panatta_super_rowing",
+     "date": "2026-08-13",
+     "from": 20,
+     "to": 25
+    },
+    {
+     "id": "cable_wrist_radial",
+     "date": "2026-08-12",
+     "from": 11,
+     "to": 18
+    },
+    {
+     "id": "leg_extension_single",
+     "date": "2026-08-10",
+     "from": 15,
+     "to": 20
+    },
+    {
+     "id": "panatta_high_row",
+     "date": "2026-08-10",
+     "from": 20,
+     "to": 25
+    },
+    {
+     "id": "assisted_pullup",
+     "date": "2026-08-06",
+     "from": 68,
+     "to": 69
+    }
+   ],
+   "prP": 32,
+   "streak": 12,
+   "bal": [
+    {
+     "g": "腿部",
+     "n": 210,
+     "since": 2
+    },
+    {
+     "g": "背部",
+     "n": 170,
+     "since": 2
+    },
+    {
+     "g": "胸部",
+     "n": 154,
+     "since": 4
+    },
+    {
+     "g": "肩部",
+     "n": 185,
+     "since": 2
+    },
+    {
+     "g": "手臂",
+     "n": 154,
+     "since": 2
+    },
+    {
+     "g": "核心",
+     "n": 36,
+     "since": 4
+    },
+    {
+     "g": "髖部",
+     "n": 13,
+     "since": 7
+    },
+    {
+     "g": "有氧",
+     "n": 19,
+     "since": 8
+    }
+   ],
+   "ex": {
+    "普通": 154,
+    "吃力": 110,
+    "輕鬆": 10,
+    "力竭": 24,
+    "—": 25
+   },
+   "exTot": 323,
+   "neg": [
+    "treadmill",
+    "lat_pulldown",
+    "leg_press",
+    "leg_curl_seated",
+    "shoulder_press_machine",
+    "plank"
+   ],
+   "recent": [
+    "2026-10-19",
+    "2026-10-17",
+    "2026-10-16",
+    "2026-10-15",
+    "2026-10-14",
+    "2026-10-13"
+   ],
+   "ysLen": 167,
+   "best": 8,
+   "wks": 43,
+   "kspark": {
+    "days": [
+     2,
+     4,
+     5,
+     4,
+     3,
+     6,
+     5,
+     4,
+     6,
+     5,
+     6,
+     1
+    ],
+    "vol": [
+     8314,
+     23437.5,
+     24554,
+     24304,
+     10377.5,
+     17827,
+     19068,
+     15532,
+     29488,
+     17209,
+     22876,
+     7236
+    ],
+    "pr": [
+     1,
+     4,
+     6,
+     2,
+     2,
+     1,
+     2,
+     0,
+     5,
+     3,
+     2,
+     0
+    ]
+   }
+  }
+ },
+ "weeks": [
+  {
+   "w": "2026-04-27",
+   "days": 5,
+   "sets": 64,
+   "vol": 26550
+  },
+  {
+   "w": "2026-05-04",
+   "days": 3,
+   "sets": 33,
+   "vol": 14760
+  },
+  {
+   "w": "2026-05-11",
+   "days": 5,
+   "sets": 60,
+   "vol": 23980
+  },
+  {
+   "w": "2026-05-18",
+   "days": 3,
+   "sets": 46,
+   "vol": 15220
+  },
+  {
+   "w": "2026-05-25",
+   "days": 6,
+   "sets": 88,
+   "vol": 35307.5
+  },
+  {
+   "w": "2026-06-01",
+   "days": 4,
+   "sets": 53,
+   "vol": 17115
+  },
+  {
+   "w": "2026-06-08",
+   "days": 3,
+   "sets": 36,
+   "vol": 13835
+  },
+  {
+   "w": "2026-06-15",
+   "days": 3,
+   "sets": 44,
+   "vol": 16730
+  },
+  {
+   "w": "2026-06-22",
+   "days": 3,
+   "sets": 43,
+   "vol": 19399
+  },
+  {
+   "w": "2026-06-29",
+   "days": 6,
+   "sets": 130,
+   "vol": 42228
+  },
+  {
+   "w": "2026-07-06",
+   "days": 4,
+   "sets": 78,
+   "vol": 25620
+  },
+  {
+   "w": "2026-07-13",
+   "days": 6,
+   "sets": 146,
+   "vol": 45029.5
+  },
+  {
+   "w": "2026-07-20",
+   "days": 0,
+   "sets": 0,
+   "vol": 0
+  },
+  {
+   "w": "2026-07-27",
+   "days": 0,
+   "sets": 0,
+   "vol": 0
+  },
+  {
+   "w": "2026-08-03",
+   "days": 2,
+   "sets": 27,
+   "vol": 8314
+  },
+  {
+   "w": "2026-08-10",
+   "days": 4,
+   "sets": 99,
+   "vol": 23437.5
+  },
+  {
+   "w": "2026-08-17",
+   "days": 5,
+   "sets": 115,
+   "vol": 24554
+  },
+  {
+   "w": "2026-08-24",
+   "days": 4,
+   "sets": 91,
+   "vol": 24304
+  },
+  {
+   "w": "2026-08-31",
+   "days": 3,
+   "sets": 35,
+   "vol": 10377.5
+  },
+  {
+   "w": "2026-09-07",
+   "days": 6,
+   "sets": 52,
+   "vol": 17827
+  },
+  {
+   "w": "2026-09-14",
+   "days": 5,
+   "sets": 81,
+   "vol": 19068
+  },
+  {
+   "w": "2026-09-21",
+   "days": 4,
+   "sets": 66,
+   "vol": 15532
+  },
+  {
+   "w": "2026-09-28",
+   "days": 6,
+   "sets": 113,
+   "vol": 29488
+  },
+  {
+   "w": "2026-10-05",
+   "days": 5,
+   "sets": 88,
+   "vol": 17209
+  },
+  {
+   "w": "2026-10-12",
+   "days": 6,
+   "sets": 108,
+   "vol": 22876
+  },
+  {
+   "w": "2026-10-19",
+   "days": 1,
+   "sets": 23,
+   "vol": 7236
+  }
+ ],
+ "palette": {
+  "1019": [
+   "訓練日|2026/10/19（一）"
+  ],
+  "10/19": [
+   "訓練日|2026/10/19（一）"
+  ],
+  "2026-10-19": [
+   "訓練日|2026/10/19（一）"
+  ],
+  "深蹲": [
+   "動作|熊抱槓深蹲",
+   "動作|SSB 背槓深蹲",
+   "動作|背槓深蹲",
+   "動作|哈克深蹲（Panatta Super Hack）"
+  ],
+  "腿部": [
+   "動作|熊抱槓深蹲",
+   "動作|SSB 背槓深蹲",
+   "動作|垂直腿推",
+   "動作|後腳抬高蹲",
+   "動作|坐姿踢腿機",
+   "動作|坐姿腿後勾",
+   "動作|趴姿腿後勾",
+   "動作|坐姿外展機"
+  ],
+  "RDL": [
+   "動作|RDL（槓鈴）",
+   "動作|單腳 RDL",
+   "動作|RDL 持槓（握力）"
+  ],
+  "": [
+   "頁面|總覽",
+   "頁面|動作庫",
+   "頁面|訓練紀錄",
+   "指令|切換為深色模式",
+   "指令|匯出動作庫 CSV",
+   "訓練日|2026/10/19（一）",
+   "訓練日|2026/10/17（六）",
+   "訓練日|2026/10/16（五）",
+   "訓練日|2026/10/15（四）",
+   "動作|後腳抬高蹲",
+   "動作|坐姿踢腿機",
+   "動作|器械輔助引體向上",
+   "動作|直臂下拉（Cable）",
+   "動作|Cable 三頭下拉"
+  ],
+  " 背部 ": [
+   "動作|滑輪下拉",
+   "動作|坐姿划船",
+   "動作|器械輔助引體向上",
+   "動作|直臂下拉（Cable）",
+   "動作|俯身槓鈴划船",
+   "動作|Panatta High Row",
+   "動作|Panatta Super Rowing",
+   "動作|Panatta T-Bar Row"
+  ]
+ },
+ "filters": {
+  "status:all": [
+   "zercher_squat",
+   "ssb_squat",
+   "leg_press",
+   "bulgarian_split",
+   "leg_extension",
+   "leg_curl_seated",
+   "leg_curl_prone",
+   "hip_abduction",
+   "hip_adduction",
+   "standing_calf",
+   "kettlebell_rdl",
+   "rdl",
+   "seated_calf_machine",
+   "single_leg_rdl",
+   "hex_bar_deadlift",
+   "back_squat",
+   "deadlift",
+   "hack_squat",
+   "leg_press_45",
+   "split_squat",
+   "walking_lunge",
+   "leg_extension_single",
+   "leg_curl_standing_single",
+   "standing_calf_single",
+   "single_leg_calf_raise",
+   "reverse_nordic",
+   "lat_pulldown",
+   "seated_row",
+   "assisted_pullup",
+   "straight_arm_pulldown",
+   "barbell_row",
+   "panatta_high_row",
+   "panatta_super_rowing",
+   "panatta_tbar_row",
+   "db_row_single",
+   "single_arm_seated_row",
+   "machine_fly",
+   "chest_press_machine",
+   "floor_bench_press",
+   "dumbbell_bench",
+   "barbell_incline_pushup",
+   "bench_press",
+   "incline_db_press",
+   "assisted_dip",
+   "multi_flight_fly",
+   "cable_fly",
+   "machine_incline_press",
+   "cable_station_press",
+   "powersmith_incline",
+   "powersmith_bench",
+   "shoulder_press_machine",
+   "overhead_press",
+   "kneeling_press",
+   "landmine_press",
+   "db_lateral_raise",
+   "machine_lateral_raise",
+   "multi_flight_lateral",
+   "reverse_fly_machine",
+   "multi_flight_reverse_fly",
+   "cable_reverse_fly",
+   "db_reverse_fly",
+   "cable_lateral_raise",
+   "cable_front_raise",
+   "cable_y_raise",
+   "face_pull",
+   "arm_bar",
+   "shifting_press",
+   "loaded_lunge_reach",
+   "windmill",
+   "tricep_pushdown",
+   "bicep_curl_cable",
+   "bicep_curl_machine",
+   "brachialis_curl",
+   "ez_curl",
+   "ez_preacher_curl",
+   "hammer_curl",
+   "ez_skull_crusher",
+   "db_skull_crusher",
+   "rdl_hold",
+   "cable_wrist_ulnar",
+   "cable_wrist_radial",
+   "cable_supination",
+   "cable_pronation",
+   "plank",
+   "crunch_machine",
+   "copenhagen_side_plank",
+   "oblique_crunch_machine",
+   "v_crunch",
+   "cable_belly_press",
+   "dead_bug",
+   "pallof_press",
+   "side_plank_hip_flexion",
+   "serratus_side_plank",
+   "side_plank_clamshell",
+   "sled_push",
+   "kettlebell_swing",
+   "hip_thrust",
+   "single_leg_hip_thrust",
+   "floor_hip_thrust",
+   "glute_bridge_single",
+   "panatta_hip_thrust",
+   "airplane",
+   "treadmill",
+   "track_run",
+   "spin_class",
+   "stair_climber",
+   "fan_bike_hiit",
+   "step_aerobics"
+  ],
+  "status:7": [
+   "bulgarian_split",
+   "leg_extension",
+   "rdl",
+   "back_squat",
+   "leg_extension_single",
+   "reverse_nordic",
+   "assisted_pullup",
+   "straight_arm_pulldown",
+   "panatta_high_row",
+   "db_row_single",
+   "incline_db_press",
+   "cable_fly",
+   "powersmith_bench",
+   "overhead_press",
+   "db_lateral_raise",
+   "machine_lateral_raise",
+   "reverse_fly_machine",
+   "cable_lateral_raise",
+   "face_pull",
+   "tricep_pushdown",
+   "hammer_curl",
+   "db_skull_crusher",
+   "pallof_press",
+   "single_leg_hip_thrust",
+   "floor_hip_thrust"
+  ],
+  "status:30": [
+   "leg_curl_prone",
+   "hip_adduction",
+   "single_leg_rdl",
+   "hack_squat",
+   "leg_curl_standing_single",
+   "single_leg_calf_raise",
+   "seated_row",
+   "panatta_super_rowing",
+   "chest_press_machine",
+   "bench_press",
+   "assisted_dip",
+   "powersmith_incline",
+   "windmill",
+   "bicep_curl_cable",
+   "ez_curl",
+   "ez_preacher_curl",
+   "ez_skull_crusher",
+   "cable_supination",
+   "cable_pronation",
+   "copenhagen_side_plank",
+   "oblique_crunch_machine",
+   "side_plank_clamshell",
+   "glute_bridge_single",
+   "panatta_hip_thrust",
+   "track_run",
+   "stair_climber"
+  ],
+  "status:old": [
+   "zercher_squat",
+   "ssb_squat",
+   "leg_press",
+   "leg_curl_seated",
+   "hip_abduction",
+   "standing_calf",
+   "kettlebell_rdl",
+   "seated_calf_machine",
+   "hex_bar_deadlift",
+   "deadlift",
+   "leg_press_45",
+   "split_squat",
+   "walking_lunge",
+   "standing_calf_single",
+   "lat_pulldown",
+   "barbell_row",
+   "panatta_tbar_row",
+   "single_arm_seated_row",
+   "machine_fly",
+   "floor_bench_press",
+   "dumbbell_bench",
+   "barbell_incline_pushup",
+   "multi_flight_fly",
+   "machine_incline_press",
+   "cable_station_press",
+   "shoulder_press_machine",
+   "kneeling_press",
+   "landmine_press",
+   "multi_flight_lateral",
+   "multi_flight_reverse_fly",
+   "cable_reverse_fly",
+   "db_reverse_fly",
+   "cable_front_raise",
+   "cable_y_raise",
+   "arm_bar",
+   "shifting_press",
+   "loaded_lunge_reach",
+   "bicep_curl_machine",
+   "brachialis_curl",
+   "rdl_hold",
+   "cable_wrist_ulnar",
+   "cable_wrist_radial",
+   "plank",
+   "crunch_machine",
+   "v_crunch",
+   "cable_belly_press",
+   "dead_bug",
+   "side_plank_hip_flexion",
+   "serratus_side_plank",
+   "sled_push",
+   "kettlebell_swing",
+   "hip_thrust",
+   "airplane",
+   "treadmill",
+   "spin_class",
+   "fan_bike_hiit",
+   "step_aerobics"
+  ],
+  "q:深蹲": [
+   "back_squat",
+   "hack_squat",
+   "zercher_squat",
+   "ssb_squat"
+  ],
+  "groups:胸部,背部": [
+   "incline_db_press",
+   "floor_bench_press",
+   "seated_row",
+   "bench_press",
+   "straight_arm_pulldown",
+   "machine_fly",
+   "barbell_row",
+   "multi_flight_fly",
+   "chest_press_machine",
+   "dumbbell_bench",
+   "single_arm_seated_row",
+   "db_row_single",
+   "lat_pulldown",
+   "barbell_incline_pushup",
+   "assisted_pullup",
+   "assisted_dip",
+   "cable_station_press",
+   "cable_fly",
+   "machine_incline_press",
+   "panatta_high_row",
+   "panatta_super_rowing",
+   "panatta_tbar_row",
+   "powersmith_incline",
+   "powersmith_bench"
+  ]
+ },
+ "labels": {
+  "daysLabel": [
+   "今天",
+   "昨天",
+   "2 天前",
+   "15 天前"
+  ],
+  "daysTone": [
+   "tone-ok",
+   "tone-ok",
+   "tone-warn",
+   "tone-warn",
+   "tone-bad",
+   "tone-bad"
+  ],
+  "exhTone": [
+   "tone-ok",
+   "tone-mute",
+   "tone-warn",
+   "tone-bad",
+   "tone-bad",
+   "tone-none",
+   "tone-none"
+  ],
+  "datesInRange": [
+   "2026-10-16",
+   "2026-10-17",
+   "2026-10-18",
+   "2026-10-19",
+   "2026-10-20",
+   "2026-10-21",
+   "2026-10-22"
+  ],
+  "mondayOf": [
+   "2026-10-19",
+   "2026-10-19",
+   "2026-10-19"
+  ],
+  "longDate": "2026 年 10 月 19 日"
+ }
+}

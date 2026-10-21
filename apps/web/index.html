@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-Hant" data-accent="indigo">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>TrainLog · 訓練管理</title>
+    <script>
+      // React 載入前先套用深淺色、密度、側欄狀態，避免閃白（儲存格式與 src/lib/prefs.ts 相同）
+      (function () {
+        var R = document.documentElement, q = new URLSearchParams(location.search), s = {};
+        try { s = (JSON.parse(localStorage.getItem('tl-prefs') || '{}').state) || {}; } catch (e) {}
+        var dark = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;
+        R.dataset.m = q.get('m') || s.mode || (dark ? 'dark' : 'light');
+        R.dataset.density = s.density || 'comfortable';
+        if (s.collapsed) R.classList.add('sb-collapsed');
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

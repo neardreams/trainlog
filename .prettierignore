@@ -1,0 +1,21 @@
+# 舊流程與資料：不得被 Prettier 改寫（CLAUDE.md §7）
+data/
+index.html
+generate_v6.py
+redesign/
+scripts/
+dist-legacy/
+SKILL.md
+CLAUDE.md
+README.md
+trainlog-update.skill
+# 產生物
+**/dist/
+**/node_modules/
+**/.expo/
+**/routeTree.gen.ts
+pnpm-lock.yaml
+apps/mobile/android/
+apps/mobile/ios/
+# 測試資料快照（data/ 的複本與 v9 擷取結果）
+**/test/fixtures/

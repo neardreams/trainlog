@@ -8,7 +8,7 @@ import {
   exhTone,
   fmtN,
   md,
-  setRuns,
+  setBlocks,
   type Entry,
   type Exercise,
 } from '@trainlog/core';
@@ -63,36 +63,38 @@ export function Delta({
 /** 由兩個數值算增減 */
 export const deltaDir = (d: number): 'up' | 'down' | 'flat' => (d > 0 ? 'up' : d < 0 ? 'down' : 'flat');
 
+/** 組數：每組一格（日曆頁樣式）——上方色帶寫重量（越深越重）、下方大字寫次數、左上小字是組號 */
 export function Sets({ entry, ex }: { entry: Entry; ex: Exercise }) {
-  const runs = setRuns(entry, ex);
-  const first = runs[0];
-  if (first?.kind === 'text')
+  const r = setBlocks(entry, ex);
+  if (r.kind === 'text')
     return (
       <div className="sets">
-        <span className="set text">{first.text}</span>
+        <span className="set text">{r.text}</span>
       </div>
     );
-  if (first?.kind === 'none') return <span className="na">—</span>;
-  if (first?.kind === 'practice') return <span className="na">動作練習</span>;
+  if (r.kind === 'none') return <span className="na">—</span>;
+  if (r.kind === 'practice') return <span className="na">動作練習</span>;
   return (
-    <div className="sets">
-      {runs.map((r, i) =>
-        r.kind !== 'run' ? null : (
-          <span className="set" key={i}>
-            {r.weightKg == null ? null : r.zeroLabel ? (
-              `${r.zeroLabel} · `
-            ) : (
-              <>
-                {fmtN(r.weightKg)}
-                <small>kg</small> ×{' '}
-              </>
-            )}
-            {r.reps == null ? '？' : Number.isInteger(r.reps) ? r.reps : r.reps.toFixed(1)}
-            {r.unit && <small>{r.unit}</small>}
-            {r.count > 1 && <em>×{r.count}</em>}
+    <div className="setcards">
+      {r.blocks.map((b) => {
+        const w = b.zeroLabel ?? (b.weightKg == null ? null : fmtN(b.weightKg));
+        const reps = b.reps == null ? '？' : Number.isInteger(b.reps) ? String(b.reps) : b.reps.toFixed(1);
+        const unit = b.unit ?? '下';
+        const tip = `第 ${b.no} 組 · ${w == null ? '' : b.zeroLabel ? `${w} · ` : `${w} kg × `}${reps} ${unit}`;
+        return (
+          <span key={b.no} className={clsx('setcard', `lv${b.level}`)} title={tip}>
+            <span className="sc-w">
+              {w == null ? '—' : w}
+              {w != null && !b.zeroLabel && <small>kg</small>}
+            </span>
+            <span className="sc-r">
+              <span className="sc-no">{b.no}</span>
+              {reps}
+              {b.unit && <small>{b.unit}</small>}
+            </span>
           </span>
-        ),
-      )}
+        );
+      })}
     </div>
   );
 }

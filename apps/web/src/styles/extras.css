@@ -62,3 +62,77 @@
   font-size: 12.5px;
   color: var(--text-2);
 }
+
+/* ── 組數：每組一格（日曆頁＋組號，設計稿 redesign/sets-mock/v5.html 的 K5B） ── */
+.setcards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.setcard {
+  display: flex;
+  flex-direction: column;
+  width: 56px;
+  height: 52px;
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  box-shadow:
+    inset 0 0 0 1px var(--gray-6),
+    0 1px 1px color-mix(in srgb, var(--gray-12) 4%, transparent);
+  overflow: hidden;
+  cursor: default;
+}
+.setcard .sc-w {
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--acc-3);
+  box-shadow: inset 0 -1px 0 var(--acc-6);
+  color: var(--accent-text);
+  font-size: 11.5px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.setcard .sc-w small,
+.setcard .sc-r small {
+  font-size: 9.5px;
+  font-weight: 450;
+  margin-left: 1px;
+  opacity: 0.75;
+}
+.setcard.lv2 .sc-w {
+  background: var(--acc-5);
+}
+.setcard.lv3 .sc-w {
+  background: var(--accent);
+  color: var(--accent-fg);
+  box-shadow: none;
+}
+.setcard .sc-r {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 650;
+  color: var(--text);
+}
+.setcard .sc-no {
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--text-4);
+}
+.setcard:hover {
+  box-shadow:
+    inset 0 0 0 1px var(--gray-8),
+    0 1px 2px color-mix(in srgb, var(--gray-12) 8%, transparent);
+}
+.tbl.fixed .w-sets {
+  width: 268px;
+}

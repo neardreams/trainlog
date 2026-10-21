@@ -22,6 +22,7 @@ import {
   prevTrainingDate,
   rangeEntries,
   rangeStats,
+  setBlocks,
   setRuns,
   stripJournalHeading,
   type Entry,
@@ -128,6 +129,35 @@ describe('計算', () => {
       ),
     ).toBe(12.5);
     expect(getMaxWeight(e([[0, 10]]).sets)).toBeNull();
+  });
+  it('每組一格：組號與重量深淺', () => {
+    const r = setBlocks(
+      e([
+        [55, 10],
+        [60, 10],
+        [57.5, 8],
+        [55, 10],
+      ]),
+      {},
+    );
+    expect(r.kind).toBe('blocks');
+    if (r.kind !== 'blocks') return;
+    expect(r.blocks.map((b) => b.no)).toEqual([1, 2, 3, 4]);
+    expect(r.blocks.map((b) => b.level)).toEqual([1, 3, 2, 1]);
+    const same = setBlocks(
+      e([
+        [32, 10],
+        [32, 8],
+      ]),
+      {},
+    );
+    expect(same.kind === 'blocks' && same.blocks.map((b) => b.level)).toEqual([1, 1]);
+    const zero = setBlocks(e([[0, 20]]), { zeroLabel: '空重', repUnit: '秒' });
+    expect(zero.kind === 'blocks' && zero.blocks[0]).toMatchObject({ zeroLabel: '空重', unit: '秒' });
+    expect(setBlocks({ ...e([]), setsDisplay: '19:00 階梯有氧課' }, {})).toEqual({
+      kind: 'text',
+      text: '19:00 階梯有氧課',
+    });
   });
   it('組數合併與文字格式（沿用 v6）', () => {
     const en = e([

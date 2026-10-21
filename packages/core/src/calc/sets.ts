@@ -67,6 +67,47 @@ export function setRuns(entry: Entry, ex: Pick<Exercise, 'repUnit' | 'zeroLabel'
   return out;
 }
 
+/** 每組一格（日曆頁樣式）的資料 */
+export interface SetBlock {
+  /** 組號，從 1 開始 */
+  no: number;
+  weightKg: number | null;
+  /** 重量為 0 且有 zeroLabel 時顯示的文字 */
+  zeroLabel?: string;
+  reps: number | null;
+  unit?: string;
+  /** 重量深淺：1 最輕（或全部同重量）、2 中間、3 當天最重（只有重量有變化時才會出現 2、3） */
+  level: 1 | 2 | 3;
+}
+export type SetBlocks =
+  | { kind: 'text'; text: string }
+  | { kind: 'none' }
+  | { kind: 'practice' }
+  | { kind: 'blocks'; blocks: SetBlock[] };
+
+export function setBlocks(entry: Entry, ex: Pick<Exercise, 'repUnit' | 'zeroLabel'>): SetBlocks {
+  if (entry.setsDisplay) return { kind: 'text', text: entry.setsDisplay };
+  const sets = entry.sets;
+  if (!sets.length) return { kind: 'none' };
+  const unit = ex.repUnit;
+  if (sets[0]?.weightKg == null && !unit) return { kind: 'practice' };
+  const ws = sets.map((s) => s.weightKg ?? 0);
+  const mx = Math.max(...ws);
+  const mn = Math.min(...ws);
+  const level = (w: number): 1 | 2 | 3 => (mx === mn ? 1 : w >= mx ? 3 : w > mn ? 2 : 1);
+  return {
+    kind: 'blocks',
+    blocks: sets.map((s, i) => ({
+      no: i + 1,
+      weightKg: s.weightKg,
+      ...(s.weightKg === 0 && ex.zeroLabel ? { zeroLabel: ex.zeroLabel } : {}),
+      reps: s.reps,
+      ...(unit ? { unit } : {}),
+      level: level(s.weightKg ?? 0),
+    })),
+  };
+}
+
 /** 全形空白（v6 的組數文字格式使用） */
 const FULLWIDTH_SPACE = String.fromCharCode(0x3000);
 

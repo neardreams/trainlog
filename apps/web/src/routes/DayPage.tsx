@@ -102,18 +102,38 @@ function RangeTable({
         <tbody>
           {entries.map((e) => {
             const ex = exerciseOf(ds, e);
+            const on = e.id === peekId;
+            const hist = (
+              <button
+                className={clsx('btn btn-soft hist-btn', on && 'on')}
+                aria-pressed={on}
+                title={`查看「${ex.name}」的歷史紀錄`}
+                onClick={(ev) => {
+                  ev.stopPropagation();
+                  onDrill(e);
+                }}
+              >
+                <Icon name="clock" />
+                歷史
+              </button>
+            );
             return (
               <tr
                 key={e.id}
-                className={clsx('clickable', e.id === peekId && 'tr-focus')}
+                className={clsx('clickable', on && 'tr-focus')}
                 {...{ [PEEK_ATTR]: '' }}
                 onClick={() => onDrill(e)}
               >
-                {showDate && <DateCell date={e.date} onOpen={() => onOpenDay(e.date)} />}
+                {showDate && (
+                  <DateCell date={e.date} onOpen={() => onOpenDay(e.date)}>
+                    {hist}
+                  </DateCell>
+                )}
                 {showName && (
                   <td className="c-name">
                     <GDot group={ex.group} className="tw:mr-2" />
                     {ex.name}
+                    {!showDate && hist}
                   </td>
                 )}
                 <td className="c-sets">

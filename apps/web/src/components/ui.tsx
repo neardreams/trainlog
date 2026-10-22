@@ -99,7 +99,15 @@ export function Sets({ entry, ex }: { entry: Entry; ex: Exercise }) {
   );
 }
 
-export function DateCell({ date, onOpen }: { date: string; onOpen?: () => void }) {
+export function DateCell({
+  date,
+  onOpen,
+  children,
+}: {
+  date: string;
+  onOpen?: () => void;
+  children?: ReactNode;
+}) {
   return (
     <td className="c-date">
       <a
@@ -112,6 +120,7 @@ export function DateCell({ date, onOpen }: { date: string; onOpen?: () => void }
         {md(date)}
       </a>
       <span className="dow">週{dowOf(date)}</span>
+      {children}
     </td>
   );
 }

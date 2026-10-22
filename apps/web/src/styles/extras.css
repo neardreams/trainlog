@@ -296,3 +296,25 @@ html[data-m='dark'] .sh-item.is-focus {
     }
   }
 }
+
+/* 訓練紀錄每列的「歷史紀錄」按鈕：放在日期（或動作名稱）下方，明確的入口，不另佔欄位 */
+.hist-btn {
+  display: flex;
+  width: fit-content;
+  height: 24px;
+  margin-top: 6px;
+  padding: 0 8px;
+  gap: 4px;
+  font-size: 12px;
+}
+.hist-btn svg.i {
+  width: 13px;
+  height: 13px;
+}
+.hist-btn.on {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+.hist-btn.on svg.i {
+  color: var(--accent-fg);
+}

@@ -29,6 +29,7 @@ import {
   type RangeGroupBy,
   type RangeSortKey,
 } from '@trainlog/core';
+import { HistorySheet, PEEK_ATTR } from '@/components/HistorySheet';
 import { RecordPanel, VolCell } from '@/components/RecordPanel';
 import { DateCell, Empty, ExhBadge, GDot, PageHead, Seg, Sets } from '@/components/ui';
 import { gColor, useCrumbs, type Crumb } from '@/lib/chrome';
@@ -72,6 +73,7 @@ function RangeTable({
   entries,
   showDate,
   showName,
+  peekId,
   onDrill,
   onOpenDay,
 }: {
@@ -79,6 +81,7 @@ function RangeTable({
   entries: Entry[];
   showDate: boolean;
   showName: boolean;
+  peekId: string | undefined;
   onDrill: (e: Entry) => void;
   onOpenDay: (d: DateStr) => void;
 }) {
@@ -100,7 +103,12 @@ function RangeTable({
           {entries.map((e) => {
             const ex = exerciseOf(ds, e);
             return (
-              <tr key={e.id} className="clickable" onClick={() => onDrill(e)}>
+              <tr
+                key={e.id}
+                className={clsx('clickable', e.id === peekId && 'tr-focus')}
+                {...{ [PEEK_ATTR]: '' }}
+                onClick={() => onDrill(e)}
+              >
                 {showDate && <DateCell date={e.date} onOpen={() => onOpenDay(e.date)} />}
                 {showName && (
                   <td className="c-name">
@@ -151,6 +159,7 @@ function RangePanel({
   range,
   groupBy,
   sortBy,
+  peekId,
   onDrill,
   onOpenDay,
 }: {
@@ -158,6 +167,7 @@ function RangePanel({
   range: number;
   groupBy: RangeGroupBy;
   sortBy: RangeSortKey;
+  peekId: string | undefined;
   onDrill: (e: Entry) => void;
   onOpenDay: (d: DateStr) => void;
 }) {
@@ -247,6 +257,7 @@ function RangePanel({
                   entries={g.entries}
                   showDate={showDate}
                   showName={showName}
+                  peekId={peekId}
                   onDrill={onDrill}
                   onOpenDay={onOpenDay}
                 />
@@ -598,6 +609,15 @@ export function DayPage() {
         ...(at !== date ? { at } : { at: undefined }),
       }),
     });
+  // 點動作列：右側滑出該動作的歷史紀錄（不換頁）；側欄內「完整歷程」才下鑽
+  const [peek, setPeek] = useState<Entry>();
+  const peekEx = peek ? ds.exerciseById.get(peek.exerciseId) : undefined;
+  const [prevKey, setPrevKey] = useState(`${date}|${range}|${tab}|${search.ex ?? ''}`);
+  const key = `${date}|${range}|${tab}|${search.ex ?? ''}`;
+  if (key !== prevKey) {
+    setPrevKey(key);
+    setPeek(undefined);
+  }
   const goBack = () => void navigate({ search: (prev) => ({ ...prev, ex: undefined, at: undefined }) });
 
   useEffect(() => {
@@ -773,7 +793,8 @@ export function DayPage() {
                     range={range}
                     groupBy={groupBy}
                     sortBy={sortBy}
-                    onDrill={(e) => drill(e.exerciseId, e.date)}
+                    peekId={peek?.id}
+                    onDrill={setPeek}
                     onOpenDay={openDay}
                   />
                 )}
@@ -802,6 +823,14 @@ export function DayPage() {
           onOpenRaw={() => setSearch({ tab: 'raw', ex: undefined, at: undefined })}
         />
       </div>
+      {peek && peekEx && (
+        <HistorySheet
+          ex={peekEx}
+          focus={peek.date}
+          onClose={() => setPeek(undefined)}
+          onOpenFull={() => drill(peek.exerciseId, peek.date)}
+        />
+      )}
     </section>
   );
 }

@@ -17,7 +17,8 @@ sync_journals.py — Apple Journal HTML → journals_raw.json 同步腳本
                      - 舊條目 HTML 變了 → 寫入 pending_updates.json，由 Claude 問使用者
                      - hash 沒變 → 跳過
 3. --apply-pending   套用使用者同意的 pending 更新
-4. --dry-run         搭配任何模式使用，不寫入檔案
+4. --reparse         解析器修正後使用：用目前的 HTML 重新產生所有條目的原文並更新 hash
+5. --dry-run         搭配任何模式使用，不寫入檔案
 
 用法：
     # 首次建立 baseline（只記錄 hash，不改 JSON）
@@ -54,9 +55,9 @@ class AppleJournalParser(HTMLParser):
         self.div_stack = []
         self.skip_tags = {"style", "script", "head"}
         self.skip_depth = 0
-        self.is_empty_paragraph = False
         self.in_p = False
         self.p_class = ""
+        self.list_stack = []  # 每層 [標籤(ol/ul), 目前序號]
 
     def handle_starttag(self, tag, attrs):
         attrs_dict = dict(attrs)
@@ -81,7 +82,14 @@ class AppleJournalParser(HTMLParser):
             self.in_p = True
             self.p_class = attrs_dict.get("class", "")
             self.current_text = ""
-            self.is_empty_paragraph = "p3" in self.p_class
+
+        if tag in ("ol", "ul"):
+            start = attrs_dict.get("start", "1")
+            self.list_stack.append([tag, int(start) - 1 if start.isdigit() else 0])
+
+        if tag == "li":
+            self.in_p = True
+            self.current_text = ""
 
     def handle_endtag(self, tag):
         if tag in self.skip_tags:
@@ -101,12 +109,29 @@ class AppleJournalParser(HTMLParser):
                 self.category = text
 
         if tag == "p" and self.in_p:
-            if self.is_empty_paragraph:
+            # 空行依內容判斷：Apple 每篇匯出的 class 名稱（p1/p2/p3…）不固定，不能用來判斷
+            text = self.current_text.strip()
+            if not text:
                 self.result_lines.append("")
-            else:
-                text = self.current_text.strip()
-                if text and not text.startswith("<div") and not text.startswith("</div"):
-                    self.result_lines.append(text)
+            elif not text.startswith("<div") and not text.startswith("</div"):
+                self.result_lines.append(text)
+            self.in_p = False
+            self.current_text = ""
+
+        if tag in ("ol", "ul") and self.list_stack:
+            self.list_stack.pop()
+
+        # 列表項目：Apple 用 <ol>/<ul><li> 輸出編號或項目符號清單
+        if tag == "li" and self.in_p:
+            text = self.current_text.strip()
+            if text:
+                indent = "   " * max(0, len(self.list_stack) - 1)
+                if self.list_stack and self.list_stack[-1][0] == "ol":
+                    self.list_stack[-1][1] += 1
+                    prefix = f"{self.list_stack[-1][1]}. "
+                else:
+                    prefix = "- "
+                self.result_lines.append(f"{indent}{prefix}{text}")
             self.in_p = False
             self.current_text = ""
 
@@ -208,6 +233,8 @@ def main():
                     help="首次執行：為所有現有條目建立 hash 基準 + 新增缺少的條目，不動已有的 JSON 內容")
     ap.add_argument("--apply-pending", default="",
                     help="套用指定日期的 pending 更新，逗號分隔，如 2026-03-28,2026-02-10")
+    ap.add_argument("--reparse", action="store_true",
+                    help="解析器修正後使用：重新解析所有 HTML，覆寫原文並更新 hash，列出內容有變的日期")
     ap.add_argument("--dry-run", action="store_true", help="只顯示差異，不寫入")
     args = ap.parse_args()
 
@@ -248,15 +275,42 @@ def main():
 
         if not args.dry_run:
             sorted_data = dict(sorted(existing.items()))
-            json_path.write_text(json.dumps(sorted_data, ensure_ascii=False, indent=2), encoding="utf-8")
-            hash_path.write_text(json.dumps(hashes, ensure_ascii=False, indent=2), encoding="utf-8")
+            json_path.write_text(json.dumps(sorted_data, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
+            hash_path.write_text(json.dumps(hashes, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
             if pending:
-                pending_path.write_text(json.dumps(pending, ensure_ascii=False, indent=2), encoding="utf-8")
+                pending_path.write_text(json.dumps(pending, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
             elif pending_path.exists():
                 pending_path.unlink()
 
         print(f"\n已套用 {applied} 筆更新")
         return applied
+
+    # ── 模式 1b：reparse（解析器修正後重建原文）──────────────────────────────
+    if args.reparse:
+        changed = []
+        for date_str, html_path in html_files.items():
+            new_content = parse_html_file(html_path)
+            old_content = existing.get(date_str)
+            if old_content != new_content:
+                same_text = old_content is not None and \
+                    re.sub(r"\s+", "", old_content) == re.sub(r"\s+", "", new_content)
+                label = "空白" if same_text else ("新增" if old_content is None else "內容")
+                print(f"  [{label}] {date_str}")
+                if not same_text:
+                    changed.append(date_str)
+            if not args.dry_run:
+                existing[date_str] = new_content
+                hashes[date_str] = body_content_hash(html_path)
+
+        if not args.dry_run:
+            sorted_data = dict(sorted(existing.items()))
+            json_path.write_text(json.dumps(sorted_data, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
+            hash_path.write_text(json.dumps(hashes, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
+            if pending_path.exists():
+                pending_path.unlink()
+
+        print(f"\n重新解析 {len(html_files)} 篇，內容有變動 {len(changed)} 篇：{','.join(changed)}")
+        return len(changed)
 
     # ── 模式 2：init-baseline ────────────────────────────────────────────────
     if args.init_baseline:
@@ -280,8 +334,8 @@ def main():
 
         if not args.dry_run:
             sorted_data = dict(sorted(existing.items()))
-            json_path.write_text(json.dumps(sorted_data, ensure_ascii=False, indent=2), encoding="utf-8")
-            hash_path.write_text(json.dumps(hashes, ensure_ascii=False, indent=2), encoding="utf-8")
+            json_path.write_text(json.dumps(sorted_data, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
+            hash_path.write_text(json.dumps(hashes, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
 
         print(f"\nBaseline 完成：建立 {hash_count} 筆 hash，新增 {new_count} 筆條目")
         return new_count
@@ -323,12 +377,12 @@ def main():
     # 寫入
     if not args.dry_run:
         sorted_data = dict(sorted(existing.items()))
-        json_path.write_text(json.dumps(sorted_data, ensure_ascii=False, indent=2), encoding="utf-8")
-        hash_path.write_text(json.dumps(hashes, ensure_ascii=False, indent=2), encoding="utf-8")
+        json_path.write_text(json.dumps(sorted_data, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
+        hash_path.write_text(json.dumps(hashes, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
 
         if pending_updates:
             pending_path.write_text(
-                json.dumps(pending_updates, ensure_ascii=False, indent=2), encoding="utf-8"
+                json.dumps(pending_updates, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n"
             )
         elif pending_path.exists():
             pending_path.unlink()

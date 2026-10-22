@@ -186,8 +186,21 @@ python3 <trainlog>/scripts/sync_journals.py \
 - **舊條目 HTML 沒變** → 跳過
 - **舊條目 HTML 有變** → 存入 `.pending_updates.json`，由使用者確認
 
+## 解析器修正後重建（--reparse）
+
+日常同步只會解析「新的」或「HTML 有變」的條目。若修正了解析器，舊條目不會自動重新解析，要跑：
+
+```bash
+python3 <trainlog>/scripts/sync_journals.py --entries-dir "<Apple日誌條目>/Entries" --data-dir "<trainlog>/data" --reparse
+```
+
+它會用目前的 HTML 重建所有原文並更新 hash，最後列出「內容有變動」的日期（只差空白的不算）。
+接著對這些日期比對新舊原文，把先前漏掉的動作或組數補進 `training_data.json`（Step 2 的規則）。
+
 ## 注意事項
 
 - `sync_journals.py` 只用 Python 標準庫
+- 空行與段落一律依「有沒有文字」判斷，不能看 `p1`／`p2`／`p3` 這類 class：Apple 每篇匯出的 class 名稱不固定（2026-10-22 曾因此把整篇內容當空行丟掉）
+- 清單（`<ol>`／`<ul>` 的 `<li>`）會轉成 `1. `／`- ` 開頭的行
 - HTML 解析只抽取文字，多媒體會被忽略
 - `.gitignore` 已排除 `.pending_updates.json`

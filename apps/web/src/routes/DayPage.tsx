@@ -32,7 +32,7 @@ import {
 import { HistorySheet, PEEK_ATTR } from '@/components/HistorySheet';
 import { RecordPanel, VolCell } from '@/components/RecordPanel';
 import { DateCell, Empty, ExhBadge, GDot, PageHead, Seg, Sets } from '@/components/ui';
-import { DayVideoLink, VideoButton } from '@/components/VideoLinks';
+import { DayVideoButton, RailVideos, VideoButton } from '@/components/VideoLinks';
 import { gColor, useCrumbs, type Crumb } from '@/lib/chrome';
 import { Icon } from '@/lib/icons';
 import { TODAY } from '@/lib/today';
@@ -241,6 +241,7 @@ function RangePanel({
               <span className="rg-meta">
                 週{dowOf(g.id)} · {g.entries.length} 個動作
               </span>
+              <DayVideoButton date={g.id} variant="compact" />
             </>
           );
           cols = ['動作', '重量 / 組次', '總容量', '感受度', '力竭', '動作提示'];
@@ -332,6 +333,7 @@ function CompareCol({
             <div className="cx-top">
               <GDot group={ex.group} />
               <span className="cx-name">{ex.name}</span>
+              <VideoButton entry={h} compact />
               {o && o.maxWeight != null && maxWeight != null && <DeltaKg d={maxWeight - o.maxWeight} />}
               {o && o.volume != null && volume != null && (
                 <>
@@ -461,11 +463,17 @@ function ComparePanel({
       </div>
       <div className="compare-grid">
         <div className="compare-col">
-          <div className="compare-col-header">A · {slash(dA)}</div>
+          <div className="compare-col-header">
+            A · {slash(dA)}
+            <DayVideoButton date={dA} variant="compact" />
+          </div>
           <CompareCol rows={r.a} date={dA} onDrill={onDrill} />
         </div>
         <div className="compare-col">
-          <div className="compare-col-header">B · {slash(dB)}</div>
+          <div className="compare-col-header">
+            B · {slash(dB)}
+            <DayVideoButton date={dB} variant="compact" />
+          </div>
           <CompareCol rows={r.b} date={dB} onDrill={onDrill} />
         </div>
       </div>
@@ -486,6 +494,7 @@ function RawPanel({ date, range }: { date: DateStr; range: number }) {
           <div className="journal-h">
             <b>{longDate(d)}</b>
             <span>星期{dowOf(d)}</span>
+            <DayVideoButton date={d} />
           </div>
           <div className="raw-journal">{stripJournalHeading(ds.journals.get(d) ?? '')}</div>
         </article>
@@ -593,6 +602,7 @@ function DayRail({ date, range, onOpenRaw }: { date: DateStr; range: number; onO
           </div>
         )}
       </section>
+      <RailVideos date={date} range={range} />
       {jr && (
         <section className="panel">
           <div className="panel-head">
@@ -695,7 +705,7 @@ export function DayPage() {
                 返回 {md(date)}
               </button>
             )}
-            {!drillEx && range === 0 && <DayVideoLink date={date} />}
+            {!drillEx && range === 0 && <DayVideoButton date={date} variant="head" />}
             <div className="btn-group">
               <button
                 className="btn btn-icon"

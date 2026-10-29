@@ -6,6 +6,7 @@ import { DataLoadError, useDataset } from '@trainlog/data-client';
 import { CommandPalette } from './CommandPalette';
 import { Sidebar } from './Sidebar';
 import { Toast } from './Toast';
+import { VideoPlayerHost } from './VideoPlayerDialog';
 import { WeekStrip } from './Calendars';
 import { useChrome } from '@/lib/chrome';
 import { Icon } from '@/lib/icons';
@@ -115,6 +116,7 @@ export function AppShell() {
         </main>
       </div>
       {paletteOpen && <CommandPalette />}
+      <VideoPlayerHost />
       <Toast />
     </>
   );

@@ -321,6 +321,7 @@ export function Heatmap({ today, onOpenDay }: { today: DateStr; onOpenDay: (d: D
                   [
                     `${slash(c.d)}（${dowOf(c.d)}）`,
                     c.n ? `**${c.n}** 組 · ${dayGroups(ds, c.d).join('、')}` : '休息',
+                    ...(ds.videosByDate.has(c.d) ? ['有影片'] : []),
                   ],
                   e,
                 )

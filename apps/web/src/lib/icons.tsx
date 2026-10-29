@@ -31,6 +31,7 @@ import {
   Search,
   Sun,
   Trophy,
+  Volume2,
   X,
   type LucideIcon,
 } from 'lucide-react';
@@ -68,6 +69,7 @@ const ICONS = {
   clock: Clock,
   play: Play,
   external: ExternalLink,
+  volume: Volume2,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof ICONS;

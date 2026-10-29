@@ -354,6 +354,47 @@ html[data-m='dark'] .sh-item.is-focus {
   min-width: 0;
   overflow-wrap: anywhere;
 }
+.video-menu .vm-sub {
+  margin-left: 6px;
+  font-size: 12px;
+  color: var(--text-4);
+  font-variant-numeric: tabular-nums;
+}
+/* 當天影片的按鈕：段數改成影片長度 */
+.video-btn .vb-dur {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+/* 影片按鈕放在標頭、列表列裡時和文字同一列，不用「歷史」按鈕的上邊距 */
+.range-group-header .video-btn,
+.compare-col-header .video-btn,
+.journal-h .video-btn,
+.cx-top .video-btn,
+.drow .video-btn {
+  margin-top: 0;
+}
+.journal-h .video-btn {
+  align-self: center;
+}
+.compare-col-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 37px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+/* 總覽最近破紀錄：只有圖示的方形按鈕 */
+.icon-video-btn {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  justify-content: center;
+}
+.drow .video-btn {
+  flex: none;
+}
 
 /* 影片播放器對話框：v9 沒有，遮罩與外框沿用指令面板（.palette／.pal-box），標題列沿用歷史側欄（.sheet-head），
    段落清單的選取狀態沿用 .pal-item.sel。--ar＝影片寬高比（直式 9:16、橫式 16:9），由元件帶入。
@@ -411,8 +452,9 @@ html[data-m='dark'] .sh-item.is-focus {
   flex: 1 1 auto;
   min-width: 0;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 .vp-frame {
   width: min(100%, calc(var(--vp-h) * var(--ar)));
@@ -430,11 +472,32 @@ html[data-m='dark'] .sh-item.is-focus {
 }
 /* 清單和播放器等高，超出時在清單內捲動（contain: size 讓清單不把高度撐開） */
 .vp-side {
+  position: relative;
   flex: 0 0 var(--vp-side);
   min-width: 0;
   contain: size;
   overflow-y: auto;
   overscroll-behavior: contain;
+}
+/* 「這一天／所有日期」：捲動清單時固定在上方 */
+.vp-scope {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  margin-bottom: 8px;
+  box-shadow:
+    inset 0 0 0 1px var(--border-subtle),
+    0 0 0 4px var(--surface-raised);
+}
+.vp-scope > button {
+  flex: 1;
+  justify-content: center;
+}
+/* 瀏覽器擋下有聲音的自動播放、改成靜音播放時才出現 */
+.vp-unmute {
+  flex: none;
+  max-width: 100%;
 }
 .vp-group + .vp-group {
   margin-top: 8px;
@@ -483,7 +546,8 @@ html[data-m='dark'] .sh-item.is-focus {
 .vp-seg:active {
   background: var(--pressed);
 }
-.vp-seg .vp-ic {
+.vp-seg .vp-ic,
+.rail-vid .vp-ic {
   flex: none;
   width: 22px;
   height: 22px;
@@ -494,11 +558,13 @@ html[data-m='dark'] .sh-item.is-focus {
   color: var(--text-3);
   box-shadow: inset 0 0 0 1px var(--border-subtle);
 }
-.vp-seg .vp-ic svg.i {
+.vp-seg .vp-ic svg.i,
+.rail-vid .vp-ic svg.i {
   width: 12px;
   height: 12px;
 }
-.vp-seg:hover .vp-ic {
+.vp-seg:hover .vp-ic,
+.rail-vid:hover .vp-ic {
   color: var(--text);
 }
 .vp-seg .vp-label {
@@ -531,6 +597,68 @@ html[data-m='dark'] .sh-item.is-focus {
 .vp-seg.on em {
   color: var(--accent-text);
 }
+/* 訓練紀錄詳細資料欄的影片區塊：一列一個動作（或一天），點了在播放器播放；列的狀態沿用播放器的段落清單 */
+/* 詳細資料欄排成兩欄（1799 以下）時不要被旁邊的面板撐高 */
+.rail-video {
+  align-self: start;
+}
+.rail-vids {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 8px 8px;
+}
+.rail-vid {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 8px;
+  border-radius: var(--r);
+  font-size: 13px;
+  color: var(--text);
+  text-align: left;
+  transition: background 0.1s;
+}
+.rail-vid:hover {
+  background: var(--hover);
+}
+.rail-vid:active {
+  background: var(--pressed);
+}
+.rail-vid .rv-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rail-vid .rv-sub {
+  font-size: 12.5px;
+  color: var(--text-3);
+}
+.rail-vid .rv-date {
+  flex: none;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.rail-vid .rv-n {
+  flex: none;
+  margin-left: 4px;
+  font-size: 12px;
+  color: var(--text-4);
+  font-weight: 400;
+}
+.rail-vid em {
+  flex: none;
+  font-style: normal;
+  font-size: 12px;
+  color: var(--text-4);
+  font-variant-numeric: tabular-nums;
+}
+
 @media (max-width: 760px) {
   .vp-overlay {
     padding: 8px;

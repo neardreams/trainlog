@@ -1,6 +1,7 @@
 // 訓練影片：某筆紀錄對應合併影片中的哪幾段、YouTube 網址、時間顯示
 import type { DateStr } from '../dates';
 import type { Dataset, DayVideo, Entry, VideoSegment } from '../domain/types';
+import { getMaxWeight } from './sets';
 
 export interface EntryVideo {
   video: DayVideo;
@@ -19,6 +20,31 @@ export function entryVideo(ds: Dataset, entry: Entry): EntryVideo | undefined {
   if (!video) return undefined;
   const segments = segmentsOf(video, entry.exerciseId);
   return segments.length ? { video, segments } : undefined;
+}
+
+/** 這個動作所有拍了影片的日子，新到舊 */
+export function exerciseVideos(ds: Dataset, exerciseId: string): EntryVideo[] {
+  const out: EntryVideo[] = [];
+  for (const e of ds.entriesByExercise.get(exerciseId) ?? []) {
+    const ev = entryVideo(ds, e);
+    if (ev) out.push(ev);
+  }
+  return out.reverse();
+}
+
+/**
+ * 最重那一組在影片中的段落（破紀錄的那一組）：同重量有好幾組時取第一組；
+ * 片段標不出組號、或最重的那組沒拍到時，取這個動作的第一段
+ */
+export function topSetSegment(entry: Entry, segments: readonly VideoSegment[]): VideoSegment | undefined {
+  const max = getMaxWeight(entry.sets);
+  const top =
+    max == null
+      ? undefined
+      : segments
+          .filter((s) => s.set != null && entry.sets[s.set - 1]?.weightKg === max)
+          .sort((x, y) => (x.set ?? 0) - (y.set ?? 0) || x.start - y.start)[0];
+  return top ?? segments[0];
 }
 
 /** 直式影片（高 > 寬），播放器用 9:16 */
@@ -45,10 +71,17 @@ export function youtubeUrl(youtubeId: string, start = 0): string {
   return `https://youtu.be/${youtubeId}${t > 0 ? `?t=${t}` : ''}`;
 }
 
-/** 網站內嵌播放器的網址（不留 Cookie 的網域）；從 start 秒開始自動播放、結束時不推薦其他頻道的影片 */
-export function youtubeEmbedUrl(youtubeId: string, start = 0): string {
+/** 內嵌播放器的網域（不留 Cookie）；網頁和播放器之間的訊息只收這個來源 */
+export const YOUTUBE_EMBED_ORIGIN = 'https://www.youtube-nocookie.com';
+
+/**
+ * 網站內嵌播放器的網址：從 start 秒開始自動播放、結束時不推薦其他頻道的影片。
+ * 有 origin（網站自己的網址）時開啟播放器的控制介面，網頁才能讓播放器跳段、播放
+ */
+export function youtubeEmbedUrl(youtubeId: string, start = 0, origin?: string): string {
   const t = Math.max(0, Math.floor(start));
-  return `https://www.youtube-nocookie.com/embed/${youtubeId}?start=${t}&autoplay=1&rel=0&playsinline=1`;
+  const api = origin ? `&enablejsapi=1&origin=${encodeURIComponent(origin)}` : '';
+  return `${YOUTUBE_EMBED_ORIGIN}/embed/${youtubeId}?start=${t}&autoplay=1&rel=0&playsinline=1${api}`;
 }
 
 /** 秒數 → m:ss（滿一小時為 h:mm:ss），與 YouTube 章節時間的寫法相同 */

@@ -26,6 +26,7 @@ import {
 } from '@trainlog/core';
 import { Heatmap, KSpark, WeekChart, type WeekMetric } from '@/components/charts';
 import { Delta, GDot, PageHead, Seg, Status } from '@/components/ui';
+import { DayVideoButton, TopSetButton } from '@/components/VideoLinks';
 import { gColor, useCrumbs } from '@/lib/chrome';
 import { Icon, type IconName } from '@/lib/icons';
 import { TODAY } from '@/lib/today';
@@ -273,6 +274,7 @@ export function DashboardPage() {
               {allPrs.slice(0, 6).map((p) => {
                 const ex = ds.exerciseById.get(p.exerciseId);
                 if (!ex) return null;
+                const entry = ds.entriesByDate.get(p.date)?.find((e) => e.exerciseId === p.exerciseId);
                 return (
                   <div className="drow" key={`${p.exerciseId}${p.date}`} onClick={() => openEx(ex.id)}>
                     <GDot group={ex.group} />
@@ -282,6 +284,7 @@ export function DashboardPage() {
                         {md(p.date)} · {daysLabel(daysAgo(p.date, TODAY))} · 原紀錄 {fmtN(p.from)} kg
                       </div>
                     </div>
+                    {entry && <TopSetButton entry={entry} />}
                     <div className="dv">
                       {fmtN(p.to)}
                       <small>kg</small>
@@ -325,6 +328,7 @@ export function DashboardPage() {
                         ))}
                       </div>
                     </div>
+                    <DayVideoButton date={d} variant="compact" />
                     <div className="dv">
                       {v ? (
                         <>

@@ -36,7 +36,7 @@ export function DayCell({
         selected && 'active-sel',
       )}
       data-date={date}
-      title={`${slash(date)}（${dowOf(date)}）${groups.length ? ` · ${groups.join('、')}` : ''}`}
+      title={`${slash(date)}（${dowOf(date)}）${groups.length ? ` · ${groups.join('、')}` : ''}${ds.videosByDate.has(date) ? ' · 有影片' : ''}`}
       {...(clickable
         ? {
             role: 'button',

@@ -10,6 +10,7 @@ import {
   dayVideo,
   deltaOf,
   entryVideo,
+  exerciseVideos,
   fmtClock,
   exercisesCsv,
   formatSets,
@@ -31,6 +32,7 @@ import {
   setBlocks,
   setRuns,
   stripJournalHeading,
+  topSetSegment,
   youtubeEmbedUrl,
   youtubeUrl,
   type Entry,
@@ -315,6 +317,44 @@ describe('影片', () => {
     expect(segmentAt(vid.segments, 99.9)?.label).toBe('暖身');
     expect(segmentAt(vid.segments, 120)).toBeUndefined();
   });
+  it('這個動作所有拍了影片的日子（新到舊）', () => {
+    // 找同一個動作的另一天，也做一支影片
+    const other = ds.entriesByExercise.get(a.exerciseId)!.find((e) => e.date < date)!;
+    const v = videos();
+    v.videos.push({
+      date: other.date,
+      youtube_id: 'zyxWVU_98-7',
+      duration_sec: 60,
+      canvas: '1920x1080',
+      title: `${other.date} 測試`,
+      segments: [{ exercise_id: a.exerciseId, start: 0, end: 30, label: '片段 1' }],
+    });
+    const r = parsed(v);
+    if (!r.ok) throw new Error(r.issues.join('\n'));
+    expect(exerciseVideos(r.dataset, a.exerciseId).map((x) => [x.video.date, x.segments.length])).toEqual([
+      [date, 2],
+      [other.date, 1],
+    ]);
+    expect(exerciseVideos(r.dataset, b.exerciseId)).toEqual([]);
+  });
+  it('最重那一組的段落', () => {
+    const seg = (start: number, set?: number) => ({
+      exerciseId: a.exerciseId,
+      start,
+      end: start + 10,
+      label: '',
+      ...(set ? { set } : {}),
+    });
+    const e = (...w: (number | null)[]) => ({ ...a, sets: w.map((weightKg) => ({ weightKg, reps: 5 })) });
+    // 第 3 組最重
+    expect(topSetSegment(e(60, 70, 80), [seg(0, 1), seg(10, 2), seg(20, 3)])?.start).toBe(20);
+    // 同重量取第一組（不管片段順序）
+    expect(topSetSegment(e(60, 80, 80), [seg(0, 3), seg(10, 2)])?.start).toBe(10);
+    // 最重的組沒拍到、或沒有組號、或沒有重量：取第一段
+    expect(topSetSegment(e(60, 80), [seg(5, 1), seg(15)])?.start).toBe(5);
+    expect(topSetSegment(e(null, null), [seg(7), seg(17, 2)])?.start).toBe(7);
+    expect(topSetSegment(e(60), [])).toBeUndefined();
+  });
   it('YouTube ID 格式錯誤會失敗', () => {
     const v = videos();
     v.videos[0]!.youtube_id = 'short';
@@ -352,6 +392,10 @@ describe('影片', () => {
     );
     expect(youtubeEmbedUrl('abcDEF_12-3', 32.31)).toBe(
       'https://www.youtube-nocookie.com/embed/abcDEF_12-3?start=32&autoplay=1&rel=0&playsinline=1',
+    );
+    expect(youtubeEmbedUrl('abcDEF_12-3', 5, 'https://trainlog.x-hu.com')).toBe(
+      'https://www.youtube-nocookie.com/embed/abcDEF_12-3?start=5&autoplay=1&rel=0&playsinline=1' +
+        '&enablejsapi=1&origin=https%3A%2F%2Ftrainlog.x-hu.com',
     );
     expect(fmtClock(0)).toBe('0:00');
     expect(fmtClock(75.6)).toBe('1:15');

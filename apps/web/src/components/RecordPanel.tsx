@@ -18,7 +18,7 @@ import {
 } from '@trainlog/core';
 import { Sparkline } from './charts';
 import { Count, DateCell, Empty, ExhBadge, Sets } from './ui';
-import { VideoButton } from './VideoLinks';
+import { ExerciseVideosButton, VideoButton } from './VideoLinks';
 import { Icon } from '@/lib/icons';
 import { TODAY } from '@/lib/today';
 import { useDs } from '@/lib/useDs';
@@ -179,6 +179,7 @@ export function RecordPanel({
           </button>
         ))}
         <span className="rec-act">
+          <ExerciseVideosButton exerciseId={ex.id} />
           {!inDay && last && (
             <button
               className="btn btn-ghost"

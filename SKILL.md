@@ -144,6 +144,7 @@ cd <trainlog> && pnpm validate:data
 ```bash
 cd <trainlog>
 git add data/journals_raw.json data/training_data.json data/.sync_hashes.json
+# 有更新影片清單時也加上 data/videos.json（見「訓練影片」）
 git commit -m "sync: 更新日誌 $(date +%Y-%m-%d)"
 git push origin main
 ```
@@ -165,6 +166,45 @@ npx wrangler deploy
 若已在 Cloudflare 控制台把 Worker 連上 GitHub（push 自動部署），這一步可省略。
 
 ---
+
+## 訓練影片（data/videos.json）
+
+訓練影片的原檔、合併影片和上傳紀錄都放在 `local-media/training/`。這個資料夾只在本機：已列在 `.git/info/exclude`，不 commit 也不部署。
+
+```
+local-media/training/
+├── <YYYY-MM-DD>/<動作名稱>/IMG_xxxx.MOV   ← 依日期、動作分類好的原檔（另有「待確認」「非訓練片段」）
+├── _catalog/
+│   ├── classification-decisions.json       ← 每支原檔的分類
+│   └── review-2026-10-29.json              ← 逐支檢查結果：動作、第幾組、左右、章節標籤
+└── _render/
+    ├── <YYYY-MM-DD>.mp4 / .json            ← 每天合併成一支（1080p、30fps、SDR）＋章節與各段時間
+    └── upload/
+        ├── manifest.json                   ← 每支的 YouTube 標題、說明欄（章節＋紀錄＋日誌原文）
+        └── results.json                    ← 已上傳的影片 ID（上傳者寫入）
+```
+
+流程（新影片進來時）：
+1. 把影片依日期、動作分類到 `local-media/training/<日期>/<動作名稱>/`。
+2. 逐支看過，確認動作，並判斷是第幾組、左邊還是右邊：
+   - 影片不一定每組都錄，也可能有暖身、重錄，不能假設第 N 支＝第 N 組；
+   - 不確定的章節標成「片段 N」。
+3. 每天合併成一支：統一 1080p、30fps、SDR、H.264；章節時間用實際轉出來的長度計算。
+4. 上傳到 YouTube「Marco's workout」頻道，瀏覽權限設為「不公開」：
+   - 標題和說明欄照 `manifest.json` 填；
+   - 影片 ID 寫進 `results.json`。
+5. 產生影片清單並驗證：
+   ```bash
+   python scripts/build_videos_json.py --render-dir local-media/training/_render --data-dir data
+   pnpm validate:data
+   ```
+   驗證會檢查：每一段都對得到當天那個動作的訓練紀錄、組號不超過組數、時間不重疊。
+6. 照 Step 4、Step 5 commit（含 `data/videos.json`）並部署。
+
+注意：
+- 直式而且 3 分鐘以內的影片會被 YouTube 當成 Shorts，手機上不顯示章節、也不能跳到指定時間，這種日子改用橫式輸出。
+- 用未經 Google 稽核的 API 上傳，影片會被鎖成「私人」，所以上傳要透過 YouTube Studio 網頁。
+- YouTube 只靠說明欄的時間戳記產生章節：第一個從 0:00 開始、至少 3 段、每段至少 10 秒。播放器要顯示章節，頻道可能需要啟用「進階功能」。
 
 ## 首次使用（init-baseline）
 

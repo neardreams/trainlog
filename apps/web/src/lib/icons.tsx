@@ -24,6 +24,7 @@ import {
   Menu,
   Moon,
   PanelLeft,
+  Play,
   Rows3,
   Rows4,
   Search,
@@ -64,6 +65,7 @@ const ICONS = {
   flame: Flame,
   weight: Dumbbell,
   clock: Clock,
+  play: Play,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof ICONS;

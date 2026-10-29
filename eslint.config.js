@@ -31,6 +31,7 @@ export default tseslint.config(
       'redesign/**',
       'scripts/**',
       'dist-legacy/**',
+      'local-media/**',
       'index.html',
       'apps/mobile/android/**',
       'apps/mobile/ios/**',

@@ -75,7 +75,60 @@ export const RawJournalsSchema = z.record(
   z.string(),
 );
 
+/** data/videos.json：每個訓練日合併成一支 YouTube 影片，segments 是影片中各段（章節）的時間 */
+export const RawVideoSegmentSchema = z
+  .object({
+    exercise_id: z.string().regex(/^[a-z0-9_]+$/, 'exercise_id 必須是小寫英文、數字與底線'),
+    start: z.number().min(0),
+    end: z.number(),
+    label: z.string().min(1),
+    set: z.number().int().positive().nullish(),
+    side: z.enum(['左', '右']).nullish(),
+  })
+  .strict()
+  .refine((s) => s.end > s.start, '片段的結束時間必須晚於開始時間');
+
+export const RawDayVideoSchema = z
+  .object({
+    date: z.string().regex(DATE_RE, '日期必須是 YYYY-MM-DD'),
+    youtube_id: z.string().regex(/^[A-Za-z0-9_-]{11}$/, 'YouTube 影片 ID 必須是 11 個字元'),
+    duration_sec: z.number().positive(),
+    title: z.string().min(1),
+    segments: z.array(RawVideoSegmentSchema).min(1),
+  })
+  .strict()
+  .superRefine((v, ctx) => {
+    v.segments.forEach((s, i) => {
+      const prev = v.segments[i - 1];
+      if (prev && s.start < prev.end - 0.01)
+        ctx.addIssue({
+          code: 'custom',
+          path: ['segments', i, 'start'],
+          message: '片段必須依時間排序且不重疊',
+        });
+      if (s.end > v.duration_sec + 0.5)
+        ctx.addIssue({ code: 'custom', path: ['segments', i, 'end'], message: '片段超過影片長度' });
+    });
+  });
+
+export const RawVideosSchema = z
+  .object({ videos: z.array(RawDayVideoSchema) })
+  .strict()
+  .superRefine((d, ctx) => {
+    const dates = new Set<string>();
+    d.videos.forEach((v, i) => {
+      if (dates.has(v.date))
+        ctx.addIssue({
+          code: 'custom',
+          path: ['videos', i, 'date'],
+          message: `同一天只能有一支影片：${v.date}`,
+        });
+      dates.add(v.date);
+    });
+  });
+
 export type RawTrainingData = z.infer<typeof RawTrainingDataSchema>;
 export type RawExercise = z.infer<typeof RawExerciseSchema>;
 export type RawHistoryEntry = z.infer<typeof RawHistoryEntrySchema>;
 export type RawJournals = z.infer<typeof RawJournalsSchema>;
+export type RawVideos = z.infer<typeof RawVideosSchema>;

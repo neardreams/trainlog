@@ -18,12 +18,13 @@ import {
 } from '@trainlog/core';
 import { VolCell } from './RecordPanel';
 import { ExhBadge, GDot, Sets } from './ui';
+import { VideoButton } from './VideoLinks';
 import { Icon } from '@/lib/icons';
+import { PEEK_ATTR } from '@/lib/peek';
 import { TODAY } from '@/lib/today';
 import { useDs } from '@/lib/useDs';
 
-/** 點這些元素（訓練紀錄的動作列）時不關閉側欄，直接換成新的動作 */
-export const PEEK_ATTR = 'data-peek';
+export { PEEK_ATTR };
 
 export function HistorySheet({
   ex,
@@ -130,6 +131,7 @@ export function HistorySheet({
                     </span>
                     {f && <span className="sh-here">目前查看</span>}
                     <span className="sh-badges">
+                      <VideoButton entry={h} />
                       {prs.has(h.date) && (
                         <span className="badge tone-ok">
                           <Icon name="trophy" />

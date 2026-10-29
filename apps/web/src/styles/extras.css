@@ -319,6 +319,42 @@ html[data-m='dark'] .sh-item.is-focus {
   color: var(--accent-fg);
 }
 
+/* 訓練影片：「影片」按鈕和「歷史」按鈕排在同一列；選單列出這個動作在當天影片中的各段 */
+.row-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+.row-acts .hist-btn,
+.sh-badges .video-btn {
+  margin-top: 0;
+}
+.video-btn .count {
+  margin-left: 2px;
+}
+.video-btn.compact {
+  padding: 0 6px;
+}
+.video-menu {
+  max-width: min(360px, calc(100vw - 32px));
+}
+.video-menu .menu-item {
+  height: auto;
+  min-height: 32px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.video-menu .menu-item svg.i {
+  flex: none;
+  color: var(--text-3);
+}
+.video-menu .vm-label {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 /* 訓練紀錄：1280–1799 寬時右側詳細資料欄改排到下方（同 ≤1279 的排法），
    否則表格只剩約 600–950px，扣掉固定欄寬（依部位分組時更多）後「感受度」「動作提示」會被擠到幾乎沒有寬度 */
 @media (min-width: 1280px) and (max-width: 1799px) {

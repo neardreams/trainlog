@@ -9,7 +9,7 @@
 個人重量訓練紀錄與分析工具。
 
 - **資料來源**：使用者在 Apple 日誌（Apple Journal）寫訓練日記 → 匯出 HTML → Python 腳本同步成純文字 → AI 依語意整理成結構化資料（`data/training_data.json`）。
-- **目前的前端**：`apps/web`（React），開頁時讀 `data/training_data.json`、`data/journals_raw.json`。GitHub（repo：`neardreams/trainlog`）**只當程式碼倉庫**；正式網站部署在 **Cloudflare Workers**：https://trainlog.x-hu.com（`wrangler.jsonc`，自訂網域、不使用 workers.dev；`pnpm build && npx wrangler deploy`，帳號已用 `wrangler login` 登入）。只公開 `apps/web/dist/`（網頁、兩個 JSON、授權清單），**絕不能把整個 repo 當靜態目錄**。舊版 `generate_v6.py`／`index.html` 已停用（2026-10-21 切換），尚未移到 `legacy/`。
+- **目前的前端**：`apps/web`（React），開頁時讀 `data/training_data.json`、`data/journals_raw.json`，以及可選的 `data/videos.json`（訓練影片的 YouTube 連結）。GitHub（repo：`neardreams/trainlog`）**只當程式碼倉庫**；正式網站部署在 **Cloudflare Workers**：https://trainlog.x-hu.com（`wrangler.jsonc`，自訂網域、不使用 workers.dev；`pnpm build && npx wrangler deploy`，帳號已用 `wrangler login` 登入）。只公開 `apps/web/dist/`（網頁、data/ 的 JSON（`training_data.json`、`journals_raw.json`、有的話 `videos.json`）、授權清單），**絕不能把整個 repo 當靜態目錄**。舊版 `generate_v6.py`／`index.html` 已停用（2026-10-21 切換），尚未移到 `legacy/`。
 - **目標**：改寫成 React 網頁（現在），之後補 React Native App（Expo），兩者共用 TypeScript 的資料型別、計算邏輯與設計 token。
 
 ### 使用者與語言
@@ -93,7 +93,8 @@ trainlog/
 | 單元測試 | `pnpm test` |
 | 資料驗證 | `pnpm validate:data`（用 `packages/core` 的 zod schema 驗證 `data/*.json`） |
 | 畫面截圖測試（預定） | `pnpm test:e2e`（Playwright） |
-| 建置 | `pnpm build` → `apps/web/dist`（只複製 data/ 的兩個 JSON） |
+| 建置 | `pnpm build` → `apps/web/dist`（只複製 data/ 的 `training_data.json`、`journals_raw.json`，以及存在時的 `videos.json`） |
+| 產生影片清單 | `python scripts/build_videos_json.py --render-dir local-media/training/_render --data-dir data`（見 SKILL.md「訓練影片」） |
 | 程式檢查 | `pnpm lint`（ESLint＋Prettier） |
 | 授權檢查 | `pnpm licenses:check` |
 | 部署網站 | `pnpm build && npx wrangler deploy` |
@@ -139,6 +140,27 @@ type HistoryEntry = {
 }
 ```
 `journals_raw.json`：`{ "YYYY-MM-DD": "日誌原文" }`，原文第一行通常是 `# 日期`，顯示時要去掉。
+
+`videos.json`（可選；沒有這個檔案時網站照常運作）：每個訓練日的影片合併成一支 YouTube 不公開影片，segments 是影片中的各段（也是 YouTube 說明欄的章節）。由 `scripts/build_videos_json.py` 產生，不要手動編輯。
+```ts
+type Videos = {
+  videos: {
+    date: string          // YYYY-MM-DD，同一天只能有一支
+    youtube_id: string    // 11 字元
+    duration_sec: number
+    title: string
+    segments: {           // 依時間排序、不重疊、不超過影片長度
+      exercise_id: string // 必須對得到當天這個動作的訓練紀錄
+      start: number       // 秒
+      end: number
+      label: string       // 章節標籤，不含動作名稱：「第 3 組 80kg×6」「片段 5（左）」「暖身」
+      set?: number        // 能確定是第幾組時才有，不能超過那筆紀錄的組數
+      side?: '左' | '右'
+    }[]
+  }[]
+}
+```
+網頁上每筆紀錄的「影片」按鈕列出該動作在當天影片中的各段，連到 `https://youtu.be/<id>?t=<秒>`。
 
 ### 計算定義（全部放在 `packages/core`，必須有單元測試）
 這些定義沿用舊版 `generate_v6.py`，改動前要先問使用者。
@@ -227,7 +249,8 @@ type HistoryEntry = {
 5. 回報時照實說：哪些驗證過、哪些沒有（例如「沒有實際下載 CSV」）。
 
 ### 資料
-- **不要手動編輯 `data/journals_raw.json`、`data/.sync_hashes.json`、`index.html`**；它們是腳本產物。
+- **不要手動編輯 `data/journals_raw.json`、`data/.sync_hashes.json`、`data/videos.json`、`index.html`**；它們是腳本產物。
+- `local-media/`（訓練影片原檔、合併影片、上傳紀錄）只在本機，已列在 `.git/info/exclude`、ESLint 與 Prettier 的忽略清單；不要 commit 或部署其中任何檔案。
 - `data/training_data.json` 只透過 `SKILL.md` 的流程更新；只追加、不覆蓋既有紀錄。
 - 不要 commit `data/.pending_updates.json`。
 - 衍生數據（容量、PR、統計）在前端由 `packages/core` 計算，不要寫回 JSON。

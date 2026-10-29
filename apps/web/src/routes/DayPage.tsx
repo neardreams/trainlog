@@ -32,6 +32,7 @@ import {
 import { HistorySheet, PEEK_ATTR } from '@/components/HistorySheet';
 import { RecordPanel, VolCell } from '@/components/RecordPanel';
 import { DateCell, Empty, ExhBadge, GDot, PageHead, Seg, Sets } from '@/components/ui';
+import { DayVideoLink, VideoButton } from '@/components/VideoLinks';
 import { gColor, useCrumbs, type Crumb } from '@/lib/chrome';
 import { Icon } from '@/lib/icons';
 import { TODAY } from '@/lib/today';
@@ -126,14 +127,22 @@ function RangeTable({
               >
                 {showDate && (
                   <DateCell date={e.date} onOpen={() => onOpenDay(e.date)}>
-                    {hist}
+                    <span className="row-acts">
+                      {hist}
+                      <VideoButton entry={e} />
+                    </span>
                   </DateCell>
                 )}
                 {showName && (
                   <td className="c-name">
                     <GDot group={ex.group} className="tw:mr-2" />
                     {ex.name}
-                    {!showDate && hist}
+                    {!showDate && (
+                      <span className="row-acts">
+                        {hist}
+                        <VideoButton entry={e} />
+                      </span>
+                    )}
                   </td>
                 )}
                 <td className="c-sets">
@@ -686,6 +695,7 @@ export function DayPage() {
                 返回 {md(date)}
               </button>
             )}
+            {!drillEx && range === 0 && <DayVideoLink date={date} />}
             <div className="btn-group">
               <button
                 className="btn btn-icon"

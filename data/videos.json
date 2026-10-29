@@ -1,0 +1,378 @@
+{
+  "videos": [
+    {
+      "date": "2026-02-04",
+      "youtube_id": "7pbBffak09k",
+      "duration_sec": 103.13,
+      "title": "2026/02/04（三）坐姿單手啞鈴肩推、半跪姿單手繩索划船",
+      "segments": [
+        {
+          "exercise_id": "seated_db_press_single",
+          "start": 0.0,
+          "end": 32.31,
+          "label": "片段 1（左）",
+          "side": "左"
+        },
+        {
+          "exercise_id": "seated_db_press_single",
+          "start": 32.31,
+          "end": 50.58,
+          "label": "片段 2（右）",
+          "side": "右"
+        },
+        {
+          "exercise_id": "half_kneeling_cable_row",
+          "start": 50.58,
+          "end": 72.22,
+          "label": "片段 1（左）",
+          "side": "左"
+        },
+        {
+          "exercise_id": "half_kneeling_cable_row",
+          "start": 72.22,
+          "end": 103.13,
+          "label": "片段 2（右）",
+          "side": "右"
+        }
+      ]
+    },
+    {
+      "date": "2026-02-09",
+      "youtube_id": "uvA6LtIwbXg",
+      "duration_sec": 189.507,
+      "title": "2026/02/09（一）熊抱槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "zercher_squat",
+          "start": 0.0,
+          "end": 45.333,
+          "label": "第 1 組 60kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "zercher_squat",
+          "start": 45.333,
+          "end": 93.173,
+          "label": "第 2 組 60kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "zercher_squat",
+          "start": 93.173,
+          "end": 139.307,
+          "label": "第 3 組 60kg×10",
+          "set": 3
+        },
+        {
+          "exercise_id": "zercher_squat",
+          "start": 139.307,
+          "end": 189.507,
+          "label": "第 4 組 60kg×10",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-02-10",
+      "youtube_id": "7YLfrM7liP4",
+      "duration_sec": 305.463,
+      "title": "2026/02/10（二）後腳抬高蹲",
+      "segments": [
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 0.0,
+          "end": 32.21,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 32.21,
+          "end": 79.343,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 79.343,
+          "end": 124.51,
+          "label": "片段 3"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 124.51,
+          "end": 170.08,
+          "label": "片段 4（右）",
+          "side": "右"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 170.08,
+          "end": 209.413,
+          "label": "片段 5"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 209.413,
+          "end": 254.993,
+          "label": "片段 6"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 254.993,
+          "end": 305.463,
+          "label": "片段 7"
+        }
+      ]
+    },
+    {
+      "date": "2026-02-12",
+      "youtube_id": "nbXp-YN0DY4",
+      "duration_sec": 503.32,
+      "title": "2026/02/12（四）地板槓鈴臥推、坐姿單手啞鈴肩推",
+      "segments": [
+        {
+          "exercise_id": "floor_bench_press",
+          "start": 0.0,
+          "end": 67.433,
+          "label": "第 1 組 30kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "floor_bench_press",
+          "start": 67.433,
+          "end": 127.603,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "floor_bench_press",
+          "start": 127.603,
+          "end": 181.97,
+          "label": "片段 3"
+        },
+        {
+          "exercise_id": "floor_bench_press",
+          "start": 181.97,
+          "end": 234.803,
+          "label": "片段 4"
+        },
+        {
+          "exercise_id": "floor_bench_press",
+          "start": 234.803,
+          "end": 289.17,
+          "label": "片段 5"
+        },
+        {
+          "exercise_id": "seated_db_press_single",
+          "start": 289.17,
+          "end": 398.92,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "seated_db_press_single",
+          "start": 398.92,
+          "end": 503.32,
+          "label": "片段 2"
+        }
+      ]
+    },
+    {
+      "date": "2026-02-13",
+      "youtube_id": "kL7zdkpvC1M",
+      "duration_sec": 342.377,
+      "title": "2026/02/13（五）SSB 背槓深蹲、直臂下拉（Cable）",
+      "segments": [
+        {
+          "exercise_id": "ssb_squat",
+          "start": 0.0,
+          "end": 45.37,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "ssb_squat",
+          "start": 45.37,
+          "end": 101.11,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "ssb_squat",
+          "start": 101.11,
+          "end": 161.177,
+          "label": "片段 3"
+        },
+        {
+          "exercise_id": "straight_arm_pulldown",
+          "start": 161.177,
+          "end": 210.543,
+          "label": "第 1 組 25kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "straight_arm_pulldown",
+          "start": 210.543,
+          "end": 264.077,
+          "label": "第 2 組 25kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "straight_arm_pulldown",
+          "start": 264.077,
+          "end": 296.31,
+          "label": "第 3 組 25kg×10",
+          "set": 3
+        },
+        {
+          "exercise_id": "straight_arm_pulldown",
+          "start": 296.31,
+          "end": 342.377,
+          "label": "第 4 組 25kg×10",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-02-18",
+      "youtube_id": "hCEU6iayA7M",
+      "duration_sec": 278.317,
+      "title": "2026/02/18（三）壺鈴硬拉、後腳抬高蹲",
+      "segments": [
+        {
+          "exercise_id": "kettlebell_rdl",
+          "start": 0.0,
+          "end": 49.77,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 49.77,
+          "end": 148.703,
+          "label": "第 1 組 12.5kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 148.703,
+          "end": 254.837,
+          "label": "第 2 組 12.5kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 254.837,
+          "end": 278.317,
+          "label": "片段 5"
+        }
+      ]
+    },
+    {
+      "date": "2026-02-20",
+      "youtube_id": "hoN-z6Cdw1I",
+      "duration_sec": 128.017,
+      "title": "2026/02/20（五）SSB 背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "ssb_squat",
+          "start": 0.0,
+          "end": 60.167,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "ssb_squat",
+          "start": 60.167,
+          "end": 128.017,
+          "label": "片段 2"
+        }
+      ]
+    },
+    {
+      "date": "2026-02-23",
+      "youtube_id": "Aq23UyjrNXM",
+      "duration_sec": 242.933,
+      "title": "2026/02/23（一）熊抱槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "zercher_squat",
+          "start": 0.0,
+          "end": 57.7,
+          "label": "第 1 組 60kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "zercher_squat",
+          "start": 57.7,
+          "end": 121.033,
+          "label": "第 2 組 60kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "zercher_squat",
+          "start": 121.033,
+          "end": 185.433,
+          "label": "第 3 組 60kg×10",
+          "set": 3
+        },
+        {
+          "exercise_id": "zercher_squat",
+          "start": 185.433,
+          "end": 242.933,
+          "label": "第 4 組 60kg×10",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-02-24",
+      "youtube_id": "voYWjCIkoGw",
+      "duration_sec": 495.14,
+      "title": "2026/02/24（二）壺鈴硬拉、後腳抬高蹲",
+      "segments": [
+        {
+          "exercise_id": "kettlebell_rdl",
+          "start": 0.0,
+          "end": 43.7,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 43.7,
+          "end": 157.567,
+          "label": "第 1 組 15kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 157.567,
+          "end": 268.033,
+          "label": "第 2 組 15kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 268.033,
+          "end": 381.567,
+          "label": "第 3 組 15kg×10",
+          "set": 3
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 381.567,
+          "end": 495.14,
+          "label": "第 4 組 15kg×10",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-02-28",
+      "youtube_id": "5DU1RL0bLqk",
+      "duration_sec": 63.97,
+      "title": "2026/02/28（六）SSB 背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "ssb_squat",
+          "start": 0.0,
+          "end": 63.97,
+          "label": "片段 1"
+        }
+      ]
+    }
+  ]
+}

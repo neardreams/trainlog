@@ -9,6 +9,8 @@ SKILL.md
 CLAUDE.md
 README.md
 trainlog-update.skill
+# 本機的訓練影片與處理過程（不進 git，見 .git/info/exclude）
+local-media/
 # 產生物
 **/dist/
 **/node_modules/

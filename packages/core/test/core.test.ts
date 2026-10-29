@@ -7,7 +7,10 @@ import {
   avgExcludingCurrent,
   calcVolume,
   compareDays,
+  dayVideo,
   deltaOf,
+  entryVideo,
+  fmtClock,
   exercisesCsv,
   formatSets,
   getMaxWeight,
@@ -25,6 +28,7 @@ import {
   setBlocks,
   setRuns,
   stripJournalHeading,
+  youtubeUrl,
   type Entry,
 } from '../src';
 
@@ -230,5 +234,78 @@ describe('計算', () => {
     expect(legacyUrlToHash('?exercise=back_squat')).toBe('#/exercises?ex=back_squat');
     expect(legacyUrlToHash('?view=spec')).toBe('#/spec');
     expect(legacyUrlToHash('?m=dark')).toBeNull();
+  });
+});
+
+describe('影片', () => {
+  // 取 fixture 裡某天有兩個以上動作、且第一個動作有組數的日子，做一支假影片
+  const day = [...ds.entriesByDate.entries()].find(([, es]) => es.length >= 2 && es[0]!.sets.length >= 2)!;
+  const [date, [a, b]] = [day[0], day[1] as [Entry, Entry]];
+  const videos = () => ({
+    videos: [
+      {
+        date,
+        youtube_id: 'abcDEF_12-3',
+        duration_sec: 120,
+        title: `${date} 測試`,
+        segments: [
+          { exercise_id: a.exerciseId, start: 0, end: 40, label: '第 1 組', set: 1 },
+          { exercise_id: a.exerciseId, start: 40, end: 80, label: '片段 2', side: '左' },
+        ],
+      },
+    ],
+  });
+  const parsed = (v: unknown) => parseDataset(training, journals, v);
+
+  it('沒有 videos.json 時一樣通過，且沒有影片', () => {
+    const r = parseDataset(training, journals);
+    expect(r.ok && r.dataset.videosByDate.size).toBe(0);
+  });
+  it('影片對應到當天那個動作的各段', () => {
+    const r = parsed(videos());
+    if (!r.ok) throw new Error(r.issues.join('\n'));
+    expect(dayVideo(r.dataset, date)?.youtubeId).toBe('abcDEF_12-3');
+    const ev = entryVideo(r.dataset, a);
+    expect(ev?.segments.map((s) => [s.start, s.label, s.set ?? null, s.side ?? null])).toEqual([
+      [0, '第 1 組', 1, null],
+      [40, '片段 2', null, '左'],
+    ]);
+    expect(entryVideo(r.dataset, b)).toBeUndefined();
+  });
+  it('YouTube ID 格式錯誤會失敗', () => {
+    const v = videos();
+    v.videos[0]!.youtube_id = 'short';
+    expect(parsed(v).ok).toBe(false);
+  });
+  it('對不到訓練紀錄的片段會失敗', () => {
+    const v = videos();
+    v.videos[0]!.segments[0]!.exercise_id = 'no_such_exercise';
+    const r = parsed(v);
+    expect(!r.ok && r.issues.some((i) => i.includes('找不到'))).toBe(true);
+  });
+  it('組號超過當天組數會失敗', () => {
+    const v = videos();
+    v.videos[0]!.segments[0]!.set = a.sets.length + 1;
+    expect(parsed(v).ok).toBe(false);
+  });
+  it('片段重疊或超過影片長度會失敗', () => {
+    const overlap = videos();
+    overlap.videos[0]!.segments[1]!.start = 30;
+    expect(parsed(overlap).ok).toBe(false);
+    const tooLong = videos();
+    tooLong.videos[0]!.segments[1]!.end = 200;
+    expect(parsed(tooLong).ok).toBe(false);
+  });
+  it('同一天兩支影片會失敗', () => {
+    const v = videos();
+    v.videos.push(structuredClone(v.videos[0]!));
+    expect(parsed(v).ok).toBe(false);
+  });
+  it('網址與時間格式', () => {
+    expect(youtubeUrl('abcDEF_12-3')).toBe('https://youtu.be/abcDEF_12-3');
+    expect(youtubeUrl('abcDEF_12-3', 45.9)).toBe('https://youtu.be/abcDEF_12-3?t=45');
+    expect(fmtClock(0)).toBe('0:00');
+    expect(fmtClock(75.6)).toBe('1:15');
+    expect(fmtClock(3725)).toBe('1:02:05');
   });
 });

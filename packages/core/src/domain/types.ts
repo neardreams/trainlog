@@ -47,6 +47,27 @@ export interface Session {
   hasJournal: boolean;
 }
 
+/** 合併影片中的一段（YouTube 章節），對應某個動作的一組或一支原始片段 */
+export interface VideoSegment {
+  exerciseId: string;
+  /** 在合併影片中的開始／結束秒數 */
+  start: number;
+  end: number;
+  /** 章節標籤（不含動作名稱），例如「第 3 組 80kg×6」「片段 5」「暖身」 */
+  label: string;
+  set?: number;
+  side?: '左' | '右';
+}
+
+/** 一個訓練日合併成的一支 YouTube 影片（不公開） */
+export interface DayVideo {
+  date: DateStr;
+  youtubeId: string;
+  durationSec: number;
+  title: string;
+  segments: VideoSegment[];
+}
+
 export interface Dataset {
   groupOrder: string[];
   exercises: Exercise[];
@@ -59,4 +80,6 @@ export interface Dataset {
   trainingDates: DateStr[];
   sessions: Session[];
   journals: ReadonlyMap<DateStr, string>;
+  /** 每個訓練日的合併影片（沒有影片的日子不在裡面） */
+  videosByDate: ReadonlyMap<DateStr, DayVideo>;
 }

@@ -1,12 +1,16 @@
 // 現有 JSON → 領域模型。日後也是把 JSON 匯入資料庫的轉換程式。
 import type { DateStr } from '../dates';
-import type { Dataset, Entry, Exercise, Session } from '../domain/types';
-import type { RawJournals, RawTrainingData } from '../schema/raw';
+import type { Dataset, DayVideo, Entry, Exercise, Session } from '../domain/types';
+import type { RawJournals, RawTrainingData, RawVideos } from '../schema/raw';
 
 /** 去掉日誌原文第一行的「# 日期」標題 */
 export const stripJournalHeading = (text: string) => text.replace(/^#[^\n]*\n+/, '');
 
-export function fromRawJson(raw: RawTrainingData, rawJournals: RawJournals = {}): Dataset {
+export function fromRawJson(
+  raw: RawTrainingData,
+  rawJournals: RawJournals = {},
+  rawVideos: RawVideos = { videos: [] },
+): Dataset {
   const exercises: Exercise[] = raw.exercises.map((e, order) => ({
     id: e.id,
     name: e.name,
@@ -49,6 +53,25 @@ export function fromRawJson(raw: RawTrainingData, rawJournals: RawJournals = {})
     entryIds: (entriesByDate.get(date) ?? []).map((en) => en.id),
     hasJournal: journals.has(date),
   }));
+  const videosByDate = new Map<DateStr, DayVideo>(
+    rawVideos.videos.map((v) => [
+      v.date,
+      {
+        date: v.date,
+        youtubeId: v.youtube_id,
+        durationSec: v.duration_sec,
+        title: v.title,
+        segments: v.segments.map((s) => ({
+          exerciseId: s.exercise_id,
+          start: s.start,
+          end: s.end,
+          label: s.label,
+          ...(s.set != null ? { set: s.set } : {}),
+          ...(s.side ? { side: s.side } : {}),
+        })),
+      },
+    ]),
+  );
   return {
     groupOrder: raw.meta.group_order,
     exercises,
@@ -58,5 +81,6 @@ export function fromRawJson(raw: RawTrainingData, rawJournals: RawJournals = {})
     trainingDates,
     sessions,
     journals,
+    videosByDate,
   };
 }

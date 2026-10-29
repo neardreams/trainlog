@@ -18,6 +18,7 @@ import {
 } from '@trainlog/core';
 import { Sparkline } from './charts';
 import { Count, DateCell, Empty, ExhBadge, Sets } from './ui';
+import { VideoButton } from './VideoLinks';
 import { Icon } from '@/lib/icons';
 import { TODAY } from '@/lib/today';
 import { useDs } from '@/lib/useDs';
@@ -80,7 +81,9 @@ export function HistTable({
               <DateCell
                 date={h.date}
                 onOpen={() => void navigate({ to: '/days/$date', params: { date: h.date } })}
-              />
+              >
+                <VideoButton entry={h} compact />
+              </DateCell>
               <td className="c-sets">
                 <Sets entry={h} ex={ex} />
               </td>

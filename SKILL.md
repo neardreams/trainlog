@@ -169,42 +169,59 @@ npx wrangler deploy
 
 ## 訓練影片（data/videos.json）
 
-訓練影片的原檔、合併影片和上傳紀錄都放在 `local-media/training/`。這個資料夾只在本機：已列在 `.git/info/exclude`，不 commit 也不部署。
+訓練影片的原檔、合併影片和上傳紀錄都放在 `local-media/training/`。這個資料夾只在本機：已列在 `.git/info/exclude`，不 commit 也不部署。處理腳本在 `scripts/videos/`（Python 標準庫＋ffmpeg；有 NVIDIA 顯示卡時用 NVENC）。
 
 ```
 local-media/training/
 ├── <YYYY-MM-DD>/<動作名稱>/IMG_xxxx.MOV   ← 依日期、動作分類好的原檔（另有「待確認」「非訓練片段」）
 ├── _catalog/
-│   ├── classification-decisions.json       ← 每支原檔的分類
-│   └── review-2026-10-29.json              ← 逐支檢查結果：動作、第幾組、左右、章節標籤
+│   ├── probe.json                          ← 每支原檔的格式（probe.py）
+│   ├── review.json                         ← 逐支檢查結果：動作、第幾組、左右、章節標籤（review_apply.py）
+│   ├── moves.json                          ← 改判時搬檔的紀錄
+│   └── classification-decisions.json       ← 每支原檔的分類
+├── _review/                                ← 預覽圖、檢查批次、本機檢查頁（不公開）
 └── _render/
     ├── <YYYY-MM-DD>.mp4 / .json            ← 每天合併成一支（1080p、30fps、SDR）＋章節與各段時間
     └── upload/
-        ├── manifest.json                   ← 每支的 YouTube 標題、說明欄（章節＋紀錄＋日誌原文）
+        ├── excerpts.json                   ← 每天每個動作的日誌原文
+        ├── manifest.json、<日期>.txt        ← 每支的 YouTube 標題、說明欄（章節＋紀錄＋日誌原文）
+        ├── CODEX_TASK.md                   ← 給上傳者（Codex）的任務說明
         └── results.json                    ← 已上傳的影片 ID（上傳者寫入）
 ```
 
-流程（新影片進來時）：
-1. 把影片依日期、動作分類到 `local-media/training/<日期>/<動作名稱>/`。
-2. 逐支看過，確認動作，並判斷是第幾組、左邊還是右邊：
-   - 影片不一定每組都錄，也可能有暖身、重錄，不能假設第 N 支＝第 N 組；
-   - 不確定的章節標成「片段 N」。
-3. 每天合併成一支：統一 1080p、30fps、SDR、H.264；章節時間用實際轉出來的長度計算。
-4. 上傳到 YouTube「Marco's workout」頻道，瀏覽權限設為「不公開」：
-   - 標題和說明欄照 `manifest.json` 填；
-   - 影片 ID 寫進 `results.json`。
-5. 產生影片清單並驗證：
+### 新影片進來時
+
+1. 把影片依日期、動作分類到 `local-media/training/<日期>/<動作名稱>/`，不確定的放「待確認」。
+2. 量格式：`python scripts/videos/probe.py`
+3. 逐支檢查：
+   1. `python scripts/videos/review_prepare.py`：替還沒檢查的日子產生預覽圖和 `_review/batches/batch-N.json`。
+   2. 每個 batch 交給一個 AI 子代理，指示用 `scripts/videos/review-prompt.md`，輸出 `result-N.json`。檢查要判斷動作、第幾組、左右邊；影片不一定每組都錄，**不能假設第 N 支＝第 N 組**，不確定的標成「片段 N」。
+   3. `python scripts/videos/review_page.py` 產生 `_review/index.html`，用本機伺服器開給使用者看（只看標成「動作不同」「組數不確定」的）。使用者的修正要改進對應的 `result-N.json`。
+   4. `python scripts/videos/review_apply.py --dry-run` 先看要搬哪些檔，確認後去掉 `--dry-run` 執行。
+   5. 日期不確定的原檔（不是 iPhone 相機寫的拍攝時間，例如別人傳來的檔案）不會合併。確認日期後，搬到正確日期的資料夾、在 `review.json` 該筆改日期並加 `"dateConfirmed": true`，再跑一次 `probe.py`。
+4. 合併：`python scripts/videos/render.py --dry-run` 看每天的章節，沒問題就去掉 `--dry-run`；完成後跑 `python scripts/videos/verify_render.py`。章節標籤改了要重做時加 `--dates <日期> --redo`（分段檔沿用，幾秒就好）。
+5. 準備上傳：
+   1. `python scripts/videos/upload_prepare.py --excerpt-input`，把 `excerpt-input.json` 交給 AI，指示用 `scripts/videos/excerpt-prompt.md`；
+   2. `python scripts/videos/upload_prepare.py --add-excerpts <AI 的輸出>`：只收逐行和日誌一致的原文；
+   3. `python scripts/videos/upload_prepare.py` 產生 `manifest.json`、每天的 `.txt` 和 `CODEX_TASK.md`。說明欄要先給使用者看過再上傳。
+6. 上傳（使用者交給 Codex）：在 `_render/upload/` 執行
    ```bash
-   python scripts/build_videos_json.py --render-dir local-media/training/_render --data-dir data
+   codex exec -m gpt-6.1-terra -c 'model_reasoning_effort="xhigh"' -c 'service_tier="fast"' --skip-git-repo-check - < CODEX_TASK.md
+   ```
+   Codex 依 `results.json` 續傳，已傳的會跳過。上傳需要 Chrome 的 ChatGPT 擴充功能（開啟「允許存取檔案網址」）；Codex 的工具清單裡沒有那個瀏覽器工具時，它會停下來，晚點重開一個工作階段再試。Claude in Chrome 一次只能交給網頁 10 MB 的檔案，沒辦法上傳這些影片。
+7. 產生影片清單並驗證：
+   ```bash
+   python scripts/videos/build_videos_json.py
    pnpm validate:data
    ```
    驗證會檢查：每一段都對得到當天那個動作的訓練紀錄、組號不超過組數、時間不重疊。
-6. 照 Step 4、Step 5 commit（含 `data/videos.json`）並部署。
+8. 照 Step 4、Step 5 commit（含 `data/videos.json`）並部署。
 
-注意：
-- 直式而且 3 分鐘以內的影片會被 YouTube 當成 Shorts，手機上不顯示章節、也不能跳到指定時間，這種日子改用橫式輸出。
-- 用未經 Google 稽核的 API 上傳，影片會被鎖成「私人」，所以上傳要透過 YouTube Studio 網頁。
-- YouTube 只靠說明欄的時間戳記產生章節：第一個從 0:00 開始、至少 3 段、每段至少 10 秒。播放器要顯示章節，頻道可能需要啟用「進階功能」。
+### 注意
+- 直式而且 3 分鐘以內的影片會被 YouTube 當成 Shorts，手機上不顯示章節、也不能跳到指定時間；`render.py` 會把這種日子改成橫式輸出。
+- 用未經 Google 稽核的 API 上傳，影片會被永久鎖成「私人」，所以上傳要透過 YouTube Studio 網頁。
+- YouTube 只靠說明欄的時間戳記產生章節（第一個從 0:00 開始、每段至少 10 秒）。「Marco's workout」頻道已在 2026-10-29 啟用進階功能，章節會在影片處理完後出現，每日上傳上限也已提高。
+- `results.json` 可能帶 UTF-8 BOM（PowerShell 寫的）；腳本都用 `utf-8-sig` 讀。
 
 ## 首次使用（init-baseline）
 

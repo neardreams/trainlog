@@ -29,6 +29,7 @@ trainlog/
 │   ├── journals_raw.json      ← 日誌原文（腳本維護，勿手動改）
 │   └── .sync_hashes.json      ← 同步用的 HTML hash 基準
 ├── scripts/sync_journals.py   ← Apple 日誌 HTML → journals_raw.json（只用標準庫）
+├── scripts/videos/            ← 訓練影片：檢查、合併、上傳準備、videos.json（流程見 SKILL.md「訓練影片」）
 ├── generate_v6.py             ← 舊版生成器（已停用）
 ├── index.html                 ← 舊版頁面（已停用，生成物，勿手改）
 ├── wrangler.jsonc             ← Cloudflare 部署設定
@@ -94,7 +95,7 @@ trainlog/
 | 資料驗證 | `pnpm validate:data`（用 `packages/core` 的 zod schema 驗證 `data/*.json`） |
 | 畫面截圖測試（預定） | `pnpm test:e2e`（Playwright） |
 | 建置 | `pnpm build` → `apps/web/dist`（只複製 data/ 的 `training_data.json`、`journals_raw.json`，以及存在時的 `videos.json`） |
-| 產生影片清單 | `python scripts/build_videos_json.py --render-dir local-media/training/_render --data-dir data`（見 SKILL.md「訓練影片」） |
+| 訓練影片（檢查、合併、上傳準備、影片清單） | `python scripts/videos/<步驟>.py`，流程見 SKILL.md「訓練影片」 |
 | 程式檢查 | `pnpm lint`（ESLint＋Prettier） |
 | 授權檢查 | `pnpm licenses:check` |
 | 部署網站 | `pnpm build && npx wrangler deploy` |
@@ -141,7 +142,7 @@ type HistoryEntry = {
 ```
 `journals_raw.json`：`{ "YYYY-MM-DD": "日誌原文" }`，原文第一行通常是 `# 日期`，顯示時要去掉。
 
-`videos.json`（可選；沒有這個檔案時網站照常運作）：每個訓練日的影片合併成一支 YouTube 不公開影片，segments 是影片中的各段（也是 YouTube 說明欄的章節）。由 `scripts/build_videos_json.py` 產生，不要手動編輯。
+`videos.json`（可選；沒有這個檔案時網站照常運作）：每個訓練日的影片合併成一支 YouTube 不公開影片，segments 是影片中的各段（也是 YouTube 說明欄的章節）。由 `scripts/videos/build_videos_json.py` 產生，不要手動編輯。
 ```ts
 type Videos = {
   videos: {

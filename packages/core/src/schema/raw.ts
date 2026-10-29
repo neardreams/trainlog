@@ -93,6 +93,8 @@ export const RawDayVideoSchema = z
     date: z.string().regex(DATE_RE, '日期必須是 YYYY-MM-DD'),
     youtube_id: z.string().regex(/^[A-Za-z0-9_-]{11}$/, 'YouTube 影片 ID 必須是 11 個字元'),
     duration_sec: z.number().positive(),
+    /** 畫面尺寸「寬x高」：1080x1920 是直式、1920x1080 是橫式（網站播放器依此決定長寬比） */
+    canvas: z.string().regex(/^[1-9]\d*x[1-9]\d*$/, '畫面尺寸必須是「寬x高」，例如 1080x1920'),
     title: z.string().min(1),
     segments: z.array(RawVideoSegmentSchema).min(1),
   })

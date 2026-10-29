@@ -16,6 +16,7 @@ import {
   getMaxWeight,
   groupRangeEntries,
   heatLevel,
+  isPortrait,
   latestTrainingDate,
   legacyUrlToHash,
   mondayOf,
@@ -25,9 +26,12 @@ import {
   prevTrainingDate,
   rangeEntries,
   rangeStats,
+  segmentAt,
+  segmentsByExercise,
   setBlocks,
   setRuns,
   stripJournalHeading,
+  youtubeEmbedUrl,
   youtubeUrl,
   type Entry,
 } from '../src';
@@ -241,17 +245,19 @@ describe('影片', () => {
   // 取 fixture 裡某天有兩個以上動作、且第一個動作有組數的日子，做一支假影片
   const day = [...ds.entriesByDate.entries()].find(([, es]) => es.length >= 2 && es[0]!.sets.length >= 2)!;
   const [date, [a, b]] = [day[0], day[1] as [Entry, Entry]];
+  type Seg = { exercise_id: string; start: number; end: number; label: string; set?: number; side?: string };
   const videos = () => ({
     videos: [
       {
         date,
         youtube_id: 'abcDEF_12-3',
         duration_sec: 120,
+        canvas: '1080x1920',
         title: `${date} 測試`,
         segments: [
           { exercise_id: a.exerciseId, start: 0, end: 40, label: '第 1 組', set: 1 },
           { exercise_id: a.exerciseId, start: 40, end: 80, label: '片段 2', side: '左' },
-        ],
+        ] as Seg[],
       },
     ],
   });
@@ -271,6 +277,43 @@ describe('影片', () => {
       [40, '片段 2', null, '左'],
     ]);
     expect(entryVideo(r.dataset, b)).toBeUndefined();
+  });
+  it('畫面尺寸：直式／橫式', () => {
+    const r = parsed(videos());
+    if (!r.ok) throw new Error(r.issues.join('\n'));
+    const v = dayVideo(r.dataset, date)!;
+    expect([v.width, v.height, isPortrait(v)]).toEqual([1080, 1920, true]);
+    const land = videos();
+    land.videos[0]!.canvas = '1920x1080';
+    const r2 = parsed(land);
+    expect(r2.ok && isPortrait(dayVideo(r2.dataset, date)!)).toBe(false);
+  });
+  it('畫面尺寸缺少或格式錯誤會失敗', () => {
+    for (const canvas of [undefined, '1080', '1080×1920', '0x1920']) {
+      const v = videos();
+      if (canvas === undefined) delete (v.videos[0] as { canvas?: string }).canvas;
+      else v.videos[0]!.canvas = canvas;
+      expect(parsed(v).ok, String(canvas)).toBe(false);
+    }
+  });
+  it('依動作分組、找出某秒所在的段', () => {
+    const v = videos();
+    v.videos[0]!.segments.push(
+      { exercise_id: b.exerciseId, start: 80, end: 100, label: '暖身' },
+      { exercise_id: a.exerciseId, start: 100, end: 120, label: '片段 4' },
+    );
+    const r = parsed(v);
+    if (!r.ok) throw new Error(r.issues.join('\n'));
+    const vid = dayVideo(r.dataset, date)!;
+    // 同一個動作分在同一組（即使中間穿插別的動作），組依第一次出現的時間排序
+    expect(segmentsByExercise(vid).map((g) => [g.exerciseId, g.segments.map((s) => s.start)])).toEqual([
+      [a.exerciseId, [0, 40, 100]],
+      [b.exerciseId, [80]],
+    ]);
+    expect(segmentAt(vid.segments, 0)?.start).toBe(0);
+    expect(segmentAt(vid.segments, 40)?.start).toBe(40);
+    expect(segmentAt(vid.segments, 99.9)?.label).toBe('暖身');
+    expect(segmentAt(vid.segments, 120)).toBeUndefined();
   });
   it('YouTube ID 格式錯誤會失敗', () => {
     const v = videos();
@@ -304,6 +347,12 @@ describe('影片', () => {
   it('網址與時間格式', () => {
     expect(youtubeUrl('abcDEF_12-3')).toBe('https://youtu.be/abcDEF_12-3');
     expect(youtubeUrl('abcDEF_12-3', 45.9)).toBe('https://youtu.be/abcDEF_12-3?t=45');
+    expect(youtubeEmbedUrl('abcDEF_12-3')).toBe(
+      'https://www.youtube-nocookie.com/embed/abcDEF_12-3?start=0&autoplay=1&rel=0&playsinline=1',
+    );
+    expect(youtubeEmbedUrl('abcDEF_12-3', 32.31)).toBe(
+      'https://www.youtube-nocookie.com/embed/abcDEF_12-3?start=32&autoplay=1&rel=0&playsinline=1',
+    );
     expect(fmtClock(0)).toBe('0:00');
     expect(fmtClock(75.6)).toBe('1:15');
     expect(fmtClock(3725)).toBe('1:02:05');

@@ -149,6 +149,7 @@ type Videos = {
     date: string          // YYYY-MM-DD，同一天只能有一支
     youtube_id: string    // 11 字元
     duration_sec: number
+    canvas: string        // 畫面尺寸「寬x高」：'1080x1920' 直式、'1920x1080' 橫式（領域模型轉成 width／height，播放器依此用 9:16 或 16:9）
     title: string
     segments: {           // 依時間排序、不重疊、不超過影片長度
       exercise_id: string // 必須對得到當天這個動作的訓練紀錄
@@ -161,7 +162,7 @@ type Videos = {
   }[]
 }
 ```
-網頁上每筆紀錄的「影片」按鈕列出該動作在當天影片中的各段，連到 `https://youtu.be/<id>?t=<秒>`。
+網頁上每筆紀錄的「影片」按鈕列出該動作在當天影片中的各段，點了在網站內的播放器（`VideoPlayerDialog`，內嵌 `https://www.youtube-nocookie.com/embed/<id>?start=<秒>…`）從那一段開始播，播放器旁列出這個動作的各段可直接跳段；訓練紀錄頁的「當天影片」從頭播，列出當天所有段落（依動作分組）。播放器另有「在 YouTube 開啟」（`https://youtu.be/<id>?t=<秒>`）。
 
 ### 計算定義（全部放在 `packages/core`，必須有單元測試）
 這些定義沿用舊版 `generate_v6.py`，改動前要先問使用者。

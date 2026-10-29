@@ -60,6 +60,9 @@ export function fromRawJson(
         date: v.date,
         youtubeId: v.youtube_id,
         durationSec: v.duration_sec,
+        // schema 已驗證是「寬x高」
+        width: Number(v.canvas.split('x')[0]),
+        height: Number(v.canvas.split('x')[1]),
         title: v.title,
         segments: v.segments.map((s) => ({
           exerciseId: s.exercise_id,

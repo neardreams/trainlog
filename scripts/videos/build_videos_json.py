@@ -2,7 +2,7 @@
 
 用法：python scripts/videos/build_videos_json.py [--render-dir DIR] [--data-dir DIR]
 讀取：
-  <render-dir>/<YYYY-MM-DD>.json      合併影片的章節與各段時間（render.py 產生）
+  <render-dir>/<YYYY-MM-DD>.json      合併影片的章節、各段時間與畫面尺寸 canvas（render.py 產生）
   <render-dir>/upload/results.json    已上傳的影片 ID（[{"date", "videoId", ...}]，上傳者寫入）
 只收已經有 YouTube ID 的日子；寫完請執行 pnpm validate:data。
 """
@@ -43,8 +43,12 @@ for date in sorted(uploaded):
         if len(sides) == 1 and None not in sides:
             seg["side"] = sides.pop()
         segments.append(seg)
+    # canvas（「寬x高」）決定網站播放器的長寬比：1080x1920 直式、1920x1080 橫式
+    if not day.get("canvas"):
+        warnings.append(f"{date}：{date}.json 沒有 canvas（畫面尺寸），略過")
+        continue
     videos.append({"date": date, "youtube_id": uploaded[date], "duration_sec": round(day["durationSec"], 3),
-                   "title": day["title"], "segments": segments})
+                   "canvas": day["canvas"], "title": day["title"], "segments": segments})
 
 out = os.path.join(a.data_dir, "videos.json")
 save(out, {"videos": videos}, indent=2)

@@ -15,6 +15,7 @@ import {
   Clock,
   Columns2,
   Download,
+  ExternalLink,
   Dumbbell,
   FileText,
   Flame,
@@ -66,6 +67,7 @@ const ICONS = {
   weight: Dumbbell,
   clock: Clock,
   play: Play,
+  external: ExternalLink,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof ICONS;

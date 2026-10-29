@@ -64,6 +64,9 @@ export interface DayVideo {
   date: DateStr;
   youtubeId: string;
   durationSec: number;
+  /** 畫面寬高（像素）；高 > 寬 是直式 */
+  width: number;
+  height: number;
   title: string;
   segments: VideoSegment[];
 }

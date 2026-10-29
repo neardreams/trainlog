@@ -220,7 +220,7 @@ local-media/training/
    python scripts/videos/build_videos_json.py
    pnpm validate:data
    ```
-   驗證會檢查：每一段都對得到當天那個動作的訓練紀錄、組號不超過組數、時間不重疊。
+   驗證會檢查：每一段都對得到當天那個動作的訓練紀錄、組號不超過組數、時間不重疊。每支影片也要有 `canvas`（畫面尺寸，取自 `_render/<日期>.json`），網站的播放器用它決定直式或橫式。
 8. 照 Step 4、Step 5 commit（含 `data/videos.json`）並部署。
 
 ### 注意

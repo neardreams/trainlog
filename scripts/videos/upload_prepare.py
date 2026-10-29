@@ -6,8 +6,10 @@
   python scripts/videos/upload_prepare.py --add-excerpts <AI 的輸出.json>
       → 併進 _render/upload/excerpts.json（會逐行檢查是不是日誌原文）
   python scripts/videos/upload_prepare.py
-      → _render/upload/manifest.json、<日期>.txt、CODEX_TASK.md（上傳者照 manifest 填寫，影片 ID 寫進 results.json）
-YouTube 限制：說明欄最多 5000 字、不能有 < >；章節由說明欄的時間戳記產生（第一個 0:00、每段至少 10 秒）。
+      → _render/upload/manifest.json、<日期>.txt、playlists.json、CODEX_TASK.md
+        （上傳者照 manifest 填寫標題、說明、錄製日期、類別、播放清單，影片 ID 寫進 results.json）
+YouTube 限制：說明欄最多 5000 字、不能有 < >；章節由說明欄的時間戳記產生（第一個 0:00、每段至少 10 秒）；
+hashtag 最多 15 個（前 3 個顯示在標題上方）。hashtag 對照表在 scripts/videos/hashtags.json。
 """
 import argparse
 import os
@@ -15,6 +17,7 @@ import re
 import shutil
 
 from _common import RENDER, TEMPLATES, UPLOAD, exercise_names, journals, load, save, training_data
+from _meta import CATEGORY, hashtags_for, meta_hash, playlist_plan
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--excerpt-input", action="store_true")
@@ -85,12 +88,14 @@ def record(h):
 
 
 manifest, missing, notes = [], [], []
+playlists, playlists_of = playlist_plan(days, td, names)
 for j in days:
     d = j["date"]
+    ids = list(dict.fromkeys(c["exerciseId"] for c in j["clips"]))
     head = j["description"].split("\n\n", 1)
     top = f"{head[0]}\n\n{head[1] if len(head) > 1 else ''}"
     blocks = []
-    for eid in dict.fromkeys(c["exerciseId"] for c in j["clips"]):
+    for eid in ids:
         ex = excerpts.get((d, eid))
         if ex is None:
             missing.append(f"{d} {eid}")
@@ -105,7 +110,7 @@ for j in days:
         if ex:
             lines += ["日誌：", clean(ex)]
         blocks.append("\n".join(lines))
-    tail = f"TrainLog：https://trainlog.x-hu.com/?date={d}"
+    tail = f"TrainLog：https://trainlog.x-hu.com/?date={d}\n\n{' '.join(hashtags_for(ids, names))}"
     desc = "\n\n".join([top, *blocks, tail])
     if len(desc) > LIMIT:
         per = max(80, (LIMIT - len(top) - len(tail) - 40) // max(1, len(blocks)) - 4)
@@ -114,8 +119,9 @@ for j in days:
         notes.append(f"{d}：說明欄太長，日誌原文已截短到 {len(desc)} 字")
     title = j["title"].replace("<", "＜").replace(">", "＞")
     assert len(title) <= 100 and len(desc) <= LIMIT and desc.split("\n\n")[1].startswith("0:00"), d
-    manifest.append({"date": d, "file": os.path.join(RENDER, j["file"]), "title": title, "description": desc,
-                     "visibility": "unlisted"})
+    m = {"date": d, "file": os.path.join(RENDER, j["file"]), "title": title, "description": desc,
+         "visibility": "unlisted", "recordingDate": d, "category": CATEGORY, "playlists": playlists_of[d]}
+    manifest.append(m | {"metaHash": meta_hash(m)})
 
 if missing and not a.allow_missing:
     print(f"{len(missing)} 個動作還沒有日誌原文（先跑 --excerpt-input，或加 --allow-missing）：")
@@ -124,11 +130,14 @@ if missing and not a.allow_missing:
     raise SystemExit(1)
 os.makedirs(a.out, exist_ok=True)
 save(os.path.join(a.out, "manifest.json"), manifest)
+save(os.path.join(a.out, "playlists.json"), [{k: p[k] for k in ("key", "title", "description")} | {"visibility": "unlisted"}
+                                            for p in playlists])
 for m in manifest:
     with open(os.path.join(a.out, f"{m['date']}.txt"), "w", encoding="utf-8", newline="\n") as f:
         f.write(f"{m['title']}\n\n{m['description']}\n")
 shutil.copyfile(os.path.join(TEMPLATES, "CODEX_TASK.md"), os.path.join(a.out, "CODEX_TASK.md"))
 done = {r["date"] for r in load(os.path.join(UPLOAD, "results.json"), [])}
-print(f"manifest.json：{len(manifest)} 支（已上傳 {len(done & {m['date'] for m in manifest})} 支）→ {a.out}")
+print(f"manifest.json：{len(manifest)} 支（已上傳 {len(done & {m['date'] for m in manifest})} 支）、"
+      f"播放清單 {len(playlists)} 個 → {a.out}")
 for n in notes:
     print("  " + n)

@@ -203,12 +203,18 @@ local-media/training/
 5. 準備上傳：
    1. `python scripts/videos/upload_prepare.py --excerpt-input`，把 `excerpt-input.json` 交給 AI，指示用 `scripts/videos/excerpt-prompt.md`；
    2. `python scripts/videos/upload_prepare.py --add-excerpts <AI 的輸出>`：只收逐行和日誌一致的原文；
-   3. `python scripts/videos/upload_prepare.py` 產生 `manifest.json`、每天的 `.txt` 和 `CODEX_TASK.md`。說明欄要先給使用者看過再上傳。
+   3. `python scripts/videos/upload_prepare.py` 產生 `manifest.json`、每天的 `.txt`、`playlists.json` 和 `CODEX_TASK.md`。說明欄要先給使用者看過再上傳。
+      - 說明欄最後一行是 hashtag：每個動作各一個中文和英文（對照表在 `scripts/videos/hashtags.json`，新動作要補上），再加 `#重訓`。使用者想點 hashtag 參考別人的影片。
+      - 每支都會設定錄製日期（訓練日）、類別「運動」，並加入播放清單：全部訓練、每個月，以及錄過 3 天以上的動作各一個、教練課。播放清單一律不公開。
 6. 上傳（使用者交給 Codex）：在 `_render/upload/` 執行
    ```bash
    codex exec -m gpt-6.1-terra -c 'model_reasoning_effort="xhigh"' -c 'service_tier="fast"' --skip-git-repo-check - < CODEX_TASK.md
    ```
-   Codex 依 `results.json` 續傳，已傳的會跳過。上傳需要 Chrome 的 ChatGPT 擴充功能（開啟「允許存取檔案網址」）；Codex 的工具清單裡沒有那個瀏覽器工具時，它會停下來，晚點重開一個工作階段再試。Claude in Chrome 一次只能交給網頁 10 MB 的檔案，沒辦法上傳這些影片。
+   Codex 依 `results.json` 續傳，已傳的會跳過。上傳時會同時設定播放清單、錄製日期和類別。
+   - **已上傳的影片要改附加資料時**（例如 hashtag 表改了、某個動作滿 3 天而有了新的播放清單）：先跑 `upload_prepare.py`，再跑 `python scripts/videos/metadata_prepare.py`。它會列出附加資料和 `metadata-results.json` 紀錄不同的影片，寫進 `metadata.json`；接著讓 Codex 照 `CODEX_METADATA_TASK.md` 在 Studio 逐支修改，這一輪不用上傳檔案：
+     ```bash
+     codex exec -m gpt-6.1-terra -c 'model_reasoning_effort="xhigh"' -c 'service_tier="fast"' --skip-git-repo-check - < CODEX_METADATA_TASK.md
+     ```上傳需要 Chrome 的 ChatGPT 擴充功能（開啟「允許存取檔案網址」）；Codex 的工具清單裡沒有那個瀏覽器工具時，它會停下來，晚點重開一個工作階段再試。Claude in Chrome 一次只能交給網頁 10 MB 的檔案，沒辦法上傳這些影片。
 7. 產生影片清單並驗證：
    ```bash
    python scripts/videos/build_videos_json.py

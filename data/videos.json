@@ -373,6 +373,4073 @@
           "label": "片段 1"
         }
       ]
+    },
+    {
+      "date": "2026-03-02",
+      "youtube_id": "QYFP7OlLilI",
+      "duration_sec": 712.787,
+      "title": "2026/03/02（一）RDL（槓鈴）、地板槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "rdl",
+          "start": 0.0,
+          "end": 61.2,
+          "label": "第 1 組 30kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 61.2,
+          "end": 123.567,
+          "label": "第 2 組 30kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 123.567,
+          "end": 183.3,
+          "label": "第 3 組 30kg×10",
+          "set": 3
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 183.3,
+          "end": 244.6,
+          "label": "第 4 組 30kg×10",
+          "set": 4
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 244.6,
+          "end": 311.37,
+          "label": "片段 5"
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 311.37,
+          "end": 379.17,
+          "label": "片段 6"
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 379.17,
+          "end": 446.04,
+          "label": "片段 7"
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 446.04,
+          "end": 507.15,
+          "label": "片段 8"
+        },
+        {
+          "exercise_id": "floor_bench_press",
+          "start": 507.15,
+          "end": 538.42,
+          "label": "暖身"
+        },
+        {
+          "exercise_id": "floor_bench_press",
+          "start": 538.42,
+          "end": 603.92,
+          "label": "第 1 組 50kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "floor_bench_press",
+          "start": 603.92,
+          "end": 660.42,
+          "label": "第 2 組 50kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "floor_bench_press",
+          "start": 660.42,
+          "end": 712.787,
+          "label": "第 3 組 50kg×10",
+          "set": 3
+        }
+      ]
+    },
+    {
+      "date": "2026-03-13",
+      "youtube_id": "DGZG27CjJ78",
+      "duration_sec": 276.567,
+      "title": "2026/03/13（五）SSB 背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "ssb_squat",
+          "start": 0.0,
+          "end": 44.433,
+          "label": "暖身"
+        },
+        {
+          "exercise_id": "ssb_squat",
+          "start": 44.433,
+          "end": 107.167,
+          "label": "第 1 組 55kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "ssb_squat",
+          "start": 107.167,
+          "end": 163.133,
+          "label": "第 2 組 55kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "ssb_squat",
+          "start": 163.133,
+          "end": 218.533,
+          "label": "第 3 組 55kg×10",
+          "set": 3
+        },
+        {
+          "exercise_id": "ssb_squat",
+          "start": 218.533,
+          "end": 276.567,
+          "label": "第 4 組 55kg×10",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-03-16",
+      "youtube_id": "t8pDLpxAKCM",
+      "duration_sec": 276.517,
+      "title": "2026/03/16（一）熊抱槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "zercher_squat",
+          "start": 0.0,
+          "end": 61.267,
+          "label": "第 2 組 45kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "zercher_squat",
+          "start": 61.267,
+          "end": 125.867,
+          "label": "第 3 組 45kg×10",
+          "set": 3
+        },
+        {
+          "exercise_id": "zercher_squat",
+          "start": 125.867,
+          "end": 195.967,
+          "label": "第 4 組 45kg×10",
+          "set": 4
+        },
+        {
+          "exercise_id": "zercher_squat",
+          "start": 195.967,
+          "end": 276.517,
+          "label": "第 5 組 45kg×10",
+          "set": 5
+        }
+      ]
+    },
+    {
+      "date": "2026-03-19",
+      "youtube_id": "hpERT0K-spw",
+      "duration_sec": 595.177,
+      "title": "2026/03/19（四）後腳抬高蹲、RDL（槓鈴）、六角槓硬拉",
+      "segments": [
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 0.0,
+          "end": 59.433,
+          "label": "片段 1（右）",
+          "side": "右"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 59.433,
+          "end": 115.767,
+          "label": "片段 2（左）",
+          "side": "左"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 115.767,
+          "end": 173.167,
+          "label": "片段 3（右）",
+          "side": "右"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 173.167,
+          "end": 234.0,
+          "label": "片段 4（左）",
+          "side": "左"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 234.0,
+          "end": 288.733,
+          "label": "片段 5（右）",
+          "side": "右"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 288.733,
+          "end": 342.673,
+          "label": "片段 6（左）",
+          "side": "左"
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 342.673,
+          "end": 395.807,
+          "label": "第 1 組 40kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 395.807,
+          "end": 440.807,
+          "label": "第 2 組 40kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 440.807,
+          "end": 491.007,
+          "label": "第 3 組 40kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "hex_bar_deadlift",
+          "start": 491.007,
+          "end": 537.877,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "hex_bar_deadlift",
+          "start": 537.877,
+          "end": 595.177,
+          "label": "片段 2"
+        }
+      ]
+    },
+    {
+      "date": "2026-03-20",
+      "youtube_id": "MqmjQLUK14A",
+      "duration_sec": 274.067,
+      "title": "2026/03/20（五）SSB 背槓深蹲、垂直腿推",
+      "segments": [
+        {
+          "exercise_id": "ssb_squat",
+          "start": 0.0,
+          "end": 59.733,
+          "label": "第 2 組 55kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "ssb_squat",
+          "start": 59.733,
+          "end": 120.967,
+          "label": "第 3 組 55kg×10",
+          "set": 3
+        },
+        {
+          "exercise_id": "ssb_squat",
+          "start": 120.967,
+          "end": 179.0,
+          "label": "第 4 組 55kg×10",
+          "set": 4
+        },
+        {
+          "exercise_id": "leg_press",
+          "start": 179.0,
+          "end": 223.5,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "leg_press",
+          "start": 223.5,
+          "end": 274.067,
+          "label": "片段 2"
+        }
+      ]
+    },
+    {
+      "date": "2026-03-21",
+      "youtube_id": "Ijffn3VOueE",
+      "duration_sec": 93.403,
+      "title": "2026/03/21（六）地板槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "floor_bench_press",
+          "start": 0.0,
+          "end": 38.133,
+          "label": "第 1 組 55kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "floor_bench_press",
+          "start": 38.133,
+          "end": 93.403,
+          "label": "第 2 組 55kg×10",
+          "set": 2
+        }
+      ]
+    },
+    {
+      "date": "2026-03-24",
+      "youtube_id": "WG6S4Nbc2Ic",
+      "duration_sec": 243.973,
+      "title": "2026/03/24（二）熊抱槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "zercher_squat",
+          "start": 0.0,
+          "end": 56.57,
+          "label": "第 1 組 45kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "zercher_squat",
+          "start": 56.57,
+          "end": 121.07,
+          "label": "第 2 組 45kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "zercher_squat",
+          "start": 121.07,
+          "end": 184.14,
+          "label": "第 3 組 45kg×10",
+          "set": 3
+        },
+        {
+          "exercise_id": "zercher_squat",
+          "start": 184.14,
+          "end": 243.973,
+          "label": "第 4 組 45kg×10",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-03-26",
+      "youtube_id": "aPJvCGpTlx4",
+      "duration_sec": 372.647,
+      "title": "2026/03/26（四）RDL（槓鈴）",
+      "segments": [
+        {
+          "exercise_id": "rdl",
+          "start": 0.0,
+          "end": 53.633,
+          "label": "第 1 組 30kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 53.633,
+          "end": 106.503,
+          "label": "第 2 組 30kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 106.503,
+          "end": 159.237,
+          "label": "第 3 組 40kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 159.237,
+          "end": 215.207,
+          "label": "第 4 組 40kg×6",
+          "set": 4
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 215.207,
+          "end": 272.307,
+          "label": "第 5 組 40kg×6",
+          "set": 5
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 272.307,
+          "end": 321.677,
+          "label": "第 6 組 40kg×6",
+          "set": 6
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 321.677,
+          "end": 372.647,
+          "label": "第 7 組 50kg×6",
+          "set": 7
+        }
+      ]
+    },
+    {
+      "date": "2026-03-27",
+      "youtube_id": "8288HKC4hyY",
+      "duration_sec": 280.44,
+      "title": "2026/03/27（五）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 33.7,
+          "label": "暖身"
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 33.7,
+          "end": 82.4,
+          "label": "第 1 組 30kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 82.4,
+          "end": 150.17,
+          "label": "第 2 組 35kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 150.17,
+          "end": 214.07,
+          "label": "第 4 組 35kg×10",
+          "set": 4
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 214.07,
+          "end": 280.44,
+          "label": "第 5 組 35kg×10",
+          "set": 5
+        }
+      ]
+    },
+    {
+      "date": "2026-04-01",
+      "youtube_id": "M7tuqkhNfTY",
+      "duration_sec": 204.573,
+      "title": "2026/04/01（三）後腳抬高蹲、啞鈴臀推（靠凳）",
+      "segments": [
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 0.0,
+          "end": 40.2,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 40.2,
+          "end": 101.133,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 101.133,
+          "end": 154.403,
+          "label": "片段 3"
+        },
+        {
+          "exercise_id": "hip_thrust",
+          "start": 154.403,
+          "end": 204.573,
+          "label": "片段 1"
+        }
+      ]
+    },
+    {
+      "date": "2026-04-07",
+      "youtube_id": "pyHdF_AmDoM",
+      "duration_sec": 351.67,
+      "title": "2026/04/07（二）啞鈴臀推（靠凳）、熊抱槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "hip_thrust",
+          "start": 0.0,
+          "end": 62.27,
+          "label": "第 1 組 10kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "hip_thrust",
+          "start": 62.27,
+          "end": 109.97,
+          "label": "第 2 組 10kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "hip_thrust",
+          "start": 109.97,
+          "end": 163.57,
+          "label": "第 3 組 10kg×10",
+          "set": 3
+        },
+        {
+          "exercise_id": "zercher_squat",
+          "start": 163.57,
+          "end": 207.003,
+          "label": "第 1 組 60kg×7",
+          "set": 1
+        },
+        {
+          "exercise_id": "zercher_squat",
+          "start": 207.003,
+          "end": 254.637,
+          "label": "第 2 組 60kg×7",
+          "set": 2
+        },
+        {
+          "exercise_id": "zercher_squat",
+          "start": 254.637,
+          "end": 304.27,
+          "label": "第 3 組 60kg×7",
+          "set": 3
+        },
+        {
+          "exercise_id": "zercher_squat",
+          "start": 304.27,
+          "end": 351.67,
+          "label": "第 4 組 60kg×7",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-04-09",
+      "youtube_id": "lEVL9jwL4_4",
+      "duration_sec": 206.71,
+      "title": "2026/04/09（四）RDL（槓鈴）",
+      "segments": [
+        {
+          "exercise_id": "rdl",
+          "start": 0.0,
+          "end": 51.07,
+          "label": "第 1 組 40kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 51.07,
+          "end": 101.27,
+          "label": "第 2 組 40kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 101.27,
+          "end": 154.74,
+          "label": "第 3 組 50kg×10",
+          "set": 3
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 154.74,
+          "end": 206.71,
+          "label": "第 4 組 50kg×10",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-04-10",
+      "youtube_id": "gpv10feXVMM",
+      "duration_sec": 171.61,
+      "title": "2026/04/10（五）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 52.84,
+          "label": "第 1 組 40kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 52.84,
+          "end": 111.61,
+          "label": "第 2 組 40kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 111.61,
+          "end": 171.61,
+          "label": "第 3 組 40kg×10",
+          "set": 3
+        }
+      ]
+    },
+    {
+      "date": "2026-04-11",
+      "youtube_id": "uxgq5dEqG2o",
+      "duration_sec": 235.87,
+      "title": "2026/04/11（六）背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 77.9,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 77.9,
+          "end": 133.37,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 133.37,
+          "end": 186.37,
+          "label": "片段 3"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 186.37,
+          "end": 235.87,
+          "label": "片段 4"
+        }
+      ]
+    },
+    {
+      "date": "2026-04-13",
+      "youtube_id": "PA4THYq4RAY",
+      "duration_sec": 366.513,
+      "title": "2026/04/13（一）後腳抬高蹲",
+      "segments": [
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 0.0,
+          "end": 118.44,
+          "label": "第 1 組 15kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 118.44,
+          "end": 148.34,
+          "label": "片段 3（右）",
+          "set": 2,
+          "side": "右"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 148.34,
+          "end": 185.64,
+          "label": "片段 4（右）",
+          "set": 2,
+          "side": "右"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 185.64,
+          "end": 245.373,
+          "label": "第 2 組（左）15kg×10",
+          "set": 2,
+          "side": "左"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 245.373,
+          "end": 300.643,
+          "label": "第 3 組（右）15kg×10",
+          "set": 3,
+          "side": "右"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 300.643,
+          "end": 366.513,
+          "label": "第 3 組 15kg×10",
+          "set": 3
+        }
+      ]
+    },
+    {
+      "date": "2026-04-14",
+      "youtube_id": "5bn7AHL4QoY",
+      "duration_sec": 178.943,
+      "title": "2026/04/14（二）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 56.07,
+          "label": "第 1 組 45kg×9",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 56.07,
+          "end": 115.91,
+          "label": "第 2 組 45kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 115.91,
+          "end": 178.943,
+          "label": "第 3 組 40kg×10",
+          "set": 3
+        }
+      ]
+    },
+    {
+      "date": "2026-04-16",
+      "youtube_id": "CF5gyqkKrCo",
+      "duration_sec": 200.803,
+      "title": "2026/04/16（四）RDL（槓鈴）",
+      "segments": [
+        {
+          "exercise_id": "rdl",
+          "start": 0.0,
+          "end": 49.97,
+          "label": "第 1 組 40kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 49.97,
+          "end": 99.903,
+          "label": "第 2 組 50kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 99.903,
+          "end": 150.403,
+          "label": "第 3 組 50kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 150.403,
+          "end": 200.803,
+          "label": "第 4 組 50kg×6",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-04-17",
+      "youtube_id": "hJ41sFuOVtg",
+      "duration_sec": 280.07,
+      "title": "2026/04/17（五）背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 46.7,
+          "label": "第 1 組 60kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 46.7,
+          "end": 103.8,
+          "label": "第 2 組 70kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 103.8,
+          "end": 161.2,
+          "label": "第 3 組 70kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 161.2,
+          "end": 226.37,
+          "label": "第 4 組 70kg×6",
+          "set": 4
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 226.37,
+          "end": 280.07,
+          "label": "第 5 組 70kg×6",
+          "set": 5
+        }
+      ]
+    },
+    {
+      "date": "2026-04-20",
+      "youtube_id": "4sySUiO4jIM",
+      "duration_sec": 348.6,
+      "title": "2026/04/20（一）背槓深蹲、啞鈴臀推（靠凳）",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 62.233,
+          "label": "第 1 組 70kg×8",
+          "set": 1
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 62.233,
+          "end": 122.633,
+          "label": "第 2 組 75kg×8",
+          "set": 2
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 122.633,
+          "end": 190.133,
+          "label": "第 3 組 75kg×8",
+          "set": 3
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 190.133,
+          "end": 256.333,
+          "label": "第 4 組 75kg×9",
+          "set": 4
+        },
+        {
+          "exercise_id": "hip_thrust",
+          "start": 256.333,
+          "end": 296.067,
+          "label": "第 1 組 20kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "hip_thrust",
+          "start": 296.067,
+          "end": 348.6,
+          "label": "第 2 組 20kg×10",
+          "set": 2
+        }
+      ]
+    },
+    {
+      "date": "2026-04-22",
+      "youtube_id": "2AcKTSLxeFc",
+      "duration_sec": 366.37,
+      "title": "2026/04/22（三）背槓深蹲、板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 60.633,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 60.633,
+          "end": 102.203,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 102.203,
+          "end": 166.903,
+          "label": "片段 3"
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 166.903,
+          "end": 219.703,
+          "label": "第 1 組 50kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 219.703,
+          "end": 264.803,
+          "label": "第 2 組 50kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 264.803,
+          "end": 314.537,
+          "label": "第 3 組 50kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 314.537,
+          "end": 366.37,
+          "label": "第 4 組 50kg×6",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-04-23",
+      "youtube_id": "pjMr7NdbkW4",
+      "duration_sec": 195.9,
+      "title": "2026/04/23（四）RDL（槓鈴）",
+      "segments": [
+        {
+          "exercise_id": "rdl",
+          "start": 0.0,
+          "end": 52.0,
+          "label": "第 1 組 50kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 52.0,
+          "end": 101.0,
+          "label": "第 2 組 50kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 101.0,
+          "end": 149.6,
+          "label": "第 3 組 50kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 149.6,
+          "end": 195.9,
+          "label": "第 4 組 50kg×6",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-04-25",
+      "youtube_id": "lGHzaBkplKU",
+      "duration_sec": 133.833,
+      "title": "2026/04/25（六）背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 39.233,
+          "label": "第 1 組 80kg×4",
+          "set": 1
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 39.233,
+          "end": 86.333,
+          "label": "第 2 組 80kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 86.333,
+          "end": 133.833,
+          "label": "第 4 組 80kg×6",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-04-27",
+      "youtube_id": "_yL3eUYQd7s",
+      "duration_sec": 439.98,
+      "title": "2026/04/27（一）後腳抬高蹲",
+      "segments": [
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 0.0,
+          "end": 53.133,
+          "label": "第 1 組（右）10kg×10",
+          "set": 1,
+          "side": "右"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 53.133,
+          "end": 110.403,
+          "label": "第 1 組（左）10kg×10",
+          "set": 1,
+          "side": "左"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 110.403,
+          "end": 167.937,
+          "label": "第 2 組（右）10kg×10",
+          "set": 2,
+          "side": "右"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 167.937,
+          "end": 224.17,
+          "label": "第 2 組（左）10kg×10",
+          "set": 2,
+          "side": "左"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 224.17,
+          "end": 279.44,
+          "label": "第 3 組（右）10kg×10",
+          "set": 3,
+          "side": "右"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 279.44,
+          "end": 336.84,
+          "label": "第 3 組（左）10kg×10",
+          "set": 3,
+          "side": "左"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 336.84,
+          "end": 389.11,
+          "label": "第 4 組（右）10kg×10",
+          "set": 4,
+          "side": "右"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 389.11,
+          "end": 439.98,
+          "label": "第 4 組（左）10kg×10",
+          "set": 4,
+          "side": "左"
+        }
+      ]
+    },
+    {
+      "date": "2026-04-28",
+      "youtube_id": "3oKL6JBKFjA",
+      "duration_sec": 191.473,
+      "title": "2026/04/28（二）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 43.47,
+          "label": "第 1 組 ×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 43.47,
+          "end": 94.04,
+          "label": "第 2 組 ×8",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 94.04,
+          "end": 151.773,
+          "label": "第 3 組 ×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 151.773,
+          "end": 191.473,
+          "label": "第 4 組 ×6",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-04-30",
+      "youtube_id": "WIpdw-EZSpU",
+      "duration_sec": 232.537,
+      "title": "2026/04/30（四）背槓深蹲、啞鈴單腳臀推（靠凳）",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 44.1,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 44.1,
+          "end": 95.27,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 95.27,
+          "end": 136.07,
+          "label": "片段 3"
+        },
+        {
+          "exercise_id": "single_leg_hip_thrust",
+          "start": 136.07,
+          "end": 184.603,
+          "label": "第 1 組（左）7.5kg",
+          "set": 1,
+          "side": "左"
+        },
+        {
+          "exercise_id": "single_leg_hip_thrust",
+          "start": 184.603,
+          "end": 232.537,
+          "label": "第 1 組（右）7.5kg",
+          "set": 1,
+          "side": "右"
+        }
+      ]
+    },
+    {
+      "date": "2026-05-01",
+      "youtube_id": "Ouyg63rKXUs",
+      "duration_sec": 306.907,
+      "title": "2026/05/01（五）RDL（槓鈴）",
+      "segments": [
+        {
+          "exercise_id": "rdl",
+          "start": 0.0,
+          "end": 43.8,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 43.8,
+          "end": 106.47,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 106.47,
+          "end": 169.64,
+          "label": "片段 3"
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 169.64,
+          "end": 240.573,
+          "label": "片段 4"
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 240.573,
+          "end": 306.907,
+          "label": "片段 5"
+        }
+      ]
+    },
+    {
+      "date": "2026-05-04",
+      "youtube_id": "nRq7HSxWNhQ",
+      "duration_sec": 401.877,
+      "title": "2026/05/04（一）後腳抬高蹲",
+      "segments": [
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 0.0,
+          "end": 48.87,
+          "label": "第 1 組（右）12.5kg×10",
+          "set": 1,
+          "side": "右"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 48.87,
+          "end": 101.07,
+          "label": "第 1 組（左）12.5kg×10",
+          "set": 1,
+          "side": "左"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 101.07,
+          "end": 152.17,
+          "label": "第 2 組（右）12.5kg×10",
+          "set": 2,
+          "side": "右"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 152.17,
+          "end": 200.937,
+          "label": "第 2 組（左）12.5kg×10",
+          "set": 2,
+          "side": "左"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 200.937,
+          "end": 248.537,
+          "label": "第 3 組（右）12.5kg×10",
+          "set": 3,
+          "side": "右"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 248.537,
+          "end": 300.207,
+          "label": "第 3 組（左）12.5kg×10",
+          "set": 3,
+          "side": "左"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 300.207,
+          "end": 352.107,
+          "label": "第 4 組（右）12.5kg×10",
+          "set": 4,
+          "side": "右"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 352.107,
+          "end": 401.877,
+          "label": "第 4 組（左）12.5kg×10",
+          "set": 4,
+          "side": "左"
+        }
+      ]
+    },
+    {
+      "date": "2026-05-05",
+      "youtube_id": "U-X6I9Y-7iw",
+      "duration_sec": 185.673,
+      "title": "2026/05/05（二）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 41.9,
+          "label": "第 1 組 60kg×5",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 41.9,
+          "end": 89.57,
+          "label": "第 2 組 55kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 89.57,
+          "end": 138.203,
+          "label": "第 3 組 55kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 138.203,
+          "end": 185.673,
+          "label": "第 4 組 50kg×8",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-05-11",
+      "youtube_id": "8-k-Xd_S9XQ",
+      "duration_sec": 241.573,
+      "title": "2026/05/11（一）背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 60.433,
+          "label": "第 1 組 90kg×8",
+          "set": 1
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 60.433,
+          "end": 121.873,
+          "label": "第 2 組 90kg×8",
+          "set": 2
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 121.873,
+          "end": 181.773,
+          "label": "第 3 組 90kg×8",
+          "set": 3
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 181.773,
+          "end": 241.573,
+          "label": "第 4 組 90kg×8",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-05-12",
+      "youtube_id": "zmnm5A4ciFg",
+      "duration_sec": 198.71,
+      "title": "2026/05/12（二）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 43.5,
+          "label": "第 1 組 55kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 43.5,
+          "end": 92.34,
+          "label": "第 2 組 55kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 92.34,
+          "end": 140.44,
+          "label": "第 3 組 50kg×8",
+          "set": 3
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 140.44,
+          "end": 198.71,
+          "label": "第 4 組 50kg×8",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-05-13",
+      "youtube_id": "sbMN-VOx1oQ",
+      "duration_sec": 160.84,
+      "title": "2026/05/13（三）槓鈴硬舉",
+      "segments": [
+        {
+          "exercise_id": "deadlift",
+          "start": 0.0,
+          "end": 44.533,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 44.533,
+          "end": 78.267,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 78.267,
+          "end": 96.137,
+          "label": "片段 3"
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 96.137,
+          "end": 127.307,
+          "label": "片段 4"
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 127.307,
+          "end": 160.84,
+          "label": "片段 5"
+        }
+      ]
+    },
+    {
+      "date": "2026-05-15",
+      "youtube_id": "M0yxTUahYHY",
+      "duration_sec": 252.27,
+      "title": "2026/05/15（五）背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 61.833,
+          "label": "第 1 組 90kg×8",
+          "set": 1
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 61.833,
+          "end": 126.667,
+          "label": "第 2 組 90kg×8",
+          "set": 2
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 126.667,
+          "end": 188.2,
+          "label": "第 3 組 90kg×8",
+          "set": 3
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 188.2,
+          "end": 252.27,
+          "label": "第 4 組 90kg×8",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-05-18",
+      "youtube_id": "3hUroSp1nUM",
+      "duration_sec": 180.203,
+      "title": "2026/05/18（一）槓鈴硬舉",
+      "segments": [
+        {
+          "exercise_id": "deadlift",
+          "start": 0.0,
+          "end": 24.2,
+          "label": "第 1 組 75kg×3",
+          "set": 1
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 24.2,
+          "end": 50.033,
+          "label": "第 2 組 75kg×3",
+          "set": 2
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 50.033,
+          "end": 92.133,
+          "label": "第 3 組 70kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 92.133,
+          "end": 137.003,
+          "label": "第 4 組 70kg×6",
+          "set": 4
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 137.003,
+          "end": 180.203,
+          "label": "第 5 組 70kg×6",
+          "set": 5
+        }
+      ]
+    },
+    {
+      "date": "2026-05-19",
+      "youtube_id": "uBFwFkf3UIY",
+      "duration_sec": 218.403,
+      "title": "2026/05/19（二）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 35.57,
+          "label": "第 1 組 62.5kg×3",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 35.57,
+          "end": 72.77,
+          "label": "第 2 組 62.5kg×3",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 72.77,
+          "end": 117.27,
+          "label": "第 3 組 57.5kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 117.27,
+          "end": 166.77,
+          "label": "第 4 組 57.5kg×6",
+          "set": 4
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 166.77,
+          "end": 218.403,
+          "label": "第 5 組 57.5kg×6",
+          "set": 5
+        }
+      ]
+    },
+    {
+      "date": "2026-05-20",
+      "youtube_id": "kToi5T17-nM",
+      "duration_sec": 267.073,
+      "title": "2026/05/20（三）背槓深蹲、上斜啞鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 40.133,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 40.133,
+          "end": 86.003,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 86.003,
+          "end": 157.673,
+          "label": "片段 3"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 157.673,
+          "end": 227.973,
+          "label": "片段 4"
+        },
+        {
+          "exercise_id": "incline_db_press",
+          "start": 227.973,
+          "end": 267.073,
+          "label": "片段 1"
+        }
+      ]
+    },
+    {
+      "date": "2026-05-25",
+      "youtube_id": "UyBbR_A8xdU",
+      "duration_sec": 247.443,
+      "title": "2026/05/25（一）背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 40.3,
+          "label": "第 1 組 90kg×3",
+          "set": 1
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 40.3,
+          "end": 81.07,
+          "label": "第 2 組 95kg×3",
+          "set": 2
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 81.07,
+          "end": 120.403,
+          "label": "第 3 組 95kg×3",
+          "set": 3
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 120.403,
+          "end": 182.273,
+          "label": "第 4 組 80kg×8",
+          "set": 4
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 182.273,
+          "end": 247.443,
+          "label": "第 5 組 80kg×8",
+          "set": 5
+        }
+      ]
+    },
+    {
+      "date": "2026-05-26",
+      "youtube_id": "lDYxyA3uMHI",
+      "duration_sec": 258.907,
+      "title": "2026/05/26（二）板凳槓鈴臥推、槓鈴肩推（實力推）",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 37.633,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 37.633,
+          "end": 73.803,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 73.803,
+          "end": 119.303,
+          "label": "片段 3"
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 119.303,
+          "end": 171.103,
+          "label": "片段 4"
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 171.103,
+          "end": 214.637,
+          "label": "片段 5"
+        },
+        {
+          "exercise_id": "overhead_press",
+          "start": 214.637,
+          "end": 258.907,
+          "label": "片段 1"
+        }
+      ]
+    },
+    {
+      "date": "2026-05-27",
+      "youtube_id": "ktESd8Xh3dg",
+      "duration_sec": 193.343,
+      "title": "2026/05/27（三）背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 30.57,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 30.57,
+          "end": 72.34,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 72.34,
+          "end": 133.61,
+          "label": "片段 3"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 133.61,
+          "end": 193.343,
+          "label": "片段 4"
+        }
+      ]
+    },
+    {
+      "date": "2026-05-28",
+      "youtube_id": "YIMOPpROEA4",
+      "duration_sec": 182.47,
+      "title": "2026/05/28（四）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 29.6,
+          "label": "第 1 組 65kg×3",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 29.6,
+          "end": 63.07,
+          "label": "第 2 組 65kg×3",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 63.07,
+          "end": 99.67,
+          "label": "第 3 組 60kg×4",
+          "set": 3
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 99.67,
+          "end": 136.47,
+          "label": "第 4 組 55kg×6",
+          "set": 4
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 136.47,
+          "end": 182.47,
+          "label": "第 5 組 55kg×6",
+          "set": 5
+        }
+      ]
+    },
+    {
+      "date": "2026-05-29",
+      "youtube_id": "0WQtXiXImiE",
+      "duration_sec": 182.74,
+      "title": "2026/05/29（五）槓鈴硬舉",
+      "segments": [
+        {
+          "exercise_id": "deadlift",
+          "start": 0.0,
+          "end": 29.27,
+          "label": "第 1 組 85kg×3",
+          "set": 1
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 29.27,
+          "end": 61.27,
+          "label": "第 2 組 85kg×3",
+          "set": 2
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 61.27,
+          "end": 94.14,
+          "label": "第 3 組 85kg×3",
+          "set": 3
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 94.14,
+          "end": 137.807,
+          "label": "第 4 組 77.5kg×6",
+          "set": 4
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 137.807,
+          "end": 182.74,
+          "label": "第 5 組 77.5kg×6",
+          "set": 5
+        }
+      ]
+    },
+    {
+      "date": "2026-05-30",
+      "youtube_id": "MmL9HsrnAjQ",
+      "duration_sec": 195.303,
+      "title": "2026/05/30（六）俯身槓鈴划船、器械輔助雙槓臂屈伸",
+      "segments": [
+        {
+          "exercise_id": "barbell_row",
+          "start": 0.0,
+          "end": 47.17,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "barbell_row",
+          "start": 47.17,
+          "end": 87.97,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "barbell_row",
+          "start": 87.97,
+          "end": 129.703,
+          "label": "片段 3"
+        },
+        {
+          "exercise_id": "assisted_dip",
+          "start": 129.703,
+          "end": 195.303,
+          "label": "片段 1"
+        }
+      ]
+    },
+    {
+      "date": "2026-06-01",
+      "youtube_id": "ElPRiCdiGmk",
+      "duration_sec": 847.453,
+      "title": "2026/06/01（一）背槓深蹲、RDL（槓鈴）、俯身槓鈴划船、啞鈴分腿蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 44.333,
+          "label": "第 1 組 100kg×2",
+          "set": 1
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 44.333,
+          "end": 91.767,
+          "label": "第 2 組 100kg×3",
+          "set": 2
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 91.767,
+          "end": 154.1,
+          "label": "第 3 組 95kg×5",
+          "set": 3
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 154.1,
+          "end": 223.97,
+          "label": "第 4 組 90kg×6",
+          "set": 4
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 223.97,
+          "end": 296.04,
+          "label": "第 5 組 90kg×6",
+          "set": 5
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 296.04,
+          "end": 345.91,
+          "label": "第 1 組 60kg×5",
+          "set": 1
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 345.91,
+          "end": 391.21,
+          "label": "第 2 組 60kg×5",
+          "set": 2
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 391.21,
+          "end": 434.61,
+          "label": "第 3 組 60kg×5",
+          "set": 3
+        },
+        {
+          "exercise_id": "barbell_row",
+          "start": 434.61,
+          "end": 479.98,
+          "label": "第 1 組 40kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "barbell_row",
+          "start": 479.98,
+          "end": 533.213,
+          "label": "第 2 組 40kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "barbell_row",
+          "start": 533.213,
+          "end": 590.447,
+          "label": "第 3 組 40kg×10",
+          "set": 3
+        },
+        {
+          "exercise_id": "barbell_row",
+          "start": 590.447,
+          "end": 643.247,
+          "label": "第 4 組 40kg×10",
+          "set": 4
+        },
+        {
+          "exercise_id": "split_squat",
+          "start": 643.247,
+          "end": 751.48,
+          "label": "第 1 組 7.5kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "split_squat",
+          "start": 751.48,
+          "end": 847.453,
+          "label": "第 2 組 10kg×10",
+          "set": 2
+        }
+      ]
+    },
+    {
+      "date": "2026-06-02",
+      "youtube_id": "qwUWptQaJDA",
+      "duration_sec": 187.91,
+      "title": "2026/06/02（二）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 29.87,
+          "label": "第 1 組 65kg×3",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 29.87,
+          "end": 57.07,
+          "label": "第 2 組 67.5kg×2",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 57.07,
+          "end": 85.07,
+          "label": "第 3 組 70kg×2",
+          "set": 3
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 85.07,
+          "end": 108.437,
+          "label": "第 4 組 65kg×2",
+          "set": 4
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 108.437,
+          "end": 145.97,
+          "label": "第 5 組 60kg×6",
+          "set": 5
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 145.97,
+          "end": 187.91,
+          "label": "第 6 組 60kg×6",
+          "set": 6
+        }
+      ]
+    },
+    {
+      "date": "2026-06-03",
+      "youtube_id": "a_TC0bFvqUg",
+      "duration_sec": 215.633,
+      "title": "2026/06/03（三）背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 37.433,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 37.433,
+          "end": 75.167,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 75.167,
+          "end": 154.4,
+          "label": "片段 3"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 154.4,
+          "end": 215.633,
+          "label": "片段 4"
+        }
+      ]
+    },
+    {
+      "date": "2026-06-04",
+      "youtube_id": "xsXyIpUTngc",
+      "duration_sec": 115.167,
+      "title": "2026/06/04（四）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 28.233,
+          "label": "第 1 組 70kg×2",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 28.233,
+          "end": 71.867,
+          "label": "第 2 組 62.5kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 71.867,
+          "end": 115.167,
+          "label": "第 3 組 60kg×5",
+          "set": 3
+        }
+      ]
+    },
+    {
+      "date": "2026-06-08",
+      "youtube_id": "r_HoBxblUIs",
+      "duration_sec": 217.34,
+      "title": "2026/06/08（一）背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 78.57,
+          "label": "第 1 組 85kg×7",
+          "set": 1
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 78.57,
+          "end": 148.44,
+          "label": "第 2 組 85kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 148.44,
+          "end": 217.34,
+          "label": "第 3 組 85kg×6",
+          "set": 3
+        }
+      ]
+    },
+    {
+      "date": "2026-06-11",
+      "youtube_id": "3XTFzbfacXg",
+      "duration_sec": 133.97,
+      "title": "2026/06/11（四）槓鈴硬舉",
+      "segments": [
+        {
+          "exercise_id": "deadlift",
+          "start": 0.0,
+          "end": 69.37,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 69.37,
+          "end": 133.97,
+          "label": "片段 2"
+        }
+      ]
+    },
+    {
+      "date": "2026-06-16",
+      "youtube_id": "xlysyg0xr_M",
+      "duration_sec": 204.37,
+      "title": "2026/06/16（二）RDL（槓鈴）",
+      "segments": [
+        {
+          "exercise_id": "rdl",
+          "start": 0.0,
+          "end": 55.4,
+          "label": "第 1 組 50kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 55.4,
+          "end": 124.97,
+          "label": "第 2 組 50kg×8",
+          "set": 2
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 124.97,
+          "end": 204.37,
+          "label": "第 3 組 50kg×8",
+          "set": 3
+        }
+      ]
+    },
+    {
+      "date": "2026-06-20",
+      "youtube_id": "8NAVr1hxnIk",
+      "duration_sec": 241.88,
+      "title": "2026/06/20（六）背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 42.37,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 42.37,
+          "end": 108.01,
+          "label": "第 3 組 90kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 108.01,
+          "end": 177.38,
+          "label": "第 4 組 90kg×6",
+          "set": 4
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 177.38,
+          "end": 241.88,
+          "label": "第 5 組 85kg×6",
+          "set": 5
+        }
+      ]
+    },
+    {
+      "date": "2026-06-22",
+      "youtube_id": "lQClbYOuXYQ",
+      "duration_sec": 180.943,
+      "title": "2026/06/22（一）槓鈴硬舉",
+      "segments": [
+        {
+          "exercise_id": "deadlift",
+          "start": 0.0,
+          "end": 31.57,
+          "label": "第 1 組 90kg×3",
+          "set": 1
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 31.57,
+          "end": 68.503,
+          "label": "第 2 組 90kg×3",
+          "set": 2
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 68.503,
+          "end": 130.473,
+          "label": "第 3 組 90kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 130.473,
+          "end": 180.943,
+          "label": "第 4 組 80kg×6",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-07-03",
+      "youtube_id": "vWtaVKYKmOk",
+      "duration_sec": 214.77,
+      "title": "2026/07/03（五）背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 69.07,
+          "label": "第 1 組 95kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 69.07,
+          "end": 138.27,
+          "label": "第 2 組 95kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 138.27,
+          "end": 214.77,
+          "label": "第 3 組 95kg×6",
+          "set": 3
+        }
+      ]
+    },
+    {
+      "date": "2026-07-06",
+      "youtube_id": "ihD60Oa40MU",
+      "duration_sec": 215.173,
+      "title": "2026/07/06（一）背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 36.6,
+          "label": "第 1 組 100kg×1",
+          "set": 1
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 36.6,
+          "end": 72.67,
+          "label": "第 2 組 110kg×1",
+          "set": 2
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 72.67,
+          "end": 108.97,
+          "label": "第 3 組 115kg×1",
+          "set": 3
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 108.97,
+          "end": 146.503,
+          "label": "第 4 組 120kg×1",
+          "set": 4
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 146.503,
+          "end": 215.173,
+          "label": "第 5 組 100kg×6",
+          "set": 5
+        }
+      ]
+    },
+    {
+      "date": "2026-07-07",
+      "youtube_id": "l2x_XUtJZPI",
+      "duration_sec": 146.467,
+      "title": "2026/07/07（二）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 50.433,
+          "label": "第 1 組 40kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 50.433,
+          "end": 97.133,
+          "label": "第 2 組 40kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 97.133,
+          "end": 146.467,
+          "label": "第 3 組 40kg×6",
+          "set": 3
+        }
+      ]
+    },
+    {
+      "date": "2026-07-13",
+      "youtube_id": "4h09arBvIV4",
+      "duration_sec": 219.143,
+      "title": "2026/07/13（一）背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 36.1,
+          "label": "第 2 組 100kg×1",
+          "set": 2
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 36.1,
+          "end": 73.27,
+          "label": "第 3 組 105kg×1",
+          "set": 3
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 73.27,
+          "end": 105.403,
+          "label": "第 4 組 110kg×1",
+          "set": 4
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 105.403,
+          "end": 144.273,
+          "label": "第 5 組 100kg×2",
+          "set": 5
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 144.273,
+          "end": 219.143,
+          "label": "第 6 組 80kg×6",
+          "set": 6
+        }
+      ]
+    },
+    {
+      "date": "2026-07-17",
+      "youtube_id": "g3AyfTYv6r4",
+      "duration_sec": 247.767,
+      "title": "2026/07/17（五）熊抱槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "zercher_squat",
+          "start": 0.0,
+          "end": 48.7,
+          "label": "第 1 組 60kg×3",
+          "set": 1
+        },
+        {
+          "exercise_id": "zercher_squat",
+          "start": 48.7,
+          "end": 106.233,
+          "label": "第 2 組 60kg×5",
+          "set": 2
+        },
+        {
+          "exercise_id": "zercher_squat",
+          "start": 106.233,
+          "end": 175.267,
+          "label": "第 3 組 60kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "zercher_squat",
+          "start": 175.267,
+          "end": 247.767,
+          "label": "第 4 組 65kg×6",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-07-18",
+      "youtube_id": "qYsyuW9BuKM",
+      "duration_sec": 281.577,
+      "title": "2026/07/18（六）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 48.47,
+          "label": "第 1 組 40kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 48.47,
+          "end": 94.603,
+          "label": "第 2 組 45kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 94.603,
+          "end": 145.873,
+          "label": "第 3 組 47.5kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 145.873,
+          "end": 191.873,
+          "label": "第 4 組 47.5kg×6",
+          "set": 4
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 191.873,
+          "end": 238.407,
+          "label": "第 5 組 50kg×6",
+          "set": 5
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 238.407,
+          "end": 281.577,
+          "label": "第 6 組 52.5kg×6",
+          "set": 6
+        }
+      ]
+    },
+    {
+      "date": "2026-08-06",
+      "youtube_id": "Z7keMDvl2bQ",
+      "duration_sec": 88.333,
+      "title": "2026/08/06（四）背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 42.633,
+          "label": "第 2 組 80kg×3",
+          "set": 2
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 42.633,
+          "end": 88.333,
+          "label": "第 3 組 80kg×3",
+          "set": 3
+        }
+      ]
+    },
+    {
+      "date": "2026-08-10",
+      "youtube_id": "7N-07n4njzs",
+      "duration_sec": 212.573,
+      "title": "2026/08/10（一）RDL（槓鈴）",
+      "segments": [
+        {
+          "exercise_id": "rdl",
+          "start": 0.0,
+          "end": 53.5,
+          "label": "第 1 組 50kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 53.5,
+          "end": 105.133,
+          "label": "第 2 組 50kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 105.133,
+          "end": 140.033,
+          "label": "第 3 組 60kg×3",
+          "set": 3
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 140.033,
+          "end": 175.103,
+          "label": "第 4 組 70kg×3",
+          "set": 4
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 175.103,
+          "end": 212.573,
+          "label": "第 5 組 70kg×3",
+          "set": 5
+        }
+      ]
+    },
+    {
+      "date": "2026-08-12",
+      "youtube_id": "ZblTycKn-F0",
+      "duration_sec": 187.75,
+      "title": "2026/08/12（三）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 50.07,
+          "label": "第 1 組 50kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 50.07,
+          "end": 100.91,
+          "label": "第 2 組 50kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 100.91,
+          "end": 144.08,
+          "label": "第 3 組 50kg×5",
+          "set": 3
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 144.08,
+          "end": 187.75,
+          "label": "第 4 組 40kg×6",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-08-13",
+      "youtube_id": "p0OeQCzfeJ8",
+      "duration_sec": 242.873,
+      "title": "2026/08/13（四）槓鈴硬舉",
+      "segments": [
+        {
+          "exercise_id": "deadlift",
+          "start": 0.0,
+          "end": 98.337,
+          "label": "暖身"
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 98.337,
+          "end": 135.57,
+          "label": "第 1 組 75kg×3",
+          "set": 1
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 135.57,
+          "end": 169.44,
+          "label": "第 2 組 75kg×3",
+          "set": 2
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 169.44,
+          "end": 208.74,
+          "label": "第 3 組 80kg×3",
+          "set": 3
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 208.74,
+          "end": 242.873,
+          "label": "第 4 組 80kg×3",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-08-17",
+      "youtube_id": "qN7MHLYFTlM",
+      "duration_sec": 329.077,
+      "title": "2026/08/17（一）背槓深蹲、俯身槓鈴划船",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 43.4,
+          "label": "第 1 組 80kg×3",
+          "set": 1
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 43.4,
+          "end": 83.07,
+          "label": "第 2 組 90kg×3",
+          "set": 2
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 83.07,
+          "end": 127.77,
+          "label": "第 3 組 95kg×2",
+          "set": 3
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 127.77,
+          "end": 163.27,
+          "label": "第 4 組 100kg×1",
+          "set": 4
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 163.27,
+          "end": 198.64,
+          "label": "第 5 組 100kg×1",
+          "set": 5
+        },
+        {
+          "exercise_id": "barbell_row",
+          "start": 198.64,
+          "end": 236.773,
+          "label": "第 1 組 40kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "barbell_row",
+          "start": 236.773,
+          "end": 282.843,
+          "label": "第 2 組 50kg×12",
+          "set": 2
+        },
+        {
+          "exercise_id": "barbell_row",
+          "start": 282.843,
+          "end": 329.077,
+          "label": "第 3 組 50kg×10",
+          "set": 3
+        }
+      ]
+    },
+    {
+      "date": "2026-08-18",
+      "youtube_id": "mBqT6q7_D_Q",
+      "duration_sec": 212.447,
+      "title": "2026/08/18（二）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 48.27,
+          "label": "第 1 組 50kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 48.27,
+          "end": 95.64,
+          "label": "第 2 組 55kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 95.64,
+          "end": 135.71,
+          "label": "第 3 組 60kg×3",
+          "set": 3
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 135.71,
+          "end": 160.843,
+          "label": "第 4 組 65kg×1",
+          "set": 4
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 160.843,
+          "end": 183.313,
+          "label": "第 5 組 65kg×1",
+          "set": 5
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 183.313,
+          "end": 212.447,
+          "label": "片段 6"
+        }
+      ]
+    },
+    {
+      "date": "2026-08-19",
+      "youtube_id": "bOUBhJamong",
+      "duration_sec": 447.747,
+      "title": "2026/08/19（三）槓鈴硬舉、哈克深蹲（Panatta Super Hack）",
+      "segments": [
+        {
+          "exercise_id": "deadlift",
+          "start": 0.0,
+          "end": 27.933,
+          "label": "第 1 組 80kg×2",
+          "set": 1
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 27.933,
+          "end": 52.903,
+          "label": "第 2 組 90kg×2",
+          "set": 2
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 52.903,
+          "end": 94.637,
+          "label": "第 3 組 95kg×2",
+          "set": 3
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 94.637,
+          "end": 159.237,
+          "label": "片段 4"
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 159.237,
+          "end": 225.907,
+          "label": "片段 5"
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 225.907,
+          "end": 278.407,
+          "label": "第 5 組 100kg×3",
+          "set": 5
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 278.407,
+          "end": 322.777,
+          "label": "第 6 組 105kg×3",
+          "set": 6
+        },
+        {
+          "exercise_id": "hack_squat",
+          "start": 322.777,
+          "end": 385.677,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "hack_squat",
+          "start": 385.677,
+          "end": 447.747,
+          "label": "片段 2"
+        }
+      ]
+    },
+    {
+      "date": "2026-08-20",
+      "youtube_id": "jBTeGk1naTM",
+      "duration_sec": 235.48,
+      "title": "2026/08/20（四）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 50.54,
+          "label": "暖身"
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 50.54,
+          "end": 76.41,
+          "label": "第 1 組 70kg×1",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 76.41,
+          "end": 110.21,
+          "label": "第 2 組 70kg×1",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 110.21,
+          "end": 144.11,
+          "label": "第 3 組 60kg×4",
+          "set": 3
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 144.11,
+          "end": 187.18,
+          "label": "第 4 組 60kg×4",
+          "set": 4
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 187.18,
+          "end": 235.48,
+          "label": "第 5 組 55kg×5",
+          "set": 5
+        }
+      ]
+    },
+    {
+      "date": "2026-08-21",
+      "youtube_id": "90xRMid3IaY",
+      "duration_sec": 460.373,
+      "title": "2026/08/21（五）背槓深蹲、RDL（槓鈴）",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 108.567,
+          "label": "暖身"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 108.567,
+          "end": 176.8,
+          "label": "第 2 組 95kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 176.8,
+          "end": 247.67,
+          "label": "第 3 組 95kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 247.67,
+          "end": 284.103,
+          "label": "暖身"
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 284.103,
+          "end": 309.837,
+          "label": "第 1 組 80kg×1",
+          "set": 1
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 309.837,
+          "end": 351.237,
+          "label": "第 2 組 90kg×2",
+          "set": 2
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 351.237,
+          "end": 391.207,
+          "label": "第 3 組 100kg×1",
+          "set": 3
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 391.207,
+          "end": 429.84,
+          "label": "第 4 組 110kg×1",
+          "set": 4
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 429.84,
+          "end": 460.373,
+          "label": "片段 6"
+        }
+      ]
+    },
+    {
+      "date": "2026-08-25",
+      "youtube_id": "lFuHilqMbgc",
+      "duration_sec": 178.01,
+      "title": "2026/08/25（二）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 43.77,
+          "label": "第 1 組 60kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 43.77,
+          "end": 87.54,
+          "label": "第 2 組 60kg×5",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 87.54,
+          "end": 134.81,
+          "label": "第 3 組 55kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 134.81,
+          "end": 178.01,
+          "label": "第 4 組 55kg×5",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-08-26",
+      "youtube_id": "hOsuX1NVhBc",
+      "duration_sec": 269.873,
+      "title": "2026/08/26（三）背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 38.233,
+          "label": "第 1 組 120kg×1",
+          "set": 1
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 38.233,
+          "end": 72.333,
+          "label": "第 2 組 120kg×1",
+          "set": 2
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 72.333,
+          "end": 142.903,
+          "label": "第 3 組 90kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 142.903,
+          "end": 210.173,
+          "label": "第 4 組 90kg×6",
+          "set": 4
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 210.173,
+          "end": 269.873,
+          "label": "第 5 組 90kg×6",
+          "set": 5
+        }
+      ]
+    },
+    {
+      "date": "2026-08-28",
+      "youtube_id": "4yJ19CV6QoI",
+      "duration_sec": 299.417,
+      "title": "2026/08/28（五）槓鈴硬舉",
+      "segments": [
+        {
+          "exercise_id": "deadlift",
+          "start": 0.0,
+          "end": 62.25,
+          "label": "暖身"
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 62.25,
+          "end": 89.983,
+          "label": "第 1 組 110kg×1",
+          "set": 1
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 89.983,
+          "end": 114.717,
+          "label": "第 2 組 110kg×2",
+          "set": 2
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 114.717,
+          "end": 174.95,
+          "label": "第 3 組 100kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 174.95,
+          "end": 236.083,
+          "label": "第 4 組 100kg×6",
+          "set": 4
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 236.083,
+          "end": 299.417,
+          "label": "第 5 組 100kg×6",
+          "set": 5
+        }
+      ]
+    },
+    {
+      "date": "2026-08-29",
+      "youtube_id": "bRk_g5BT6TQ",
+      "duration_sec": 556.277,
+      "title": "2026/08/29（六）板凳槓鈴臥推、繩索前臂旋後、繩索前臂旋前",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 61.733,
+          "label": "第 1 組 50kg×8",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 61.733,
+          "end": 112.203,
+          "label": "第 2 組 50kg×8",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 112.203,
+          "end": 164.637,
+          "label": "第 3 組 50kg×8",
+          "set": 3
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 164.637,
+          "end": 224.007,
+          "label": "第 4 組 50kg×7",
+          "set": 4
+        },
+        {
+          "exercise_id": "cable_supination",
+          "start": 224.007,
+          "end": 277.207,
+          "label": "第 1 組（左）11kg×20",
+          "set": 1,
+          "side": "左"
+        },
+        {
+          "exercise_id": "cable_supination",
+          "start": 277.207,
+          "end": 336.14,
+          "label": "第 2 組（右）11kg×20",
+          "set": 2,
+          "side": "右"
+        },
+        {
+          "exercise_id": "cable_supination",
+          "start": 336.14,
+          "end": 392.573,
+          "label": "第 2 組（左）11kg×20",
+          "set": 2,
+          "side": "左"
+        },
+        {
+          "exercise_id": "cable_supination",
+          "start": 392.573,
+          "end": 453.573,
+          "label": "第 3 組（右）11kg×20",
+          "set": 3,
+          "side": "右"
+        },
+        {
+          "exercise_id": "cable_supination",
+          "start": 453.573,
+          "end": 506.707,
+          "label": "第 3 組（左）11kg×20",
+          "set": 3,
+          "side": "左"
+        },
+        {
+          "exercise_id": "cable_pronation",
+          "start": 506.707,
+          "end": 556.277,
+          "label": "片段 1（左）",
+          "side": "左"
+        }
+      ]
+    },
+    {
+      "date": "2026-09-02",
+      "youtube_id": "FDq-wunb104",
+      "duration_sec": 223.037,
+      "title": "2026/09/02（三）RDL（槓鈴）",
+      "segments": [
+        {
+          "exercise_id": "rdl",
+          "start": 0.0,
+          "end": 21.4,
+          "label": "暖身"
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 21.4,
+          "end": 89.733,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 89.733,
+          "end": 158.067,
+          "label": "片段 3"
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 158.067,
+          "end": 223.037,
+          "label": "片段 4"
+        }
+      ]
+    },
+    {
+      "date": "2026-09-05",
+      "youtube_id": "mgH_EjitkKc",
+      "duration_sec": 194.073,
+      "title": "2026/09/05（六）背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 63.97,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 63.97,
+          "end": 133.303,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 133.303,
+          "end": 194.073,
+          "label": "片段 3"
+        }
+      ]
+    },
+    {
+      "date": "2026-09-07",
+      "youtube_id": "QnoNQ-df0Gs",
+      "duration_sec": 249.643,
+      "title": "2026/09/07（一）背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 62.84,
+          "label": "第 1 組 90kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 62.84,
+          "end": 121.61,
+          "label": "第 2 組 90kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 121.61,
+          "end": 187.41,
+          "label": "第 3 組 90kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 187.41,
+          "end": 249.643,
+          "label": "第 4 組 90kg×6",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-09-08",
+      "youtube_id": "OdJb5DyMBTw",
+      "duration_sec": 177.173,
+      "title": "2026/09/08（二）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 46.0,
+          "label": "第 1 組 55kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 46.0,
+          "end": 91.77,
+          "label": "第 2 組 55kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 91.77,
+          "end": 131.803,
+          "label": "第 3 組 55kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 131.803,
+          "end": 177.173,
+          "label": "第 4 組 55kg×6",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-09-09",
+      "youtube_id": "Oyoct_V1zgk",
+      "duration_sec": 57.24,
+      "title": "2026/09/09（三）槓鈴硬舉",
+      "segments": [
+        {
+          "exercise_id": "deadlift",
+          "start": 0.0,
+          "end": 32.77,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 32.77,
+          "end": 57.24,
+          "label": "片段 2"
+        }
+      ]
+    },
+    {
+      "date": "2026-09-10",
+      "youtube_id": "34khPClGDzA",
+      "duration_sec": 565.643,
+      "title": "2026/09/10（四）繩索 Pallof Press、繩索手腕尺偏下壓、滑雪機（SkiErg）",
+      "segments": [
+        {
+          "exercise_id": "pallof_press",
+          "start": 0.0,
+          "end": 45.14,
+          "label": "片段 1（左）",
+          "side": "左"
+        },
+        {
+          "exercise_id": "pallof_press",
+          "start": 45.14,
+          "end": 91.38,
+          "label": "片段 2（右）",
+          "side": "右"
+        },
+        {
+          "exercise_id": "pallof_press",
+          "start": 91.38,
+          "end": 143.19,
+          "label": "片段 3（左）",
+          "side": "左"
+        },
+        {
+          "exercise_id": "pallof_press",
+          "start": 143.19,
+          "end": 190.4,
+          "label": "片段 4（右）",
+          "side": "右"
+        },
+        {
+          "exercise_id": "cable_wrist_ulnar",
+          "start": 190.4,
+          "end": 317.433,
+          "label": "第 1 組 11kg×20",
+          "set": 1
+        },
+        {
+          "exercise_id": "cable_wrist_ulnar",
+          "start": 317.433,
+          "end": 439.073,
+          "label": "第 2 組 11kg×20",
+          "set": 2
+        },
+        {
+          "exercise_id": "ski_erg",
+          "start": 439.073,
+          "end": 565.643,
+          "label": "片段 1"
+        }
+      ]
+    },
+    {
+      "date": "2026-09-11",
+      "youtube_id": "n5RFyqeFOQg",
+      "duration_sec": 310.273,
+      "title": "2026/09/11（五）器械輔助引體向上、俯身槓鈴划船",
+      "segments": [
+        {
+          "exercise_id": "assisted_pullup",
+          "start": 0.0,
+          "end": 58.833,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "assisted_pullup",
+          "start": 58.833,
+          "end": 118.233,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "assisted_pullup",
+          "start": 118.233,
+          "end": 170.403,
+          "label": "片段 3"
+        },
+        {
+          "exercise_id": "barbell_row",
+          "start": 170.403,
+          "end": 215.603,
+          "label": "第 1 組 50kg×12",
+          "set": 1
+        },
+        {
+          "exercise_id": "barbell_row",
+          "start": 215.603,
+          "end": 270.873,
+          "label": "第 2 組 50kg×12",
+          "set": 2
+        },
+        {
+          "exercise_id": "barbell_row",
+          "start": 270.873,
+          "end": 310.273,
+          "label": "第 3 組 50kg×10",
+          "set": 3
+        }
+      ]
+    },
+    {
+      "date": "2026-09-15",
+      "youtube_id": "c2aUs1qDI2E",
+      "duration_sec": 500.997,
+      "title": "2026/09/15（二）板凳槓鈴臥推、繩索夾胸、繩索側平舉、繩索反向飛鳥",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 43.27,
+          "label": "第 1 組 60kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 43.27,
+          "end": 88.87,
+          "label": "第 2 組 60kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 88.87,
+          "end": 141.71,
+          "label": "第 3 組 60kg×5",
+          "set": 3
+        },
+        {
+          "exercise_id": "cable_fly",
+          "start": 141.71,
+          "end": 198.643,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "cable_fly",
+          "start": 198.643,
+          "end": 254.113,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "cable_lateral_raise",
+          "start": 254.113,
+          "end": 313.493,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "cable_lateral_raise",
+          "start": 313.493,
+          "end": 372.063,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "cable_reverse_fly",
+          "start": 372.063,
+          "end": 435.697,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "cable_reverse_fly",
+          "start": 435.697,
+          "end": 500.997,
+          "label": "片段 2"
+        }
+      ]
+    },
+    {
+      "date": "2026-09-16",
+      "youtube_id": "wvOMhEyvTGg",
+      "duration_sec": 268.14,
+      "title": "2026/09/16（三）背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 40.633,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 40.633,
+          "end": 109.103,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 109.103,
+          "end": 155.137,
+          "label": "片段 3"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 155.137,
+          "end": 210.107,
+          "label": "片段 4"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 210.107,
+          "end": 268.14,
+          "label": "片段 5"
+        }
+      ]
+    },
+    {
+      "date": "2026-09-17",
+      "youtube_id": "1zmi0GFZc1E",
+      "duration_sec": 199.743,
+      "title": "2026/09/17（四）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 49.67,
+          "label": "第 1 組 55kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 49.67,
+          "end": 96.64,
+          "label": "第 2 組 55kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 96.64,
+          "end": 144.61,
+          "label": "第 3 組 55kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 144.61,
+          "end": 199.743,
+          "label": "第 4 組 55kg×6",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-09-21",
+      "youtube_id": "ZpfvgivDCsk",
+      "duration_sec": 195.72,
+      "title": "2026/09/21（一）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 49.67,
+          "label": "第 1 組 55kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 49.67,
+          "end": 100.31,
+          "label": "第 2 組 55kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 100.31,
+          "end": 145.98,
+          "label": "第 3 組 55kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 145.98,
+          "end": 195.72,
+          "label": "第 4 組 55kg×6",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-09-23",
+      "youtube_id": "0Dc3OpG75xk",
+      "duration_sec": 70.733,
+      "title": "2026/09/23（三）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 24.433,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 24.433,
+          "end": 70.733,
+          "label": "片段 2"
+        }
+      ]
+    },
+    {
+      "date": "2026-09-24",
+      "youtube_id": "2oaDiPboOBw",
+      "duration_sec": 306.313,
+      "title": "2026/09/24（四）Cable 二頭彎舉、繩索面拉、直臂下拉（Cable）、繩索 Pallof Press",
+      "segments": [
+        {
+          "exercise_id": "bicep_curl_cable",
+          "start": 0.0,
+          "end": 41.5,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "face_pull",
+          "start": 41.5,
+          "end": 84.8,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "face_pull",
+          "start": 84.8,
+          "end": 125.97,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "face_pull",
+          "start": 125.97,
+          "end": 167.34,
+          "label": "片段 3"
+        },
+        {
+          "exercise_id": "straight_arm_pulldown",
+          "start": 167.34,
+          "end": 215.773,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "pallof_press",
+          "start": 215.773,
+          "end": 261.143,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "pallof_press",
+          "start": 261.143,
+          "end": 306.313,
+          "label": "片段 2"
+        }
+      ]
+    },
+    {
+      "date": "2026-09-28",
+      "youtube_id": "HZKLGT2hhdg",
+      "duration_sec": 241.673,
+      "title": "2026/09/28（一）背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 32.533,
+          "label": "暖身"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 32.533,
+          "end": 99.433,
+          "label": "第 1 組 100kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 99.433,
+          "end": 168.903,
+          "label": "第 2 組 100kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 168.903,
+          "end": 241.673,
+          "label": "第 3 組 100kg×6",
+          "set": 3
+        }
+      ]
+    },
+    {
+      "date": "2026-09-29",
+      "youtube_id": "Dq-2CWG3ltY",
+      "duration_sec": 189.837,
+      "title": "2026/09/29（二）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 50.37,
+          "label": "第 1 組 60kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 50.37,
+          "end": 90.87,
+          "label": "第 2 組 60kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 90.87,
+          "end": 134.603,
+          "label": "第 3 組 60kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 134.603,
+          "end": 189.837,
+          "label": "第 4 組 60kg×6",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-10-01",
+      "youtube_id": "XPwHBz4xsQg",
+      "duration_sec": 218.01,
+      "title": "2026/10/01（四）上斜啞鈴臥推、槓鈴肩推（實力推）",
+      "segments": [
+        {
+          "exercise_id": "incline_db_press",
+          "start": 0.0,
+          "end": 55.4,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "incline_db_press",
+          "start": 55.4,
+          "end": 116.24,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "overhead_press",
+          "start": 116.24,
+          "end": 166.11,
+          "label": "第 2 組 25kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "overhead_press",
+          "start": 166.11,
+          "end": 218.01,
+          "label": "第 3 組 25kg×10",
+          "set": 3
+        }
+      ]
+    },
+    {
+      "date": "2026-10-03",
+      "youtube_id": "BOVkaxK_c-s",
+      "duration_sec": 167.703,
+      "title": "2026/10/03（六）器械輔助雙槓臂屈伸",
+      "segments": [
+        {
+          "exercise_id": "assisted_dip",
+          "start": 0.0,
+          "end": 59.4,
+          "label": "第 1 組 50kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "assisted_dip",
+          "start": 59.4,
+          "end": 112.37,
+          "label": "第 2 組 50kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "assisted_dip",
+          "start": 112.37,
+          "end": 167.703,
+          "label": "第 3 組 45kg×10",
+          "set": 3
+        }
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "youtube_id": "ePITYyl932I",
+      "duration_sec": 284.587,
+      "title": "2026/10/05（一）單手啞鈴划船",
+      "segments": [
+        {
+          "exercise_id": "db_row_single",
+          "start": 0.0,
+          "end": 41.2,
+          "label": "第 1 組（右）20kg×12",
+          "set": 1,
+          "side": "右"
+        },
+        {
+          "exercise_id": "db_row_single",
+          "start": 41.2,
+          "end": 94.54,
+          "label": "第 1 組（左）20kg×12",
+          "set": 1,
+          "side": "左"
+        },
+        {
+          "exercise_id": "db_row_single",
+          "start": 94.54,
+          "end": 138.51,
+          "label": "第 2 組（右）20kg×12",
+          "set": 2,
+          "side": "右"
+        },
+        {
+          "exercise_id": "db_row_single",
+          "start": 138.51,
+          "end": 186.477,
+          "label": "第 2 組（左）20kg×12",
+          "set": 2,
+          "side": "左"
+        },
+        {
+          "exercise_id": "db_row_single",
+          "start": 186.477,
+          "end": 236.647,
+          "label": "第 3 組（右）20kg×10",
+          "set": 3,
+          "side": "右"
+        },
+        {
+          "exercise_id": "db_row_single",
+          "start": 236.647,
+          "end": 284.587,
+          "label": "第 3 組（左）20kg×10",
+          "set": 3,
+          "side": "左"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-06",
+      "youtube_id": "lw33ErpmMlk",
+      "duration_sec": 185.073,
+      "title": "2026/10/06（二）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 52.77,
+          "label": "第 1 組 60kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 52.77,
+          "end": 107.77,
+          "label": "第 2 組 60kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 107.77,
+          "end": 159.94,
+          "label": "第 3 組 60kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 159.94,
+          "end": 185.073,
+          "label": "第 4 組 60kg×5",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-10-07",
+      "youtube_id": "32OQ1adIqYI",
+      "duration_sec": 61.6,
+      "title": "2026/10/07（三）背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 61.6,
+          "label": "第 1 組 100kg×5",
+          "set": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-10-16",
+      "youtube_id": "9eXwjuccR20",
+      "duration_sec": 139.933,
+      "title": "2026/10/16（五）RDL（槓鈴）",
+      "segments": [
+        {
+          "exercise_id": "rdl",
+          "start": 0.0,
+          "end": 40.833,
+          "label": "第 1 組 70kg×4",
+          "set": 1
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 40.833,
+          "end": 85.133,
+          "label": "第 2 組 70kg×4",
+          "set": 2
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 85.133,
+          "end": 106.033,
+          "label": "片段 3",
+          "set": 3
+        },
+        {
+          "exercise_id": "rdl",
+          "start": 106.033,
+          "end": 139.933,
+          "label": "第 3 組 70kg×4",
+          "set": 3
+        }
+      ]
+    },
+    {
+      "date": "2026-10-17",
+      "youtube_id": "Fi23gsFoKdk",
+      "duration_sec": 144.37,
+      "title": "2026/10/17（六）槓鈴肩推（實力推）",
+      "segments": [
+        {
+          "exercise_id": "overhead_press",
+          "start": 0.0,
+          "end": 46.27,
+          "label": "第 1 組 20kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "overhead_press",
+          "start": 46.27,
+          "end": 101.37,
+          "label": "第 2 組 25kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "overhead_press",
+          "start": 101.37,
+          "end": 144.37,
+          "label": "第 3 組 25kg×8",
+          "set": 3
+        }
+      ]
+    },
+    {
+      "date": "2026-10-19",
+      "youtube_id": "UX2_L4UubQI",
+      "duration_sec": 297.67,
+      "title": "2026/10/19（一）後腳抬高蹲、背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 0.0,
+          "end": 58.87,
+          "label": "第 1 組（左）15kg×10",
+          "set": 1,
+          "side": "左"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 58.87,
+          "end": 121.703,
+          "label": "第 1 組（右）15kg×10",
+          "set": 1,
+          "side": "右"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 121.703,
+          "end": 179.503,
+          "label": "第 2 組（左）15kg×10",
+          "set": 2,
+          "side": "左"
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 179.503,
+          "end": 234.737,
+          "label": "第 1 組 90kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 234.737,
+          "end": 297.67,
+          "label": "第 2 組 90kg×6",
+          "set": 2
+        }
+      ]
+    },
+    {
+      "date": "2026-10-20",
+      "youtube_id": "V3_yh2zPkio",
+      "duration_sec": 76.2,
+      "title": "2026/10/20（二）上斜啞鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "incline_db_press",
+          "start": 0.0,
+          "end": 76.2,
+          "label": "片段 1"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "youtube_id": "q51FvBYZmuc",
+      "duration_sec": 283.283,
+      "title": "2026/10/21（三）板凳槓鈴臥推、上斜啞鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 36.37,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 36.37,
+          "end": 67.74,
+          "label": "片段 2"
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 67.74,
+          "end": 113.81,
+          "label": "片段 3"
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 113.81,
+          "end": 153.543,
+          "label": "片段 4"
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 153.543,
+          "end": 189.143,
+          "label": "片段 5"
+        },
+        {
+          "exercise_id": "incline_db_press",
+          "start": 189.143,
+          "end": 230.943,
+          "label": "片段 1"
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 230.943,
+          "end": 283.283,
+          "label": "片段 6"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "youtube_id": "36lVBjXaJyk",
+      "duration_sec": 243.643,
+      "title": "2026/10/22（四）板凳槓鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 67.07,
+          "label": "第 1 組 55kg×8",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 67.07,
+          "end": 123.34,
+          "label": "第 2 組 55kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 123.34,
+          "end": 183.91,
+          "label": "第 3 組 55kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 183.91,
+          "end": 243.643,
+          "label": "第 4 組 55kg×6",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-10-24",
+      "youtube_id": "JH_RP5V9l9s",
+      "duration_sec": 561.117,
+      "title": "2026/10/24（六）單手啞鈴划船、後腳抬高蹲",
+      "segments": [
+        {
+          "exercise_id": "db_row_single",
+          "start": 0.0,
+          "end": 39.633,
+          "label": "第 1 組（左）20kg×12",
+          "set": 1,
+          "side": "左"
+        },
+        {
+          "exercise_id": "db_row_single",
+          "start": 39.633,
+          "end": 81.073,
+          "label": "第 1 組（右）20kg×12",
+          "set": 1,
+          "side": "右"
+        },
+        {
+          "exercise_id": "db_row_single",
+          "start": 81.073,
+          "end": 122.673,
+          "label": "第 2 組（左）22.5kg×12",
+          "set": 2,
+          "side": "左"
+        },
+        {
+          "exercise_id": "db_row_single",
+          "start": 122.673,
+          "end": 165.173,
+          "label": "第 2 組（右）20kg×12",
+          "set": 2,
+          "side": "右"
+        },
+        {
+          "exercise_id": "db_row_single",
+          "start": 165.173,
+          "end": 207.673,
+          "label": "第 3 組（左）22.5kg×12",
+          "set": 3,
+          "side": "左"
+        },
+        {
+          "exercise_id": "db_row_single",
+          "start": 207.673,
+          "end": 256.673,
+          "label": "第 3 組（右）20kg×12",
+          "set": 3,
+          "side": "右"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 256.673,
+          "end": 307.073,
+          "label": "第 1 組（左）15kg×10",
+          "set": 1,
+          "side": "左"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 307.073,
+          "end": 357.773,
+          "label": "第 1 組（右）15kg×10",
+          "set": 1,
+          "side": "右"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 357.773,
+          "end": 409.707,
+          "label": "第 2 組（左）15kg×10",
+          "set": 2,
+          "side": "左"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 409.707,
+          "end": 461.177,
+          "label": "第 2 組（右）15kg×10",
+          "set": 2,
+          "side": "右"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 461.177,
+          "end": 508.447,
+          "label": "第 3 組（左）15kg×10",
+          "set": 3,
+          "side": "左"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 508.447,
+          "end": 561.117,
+          "label": "第 3 組（右）15kg×10",
+          "set": 3,
+          "side": "右"
+        }
+      ]
     }
   ]
 }

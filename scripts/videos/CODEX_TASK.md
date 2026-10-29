@@ -9,9 +9,14 @@
   - `date`
   - `file`：影片的絕對路徑，1080p H.264
   - `title`
-  - `description`：開頭是 YouTube 章節時間戳記，後面是每個動作的紀錄和日誌原文
+  - `description`：開頭是 YouTube 章節時間戳記，接著是每個動作的紀錄和日誌原文，最後一行是 hashtag
   - `visibility`：一律是 `unlisted`
-- `results.json`：進度檔，由你建立並維護，說明見下方。請用 **UTF-8（不要 BOM）** 寫入。
+  - `recordingDate`：錄製日期 YYYY-MM-DD
+  - `category`：類別，「運動」
+  - `playlists`：要加入的播放清單標題
+  - `metaHash`
+- `playlists.json`：頻道上應該有的播放清單（`title`、`description`、`visibility` 一律是 `unlisted`）。
+- `results.json`、`metadata-results.json`、`playlists-results.json`：進度檔，由你建立並維護，說明見下方。請用 **UTF-8（不要 BOM）** 寫入。
 
 ## 怎麼上傳
 - 使用者的 Chrome 已經登入 YouTube（帳號 @neardreams）。
@@ -27,13 +32,16 @@
    1. 建立 → 上傳影片，把 `file` 交給上傳欄位（用工具直接設定檔案，不要開系統的檔案選擇視窗）。可以一次選多支（Studio 一次最多 15 支），但每支的細節都要逐支設定，不能留在「草稿」。
    2. **標題**：完全照 `title` 填，先清掉 YouTube 預設的檔名標題。
    3. **說明**：完全照 `description` 填，保留所有換行，不要增刪任何字。
-   4. **目標觀眾**：選「否，這不是為兒童打造的內容」。
-   5. 其他欄位（播放清單、標記、影片元素等）都不要動。
-   6. **瀏覽權限**：選「不公開」（Unlisted），然後按「儲存」。
-   7. 確認標題、說明、觀眾、瀏覽權限都存好之後，在 `results.json` 加一筆：
+   4. **播放清單**：勾選 `playlists` 裡的每一個。頻道上還沒有的，照 `playlists.json` 的標題、說明建立，瀏覽權限「不公開」；新建的播放清單 ID（網址 `list=` 後面那段）寫進 `playlists-results.json`：`{"key": "...", "title": "...", "playlistId": "PL...", "url": "..."}`。
+   5. **目標觀眾**：選「否，這不是為兒童打造的內容」。
+   6. 「顯示更多」→ **錄製日期**：填 `recordingDate`；**類別**：選「運動」。
+   7. 其他欄位（標記、影片元素等）都不要動。
+   8. **瀏覽權限**：選「不公開」（Unlisted），然後按「儲存」。
+   9. 確認都存好之後，在 `results.json` 加一筆：
       ```json
       {"date": "2026-02-04", "file": "...", "videoId": "...", "url": "https://youtu.be/...", "visibility": "unlisted", "savedAt": "<時間>"}
       ```
+      並在 `metadata-results.json` 加一筆：`{"date": "...", "videoId": "...", "metaHash": "<manifest 裡的 metaHash>", "savedAt": "<時間>"}`。
 4. 這次執行的第一支傳完，打開它的觀看頁，確認標題正確、瀏覽權限是「不公開」，有任何不對就先修正再繼續。章節要等 YouTube 處理完才會出現，不用等。
 
 ## 停止條件
@@ -42,7 +50,7 @@
 
 ## 限制
 - 只能新增影片，不要刪除或修改頻道上已經存在的任何影片，也不要改頻道設定。
-- 本機只能讀 `manifest.json` 和裡面列出的影片，只能寫 `results.json` 和 `codex-progress.log`（可選）。
+- 本機只能讀 `manifest.json`、`playlists.json` 和清單裡的影片，只能寫 `results.json`、`metadata-results.json`、`playlists-results.json` 和 `codex-progress.log`（可選）。
 - 不要動 TrainLog 專案的其他檔案。
 
 ## 最後回報（繁體中文）

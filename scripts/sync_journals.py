@@ -153,7 +153,8 @@ class AppleJournalParser(HTMLParser):
             if self.current_text and not self.current_text.endswith(" "):
                 self.current_text += data.replace("\n", " ")
             else:
-                self.current_text += text
+                # 只去開頭空白：Apple 會把「1. 」「• 」放在獨立的 span，連結尾空白一起去掉會黏住下一段文字
+                self.current_text += data.lstrip().replace("\n", " ")
 
     def get_markdown(self):
         """組合成 journals_raw.json 要求的 markdown 格式。"""

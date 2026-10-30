@@ -5,6 +5,7 @@
     "bench_press": ["#臥推", "#BenchPress"],
     "back_squat": ["#深蹲", "#BackSquat"],
     "rdl": ["#羅馬尼亞硬舉", "#RDL"],
+    "single_leg_rdl": ["#單腳羅馬尼亞硬舉", "#SingleLegRDL"],
     "bulgarian_split": ["#保加利亞分腿蹲", "#BulgarianSplitSquat"],
     "deadlift": ["#硬舉", "#Deadlift"],
     "zercher_squat": ["#熊抱深蹲", "#ZercherSquat"],

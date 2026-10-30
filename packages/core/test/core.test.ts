@@ -35,6 +35,21 @@ import {
   topSetSegment,
   youtubeEmbedUrl,
   youtubeUrl,
+  yearSets,
+  daySets,
+  entryPr,
+  otherExerciseVideo,
+  prEvents,
+  prevDayVideo,
+  segmentsBySet,
+  topSetIndex,
+  trainingDayNo,
+  entryNo,
+  compareColumns,
+  exercisesOnDates,
+  entriesOf,
+  progressOf,
+  trendPoints,
   type Entry,
 } from '../src';
 
@@ -207,6 +222,12 @@ describe('計算', () => {
     expect(addDays('2026-03-01', -1)).toBe('2026-02-28');
     expect(mondayOf('2026-11-01')).toBe('2026-10-26');
   });
+  it('某一年的總組數', () => {
+    const y2026 = ds.trainingDates.filter((d) => d.startsWith('2026-'));
+    expect(yearSets(ds, 2026)).toBe(y2026.reduce((s, d) => s + daySets(ds, d), 0));
+    expect(yearSets(ds, 2026)).toBeGreaterThan(0);
+    expect(yearSets(ds, 1999)).toBe(0);
+  });
   it('前後訓練日', () => {
     expect(latestTrainingDate(ds, T)).toBe('2026-10-19');
     expect(nextTrainingDate(ds, '2026-10-19')).toBeNull();
@@ -240,6 +261,70 @@ describe('計算', () => {
     expect(legacyUrlToHash('?exercise=back_squat')).toBe('#/exercises?ex=back_squat');
     expect(legacyUrlToHash('?view=spec')).toBe('#/spec');
     expect(legacyUrlToHash('?m=dark')).toBeNull();
+  });
+});
+
+describe('訓練紀錄頁', () => {
+  const td = ds.trainingDates;
+  it('第幾個訓練日、第幾次', () => {
+    expect(trainingDayNo(ds, td[0]!)).toBe(1);
+    expect(trainingDayNo(ds, td[td.length - 1]!)).toBe(td.length);
+    expect(trainingDayNo(ds, '1999-01-01')).toBeNull();
+    const h = ds.entriesByExercise.get(ds.exercises[0]!.id)!;
+    expect(entryNo(ds, h[0]!)).toBe(1);
+    expect(entryNo(ds, h[h.length - 1]!)).toBe(h.length);
+  });
+  it('日期比較的欄：前 3 個訓練日＋這天＋後 1 個；有範圍時是範圍內的訓練日', () => {
+    const i = 10;
+    expect(compareColumns(ds, td[i]!, 0)).toEqual(td.slice(i - 3, i + 2));
+    expect(compareColumns(ds, td[0]!, 0)).toEqual(td.slice(0, 2));
+    const r = compareColumns(ds, td[i]!, 7);
+    expect(r.every((d) => d >= addDays(td[i]!, -7) && d <= addDays(td[i]!, 7) && td.includes(d))).toBe(true);
+    expect(r).toContain(td[i]);
+  });
+  it('多天出現過的動作不重複、依出現順序', () => {
+    const dates = td.slice(0, 3);
+    const ids = exercisesOnDates(ds, dates);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(ids[0]).toBe(ds.entriesByDate.get(dates[0]!)![0]!.exerciseId);
+    const all = new Set(dates.flatMap((d) => ds.entriesByDate.get(d)!.map((e) => e.exerciseId)));
+    expect(new Set(ids)).toEqual(all);
+  });
+});
+
+describe('破紀錄', () => {
+  it('最重那一組的位置：同重量取第一組、沒有重量是 -1', () => {
+    const s = (...w: (number | null)[]) => w.map((weightKg) => ({ weightKg, reps: 5 }));
+    expect(topSetIndex(s(60, 80, 70))).toBe(1);
+    expect(topSetIndex(s(80, 80))).toBe(0);
+    expect(topSetIndex(s(null, 0))).toBe(-1);
+    expect(topSetIndex([])).toBe(-1);
+  });
+  it('某筆紀錄是不是破紀錄，與 prEvents 一致', () => {
+    const p = prEvents(ds)[0]!;
+    expect(entryPr(ds, p)).toEqual(p);
+    const first = ds.entriesByExercise.get(p.exerciseId)![0]!;
+    expect(entryPr(ds, first)).toBeUndefined();
+  });
+  it('趨勢圖的每一點：最高重量，破紀錄的點與 entryPr 一致', () => {
+    const p = prEvents(ds)[0]!;
+    const ex = ds.exerciseById.get(p.exerciseId)!;
+    const pts = trendPoints(ds, ex);
+    const hit = pts.find((x) => x.date === p.date)!;
+    expect(hit.value).toBe(p.to);
+    expect(hit.pr).toBe(true);
+    expect(pts[0]!.pr).toBe(false);
+    expect(pts.filter((x) => x.pr).length).toBe(prEvents(ds).filter((e) => e.exerciseId === ex.id).length);
+  });
+  it('進步幅度＝最後一次最高重量 − 第一次；不到 2 次是 null', () => {
+    const ex = ds.exercises.find((e) => entriesOf(ds, e.id).filter((h) => getMaxWeight(h.sets)).length >= 2)!;
+    const qs = entriesOf(ds, ex.id).filter((h) => getMaxWeight(h.sets));
+    const pg = progressOf(ds, ex.id)!;
+    expect(pg.first).toBe(getMaxWeight(qs[0]!.sets));
+    expect(pg.last).toBe(getMaxWeight(qs[qs.length - 1]!.sets));
+    expect(pg.delta).toBe(pg.last - pg.first);
+    const one = ds.exercises.find((e) => entriesOf(ds, e.id).filter((h) => getMaxWeight(h.sets)).length < 2);
+    if (one) expect(progressOf(ds, one.id)).toBeNull();
   });
 });
 
@@ -336,6 +421,31 @@ describe('影片', () => {
       [other.date, 1],
     ]);
     expect(exerciseVideos(r.dataset, b.exerciseId)).toEqual([]);
+  });
+  it('其他天最近一次的影片、前一支影片、依組號分組', () => {
+    const other = ds.entriesByExercise.get(a.exerciseId)!.find((e) => e.date < date)!;
+    const v = videos();
+    v.videos.push({
+      date: other.date,
+      youtube_id: 'zyxWVU_98-7',
+      duration_sec: 60,
+      canvas: '1920x1080',
+      title: `${other.date} 測試`,
+      segments: [{ exercise_id: a.exerciseId, start: 0, end: 30, label: '片段 1' }],
+    });
+    const r = parsed(v);
+    if (!r.ok) throw new Error(r.issues.join('\n'));
+    // 當天以外最近一次（不論在前或在後）
+    expect(otherExerciseVideo(r.dataset, a.exerciseId, date)?.video.date).toBe(other.date);
+    expect(otherExerciseVideo(r.dataset, a.exerciseId, other.date)?.video.date).toBe(date);
+    expect(otherExerciseVideo(r.dataset, b.exerciseId, date)).toBeUndefined();
+    // 前一支影片：嚴格早於那天
+    expect(prevDayVideo(r.dataset, date)?.date).toBe(other.date);
+    expect(prevDayVideo(r.dataset, addDays(date, 1))?.date).toBe(date);
+    expect(prevDayVideo(r.dataset, other.date)).toBeUndefined();
+    // 依組號分組：沒有組號的段落不列入
+    const bySet = segmentsBySet(dayVideo(r.dataset, date)!.segments);
+    expect([...bySet].map(([k, s]) => [k, s.map((x) => x.start)])).toEqual([[1, [0]]]);
   });
   it('最重那一組的段落', () => {
     const seg = (start: number, set?: number) => ({

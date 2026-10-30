@@ -1,24 +1,27 @@
-// 動作紀錄面板：概覽／歷程／動作要點（動作庫展開列與訓練紀錄下鑽共用）
+// 動作紀錄面板（v14）：標題列分頁（概覽／歷程／動作要點）＋影片；概覽是欄位格＋趨勢圖＋動作要點，右邊最近 5 次
+// 動作庫展開列與訓練紀錄下鑽共用
 import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useNavigate } from '@tanstack/react-router';
 import {
   calcVolume,
-  daysLabel,
   daysAgo,
+  dowOf,
   entriesOf,
+  exerciseVideos,
   fmtN,
   isCardio,
   md,
+  progressOf,
   summarize,
-  trendSeries,
+  trendPoints,
   type DateStr,
   type Entry,
   type Exercise,
 } from '@trainlog/core';
-import { Sparkline } from './charts';
-import { Count, DateCell, Empty, ExhBadge, Sets } from './ui';
-import { ExerciseVideosButton, VideoButton } from './VideoLinks';
+import { TrendChart } from './charts';
+import { Empty, ExhBadge, PartTile, Sets } from './ui';
+import { EntryVideoButton, ExerciseVideosButton } from './VideoLinks';
 import { Icon } from '@/lib/icons';
 import { TODAY } from '@/lib/today';
 import { useDs } from '@/lib/useDs';
@@ -34,23 +37,25 @@ export function VolCell({ ex, h }: { ex: Exercise; h: Entry }) {
   const v = calcVolume(h.sets);
   return v != null ? (
     <>
-      {fmtN(v)} <span className="na">kg</span>
+      {fmtN(v)}
+      <small>kg</small>
     </>
   ) : (
     <span className="na">—</span>
   );
 }
 
+/** 紀錄表：日期（點了到那天的訓練紀錄）、組數＋感受、容量、力竭、影片；full 時另列身心狀態與動作提示 */
 export function HistTable({
   ex,
   rows,
   focus,
-  maxHeight,
+  full,
 }: {
   ex: Exercise;
   rows: Entry[];
   focus?: DateStr;
-  maxHeight?: number;
+  full?: boolean;
 }) {
   const navigate = useNavigate();
   const focusRef = useRef<HTMLTableRowElement>(null);
@@ -58,82 +63,77 @@ export function HistTable({
     focusRef.current?.scrollIntoView({ block: 'nearest' });
   }, [focus]);
   return (
-    <div className="table-wrap" style={maxHeight ? { maxHeight } : undefined}>
-      <table className="tbl">
-        <thead>
-          <tr>
-            <th>日期</th>
-            <th>重量 / 組次</th>
-            <th className="r">{isCardio(ex) ? '時間 / 距離' : '總容量'}</th>
-            <th>感受度</th>
-            <th>力竭</th>
-            <th>身心狀態</th>
-            <th>動作提示</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((h) => (
-            <tr
-              key={h.id}
-              className={clsx(h.date === focus && 'tr-focus')}
-              ref={h.date === focus ? focusRef : undefined}
-            >
-              <DateCell
-                date={h.date}
-                onOpen={() => void navigate({ to: '/days/$date', params: { date: h.date } })}
+    <table className={clsx('dg rtab', full && 'full')}>
+      <thead>
+        <tr>
+          <th>日期</th>
+          <th>{isCardio(ex) ? '紀錄' : '組數（重量 × 次數）'}</th>
+          <th className="r rv">{isCardio(ex) ? '時間 / 距離' : '容量'}</th>
+          <th>力竭</th>
+          <th className="c">影片</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((h) => (
+          <tr
+            key={h.id}
+            className={clsx(h.date === focus && 'on')}
+            ref={h.date === focus ? focusRef : undefined}
+          >
+            <td className="num">
+              <button
+                type="button"
+                className="rt-d"
+                data-tip={`看 ${md(h.date)} 的訓練紀錄`}
+                onClick={() => void navigate({ to: '/days/$date', params: { date: h.date } })}
               >
-                <VideoButton entry={h} compact />
-              </DateCell>
-              <td className="c-sets">
-                <Sets entry={h} ex={ex} />
-              </td>
-              <td className="c-vol">
-                <VolCell ex={ex} h={h} />
-              </td>
-              <td className="c-feel">{h.feel ?? ''}</td>
-              <td className="c-exh">
-                <ExhBadge value={h.exhaustion} />
-              </td>
-              <td className="c-cond">{h.condition ?? ''}</td>
-              <td className="c-cue">{h.cue ?? ''}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+                {md(h.date)}
+              </button>
+              <div className="rt-w">週{dowOf(h.date)}</div>
+            </td>
+            <td className="fill">
+              <Sets entry={h} ex={ex} mini />
+              {h.feel && <div className="fl">{h.feel}</div>}
+              {full && h.condition && h.condition !== '正常' && (
+                <div className="fl">
+                  <em>身心狀態</em>
+                  {h.condition}
+                </div>
+              )}
+              {full && h.cue && (
+                <div className="fl cue">
+                  <em>動作提示</em>
+                  {h.cue}
+                </div>
+              )}
+            </td>
+            <td className="r num b rv">
+              <VolCell ex={ex} h={h} />
+            </td>
+            <td>
+              <ExhBadge value={h.exhaustion} />
+            </td>
+            <td className="c">
+              <div className="vbc">
+                <EntryVideoButton entry={h} />
+              </div>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 
-function TrendCard({ label, data, unit }: { label: string; data: [DateStr, number][]; unit: string }) {
-  const first = data[0]?.[1] ?? 0;
-  const last = data[data.length - 1]?.[1] ?? 0;
-  const delta = last - first;
-  const cls = delta > 0 ? 'up' : delta < 0 ? 'down' : 'flat';
-  return (
-    <div className="trend-card">
-      <div className="tc-head">
-        <span>{label}</span>
-        <span className={clsx('delta', cls)}>
-          {delta > 0 ? '+' : delta < 0 ? '−' : '±'}
-          {fmtN(Math.abs(delta))} {unit}
-        </span>
-      </div>
-      <div className="tc-value">
-        {fmtN(last)}
-        <small>{unit} · 最新</small>
-      </div>
-      <Sparkline data={data} unit={unit} />
-      <div className="tc-foot">
-        <span>
-          首次 {fmtN(first)} {unit}
-        </span>
-        <span>
-          {md(data[0]?.[0] ?? TODAY)} – {md(data[data.length - 1]?.[0] ?? TODAY)} · {data.length} 筆
-        </span>
-      </div>
-    </div>
-  );
-}
+/** 欄位格的一格 */
+const F = ({ k, children, style }: { k: string; children: React.ReactNode; style?: React.CSSProperties }) => (
+  <div>
+    <span>{k}</span>
+    <b style={style}>{children}</b>
+  </div>
+);
+const U = ({ u }: { u: string }) => <small>{u}</small>;
+const NA = () => <span className="na">—</span>;
 
 export type RecTab = 'ov' | 'hist' | 'notes';
 
@@ -154,149 +154,194 @@ export function RecordPanel({
   const hist = entriesOf(ds, ex.id);
   const s = summarize(ds, ex, TODAY);
   const cardio = isCardio(ex);
-  const series = trendSeries(ds, ex);
-  const recent = [...hist].reverse().slice(0, 5);
+  const points = trendPoints(ds, ex);
+  const pg = progressOf(ds, ex.id);
+  const videoDays = exerciseVideos(ds, ex.id).length;
   const desc = [...hist].reverse();
+  const recent = desc.slice(0, 5);
   const last = s.lastDate;
+  const maxMin = Math.max(0, ...hist.map((h) => h.minutes ?? 0));
+  const first = hist[0];
   const tabs: [RecTab, string, number | null][] = [
     ['ov', '概覽', null],
     ['hist', '歷程', hist.length],
     ['notes', '動作要點', ex.notes.length],
   ];
   return (
-    <div className="rec">
-      <div className="rec-tabs" role="tablist">
+    <section className="pn rec">
+      <header className="pn-h" role="tablist">
         {tabs.map(([k, l, c]) => (
           <button
             key={k}
-            className={clsx('rec-tab', tab === k && 'active')}
+            type="button"
             role="tab"
             aria-selected={tab === k}
+            className={clsx('xtab', tab === k && 'on')}
             onClick={() => setTab(k)}
           >
             {l}
-            {c != null && <Count n={c} />}
+            {c != null && <span className="cnt">{c}</span>}
           </button>
         ))}
-        <span className="rec-act">
-          <ExerciseVideosButton exerciseId={ex.id} />
+        <span className="sp" />
+        <div className="acts">
+          <ExerciseVideosButton exerciseId={ex.id} variant="btn" />
           {!inDay && last && (
             <button
-              className="btn btn-ghost"
+              type="button"
+              className="btn sm"
               onClick={() => void navigate({ to: '/days/$date', params: { date: last } })}
             >
               <Icon name="calendar" />
               最近一次訓練
             </button>
           )}
-        </span>
-      </div>
+        </div>
+      </header>
       {tab === 'ov' && (
-        <div className="rec-pane active">
-          <div className="kpis">
-            <div className="kpi">
-              <div className="k">訓練次數</div>
-              <div className="v">
+        <div className="xp-g">
+          <div>
+            <div className="fg">
+              <F k="部位">
+                <span className="fg-g">
+                  <PartTile group={ex.group} />
+                  {ex.group}
+                </span>
+              </F>
+              <F k="訓練次數">
                 {hist.length}
-                <small>次</small>
-              </div>
+                <U u="次" />
+              </F>
+              <F k="影片">
+                {videoDays}
+                <U u="天" />
+              </F>
+              {cardio ? (
+                <>
+                  <F k="累計時間">
+                    {s.cardio.mins ? fmtN(s.cardio.mins) : <NA />}
+                    {s.cardio.mins > 0 && <U u="分" />}
+                  </F>
+                  <F k="累計距離">
+                    {s.cardio.km ? fmtN(s.cardio.km) : <NA />}
+                    {s.cardio.km > 0 && <U u="km" />}
+                  </F>
+                  <F k="最長時間">
+                    {maxMin ? fmtN(maxMin) : <NA />}
+                    {maxMin > 0 && <U u="分" />}
+                  </F>
+                  <F k="第一次">{first ? md(first.date) : <NA />}</F>
+                </>
+              ) : (
+                <>
+                  <F k="最高重量">
+                    {s.maxWeight ? fmtN(s.maxWeight) : <NA />}
+                    {s.maxWeight > 0 && <U u="kg" />}
+                  </F>
+                  <F
+                    k="進步（首次→最近）"
+                    style={
+                      pg && pg.delta
+                        ? { color: pg.delta > 0 ? 'var(--green-11)' : 'var(--red-11)' }
+                        : undefined
+                    }
+                  >
+                    {pg ? (
+                      <>
+                        {pg.delta > 0 ? '+' : pg.delta < 0 ? '−' : ''}
+                        {fmtN(Math.abs(pg.delta))}
+                        <U u="kg" />
+                      </>
+                    ) : (
+                      <NA />
+                    )}
+                  </F>
+                  <F k="累計容量">
+                    {s.totalVolume ? fmtN(Math.round(s.totalVolume)) : <NA />}
+                    {s.totalVolume > 0 && <U u="kg" />}
+                  </F>
+                  <F k="首次最高">
+                    {pg ? fmtN(pg.first) : <NA />}
+                    {pg && <U u="kg" />}
+                  </F>
+                </>
+              )}
+              <F k="上次訓練">{last ? md(last) : <NA />}</F>
+              <F k="距今">
+                {last ? daysAgo(last, TODAY) : <NA />}
+                {last && <U u="天" />}
+              </F>
             </div>
-            {cardio ? (
+            {points.length >= 2 && (
               <>
-                <div className="kpi">
-                  <div className="k">累計時間</div>
-                  <div className="v">
-                    {s.cardio.mins ? fmtN(s.cardio.mins) : '—'}
-                    <small>{s.cardio.mins ? '分' : ''}</small>
-                  </div>
-                </div>
-                <div className="kpi">
-                  <div className="k">累計距離</div>
-                  <div className="v">
-                    {s.cardio.km ? fmtN(s.cardio.km) : '—'}
-                    <small>{s.cardio.km ? 'km' : ''}</small>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="kpi">
-                  <div className="k">最高重量</div>
-                  <div className="v">
-                    {s.maxWeight ? fmtN(s.maxWeight) : '—'}
-                    <small>{s.maxWeight ? 'kg' : ''}</small>
-                  </div>
-                </div>
-                <div className="kpi">
-                  <div className="k">累計容量</div>
-                  <div className="v">
-                    {s.totalVolume ? fmtN(s.totalVolume) : '—'}
-                    <small>{s.totalVolume ? 'kg' : ''}</small>
-                  </div>
+                <TrendChart points={points} unit={cardio ? '分' : 'kg'} />
+                <div className="trend-f">
+                  <span>
+                    {cardio ? '每次時間' : '每次最高重量'} · 共 {points.length} 次
+                  </span>
+                  <span className="lg">
+                    <span>
+                      <i style={{ background: 'var(--g)' }} />
+                      {cardio ? '時間' : '每次最高'}
+                    </span>
+                    {!cardio && (
+                      <span>
+                        <i style={{ background: 'var(--green-9)' }} />
+                        破紀錄
+                      </span>
+                    )}
+                  </span>
                 </div>
               </>
             )}
-            <div className="kpi">
-              <div className="k">上次訓練</div>
-              <div className="v">
-                {last ? md(last) : '—'}
-                <small>{last ? daysLabel(daysAgo(last, TODAY)) : ''}</small>
-              </div>
-            </div>
+            {ex.notes.length > 0 && (
+              <>
+                <div className="notes-h">
+                  <span>動作要點</span>
+                  <button type="button" className="lk" onClick={() => setTab('notes')}>
+                    全部 {ex.notes.length} 條
+                    <Icon name="arrow" />
+                  </button>
+                </div>
+                <ol className="notes-ol">
+                  {ex.notes.slice(0, 3).map((n) => (
+                    <li key={n}>{n}</li>
+                  ))}
+                </ol>
+              </>
+            )}
           </div>
-          <div className="ov-grid">
-            {series.primary.length >= 2 && (
-              <TrendCard
-                label={cardio ? '時間趨勢' : '總容量趨勢'}
-                data={series.primary}
-                unit={cardio ? '分' : 'kg'}
-              />
-            )}
-            {series.secondary.length >= 2 && (
-              <TrendCard
-                label={cardio ? '距離趨勢' : '最高重量趨勢'}
-                data={series.secondary}
-                unit={cardio ? 'km' : 'kg'}
-              />
-            )}
-            <div className="box">
-              <div className="box-h">
-                最近 {recent.length} 次
-                <a className="link" onClick={() => setTab('hist')}>
-                  查看全部 {hist.length} 筆
-                </a>
-              </div>
-              <HistTable ex={ex} rows={recent} {...(focus ? { focus } : {})} />
+          <div>
+            <HistTable ex={ex} rows={recent} {...(focus ? { focus } : {})} />
+            <div className="pn-f">
+              <span>
+                最近 {recent.length} 次，共 <b>{hist.length}</b> 筆
+              </span>
+              <button type="button" className="lk" onClick={() => setTab('hist')}>
+                查看全部歷程
+                <Icon name="arrow" />
+              </button>
             </div>
           </div>
         </div>
       )}
       {tab === 'hist' && (
-        <div className="rec-pane active">
-          <div className="box">
-            <HistTable ex={ex} rows={desc} maxHeight={560} {...(focus ? { focus } : {})} />
-          </div>
+        <div className="rec-hist">
+          <HistTable ex={ex} rows={desc} full {...(focus ? { focus } : {})} />
         </div>
       )}
-      {tab === 'notes' && (
-        <div className="rec-pane active">
-          <div className="box">
-            <div className="box-b">
-              {ex.notes.length ? (
-                <ol className="notes">
-                  {ex.notes.map((n) => (
-                    <li key={n}>{n}</li>
-                  ))}
-                </ol>
-              ) : (
-                <Empty title="還沒有動作要點" icon="doc">
-                  同步日誌時，教練提醒會自動整理進來。
-                </Empty>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+      {tab === 'notes' &&
+        (ex.notes.length ? (
+          <ol className="notes-ol all">
+            {ex.notes.map((n) => (
+              <li key={n}>{n}</li>
+            ))}
+          </ol>
+        ) : (
+          <Empty title="還沒有動作要點" icon="doc">
+            同步日誌時，教練提醒會自動整理進來。
+          </Empty>
+        ))}
+    </section>
   );
 }

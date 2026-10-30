@@ -1,9 +1,11 @@
-// 圖示：統一使用 lucide-react，className="i" 套用 v9 的尺寸與線寬
+// 圖示：統一使用 lucide-react，className="i" 套用 v14 的尺寸與線寬（方頭線）
 import {
   Activity,
   ArrowDown,
   ArrowLeft,
+  ArrowRight,
   ArrowUp,
+  ArrowUpDown,
   Calendar,
   ChartColumn,
   Check,
@@ -18,6 +20,9 @@ import {
   ExternalLink,
   Dumbbell,
   FileText,
+  History,
+  House,
+  Info,
   Flame,
   Funnel,
   LayoutGrid,
@@ -25,6 +30,7 @@ import {
   Menu,
   Moon,
   PanelLeft,
+  Shapes,
   Play,
   Rows3,
   Rows4,
@@ -63,6 +69,7 @@ const ICONS = {
   rows: Rows3,
   rows2: Rows4,
   arrowup: ArrowUp,
+  sort: ArrowUpDown,
   arrowdown: ArrowDown,
   trophy: Trophy,
   flame: Flame,
@@ -72,6 +79,11 @@ const ICONS = {
   external: ExternalLink,
   volume: Volume2,
   novideo: VideoOff,
+  home: House,
+  arrow: ArrowRight,
+  history: History,
+  info: Info,
+  spec: Shapes,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof ICONS;

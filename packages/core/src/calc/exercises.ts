@@ -98,13 +98,7 @@ export function sortExercises(ds: Dataset, key: SortKey): Exercise[] {
     case 'sessions':
       return exs.sort((a, b) => entriesOf(ds, b.id).length - entriesOf(ds, a.id).length);
     case 'progress': {
-      const pg = (e: Exercise) => {
-        const qs = entriesOf(ds, e.id).filter((h) => getMaxWeight(h.sets));
-        if (qs.length < 2) return 0;
-        return (
-          (getMaxWeight((qs[qs.length - 1] as Entry).sets) ?? 0) - (getMaxWeight((qs[0] as Entry).sets) ?? 0)
-        );
-      };
+      const pg = (e: Exercise) => progressOf(ds, e.id)?.delta ?? 0;
       return exs.sort((a, b) => pg(b) - pg(a));
     }
     case 'name':
@@ -155,6 +149,35 @@ export function prEvents(ds: Dataset): PrEvent[] {
     }
   }
   return out.sort((a, b) => b.date.localeCompare(a.date));
+}
+
+const prCache = new WeakMap<Dataset, Map<string, PrEvent>>();
+/** 這筆紀錄是不是破紀錄（是的話回傳原紀錄與新紀錄） */
+export function entryPr(ds: Dataset, entry: Pick<Entry, 'exerciseId' | 'date'>): PrEvent | undefined {
+  let m = prCache.get(ds);
+  if (!m) {
+    m = new Map(prEvents(ds).map((p) => [`${p.exerciseId}|${p.date}`, p]));
+    prCache.set(ds, m);
+  }
+  return m.get(`${entry.exerciseId}|${entry.date}`);
+}
+
+/** 重量進步幅度：最後一次最高重量 − 第一次（有重量的紀錄不到 2 次時沒有） */
+export function progressOf(ds: Dataset, exId: string): { first: number; last: number; delta: number } | null {
+  const qs = entriesOf(ds, exId).filter((h) => getMaxWeight(h.sets));
+  if (qs.length < 2) return null;
+  const first = getMaxWeight((qs[0] as Entry).sets) ?? 0;
+  const last = getMaxWeight((qs[qs.length - 1] as Entry).sets) ?? 0;
+  return { first, last, delta: last - first };
+}
+
+/** 動作庫展開列的趨勢圖：每次的最高重量（有氧用分鐘），標出破紀錄的那幾次（有氧不計） */
+export function trendPoints(ds: Dataset, ex: Exercise): { date: DateStr; value: number; pr: boolean }[] {
+  const cardio = isCardio(ex);
+  return entriesOf(ds, ex.id).flatMap((h) => {
+    const value = cardio ? (h.minutes ?? null) : getMaxWeight(h.sets);
+    return value == null ? [] : [{ date: h.date, value, pr: !cardio && !!entryPr(ds, h) }];
+  });
 }
 
 /** 列表上的迷你趨勢：最近 16 次的最高重量（有氧用分鐘） */

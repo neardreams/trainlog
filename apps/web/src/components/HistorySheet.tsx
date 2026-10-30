@@ -18,7 +18,7 @@ import {
 } from '@trainlog/core';
 import { VolCell } from './RecordPanel';
 import { ExhBadge, GDot, Sets } from './ui';
-import { VideoButton } from './VideoLinks';
+import { EntryVideoButton } from './VideoLinks';
 import { Icon } from '@/lib/icons';
 import { PEEK_ATTR } from '@/lib/peek';
 import { TODAY } from '@/lib/today';
@@ -131,7 +131,7 @@ export function HistorySheet({
                     </span>
                     {f && <span className="sh-here">目前查看</span>}
                     <span className="sh-badges">
-                      <VideoButton entry={h} />
+                      <EntryVideoButton entry={h} />
                       {prs.has(h.date) && (
                         <span className="badge tone-ok">
                           <Icon name="trophy" />

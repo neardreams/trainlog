@@ -1,17 +1,23 @@
-// 訓練紀錄：單日／範圍整理、日期比較、原始日誌、右側詳細資料欄、動作下鑽
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+// 訓練紀錄（v14）：物件標頭（日期塊、影片、上一個／下一個訓練日、屬性列、分頁）、當天影片面板、
+// 訓練整理（每個動作一張明細卡）、日期比較（多天並排）、原始日誌、右側當日日誌（≥1600）、動作下鑽
+import { useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { Navigate, useNavigate } from '@tanstack/react-router';
 import {
   EXHAUSTION_ORDER,
-  addDays,
-  compareDays,
-  dayGroups,
+  calcVolume,
+  compareColumns,
+  dayEntries,
   dowOf,
+  entryNo,
+  entryPr,
+  entryVideo,
   exerciseOf,
-  exhTone,
+  exercisesOnDates,
   fmtN,
+  getMaxWeight,
   groupRangeEntries,
+  isCardio,
   latestTrainingDate,
   longDate,
   md,
@@ -22,18 +28,30 @@ import {
   rangeStats,
   slash,
   stripJournalHeading,
-  type CompareRow,
+  topSetIndex,
+  trainingDayNo,
   type DateStr,
   type Entry,
+  type Exercise,
   type RangeGroup,
   type RangeGroupBy,
   type RangeSortKey,
 } from '@trainlog/core';
 import { HistorySheet, PEEK_ATTR } from '@/components/HistorySheet';
-import { RecordPanel, VolCell } from '@/components/RecordPanel';
-import { DateCell, Empty, ExhBadge, GDot, PageHead, Seg, Sets } from '@/components/ui';
-import { DayVideoButton, RailVideos, VideoButton } from '@/components/VideoLinks';
-import { gColor, useCrumbs, type Crumb } from '@/lib/chrome';
+import { AttrNum, ObjDate, ObjectHeader, ObjIcon, OTab, type Attr } from '@/components/ObjectHeader';
+import { RecordPanel } from '@/components/RecordPanel';
+import { Empty, ExhBadge, Panel, PartTile, Seg, Sets } from '@/components/ui';
+import {
+  DayVideoAction,
+  DayVideoButton,
+  DayVideoPanel,
+  DayVideoTag,
+  EntryVideoBadge,
+  EntryVideoButton,
+  EntryVideoTile,
+  ExerciseVideosButton,
+} from '@/components/VideoLinks';
+import { gColor, PART_CHAR, PART_DARK, useCrumbs, type Crumb } from '@/lib/chrome';
 import { Icon } from '@/lib/icons';
 import { TODAY } from '@/lib/today';
 import { useDs } from '@/lib/useDs';
@@ -49,116 +67,391 @@ export function DaysIndex() {
 type Range = NonNullable<DaySearch['range']>;
 const RANGES: readonly (readonly [Range | 0, string])[] = [
   [0, '當天'],
-  [3, '±3 天'],
-  [7, '±7 天'],
-  [14, '±14 天'],
+  [3, '±3'],
+  [7, '±7'],
+  [14, '±14'],
   [30, '±30 天'],
 ];
-const COL_W: Record<string, string> = {
-  日期: 'w-date',
-  動作: 'w-name',
-  '重量 / 組次': 'w-sets',
-  總容量: 'w-vol r',
-  感受度: '',
-  力竭: 'w-exh',
-  動作提示: '',
-};
-const TABS: [DayTab, string, 'chart' | 'compare' | 'doc'][] = [
-  ['range', '訓練整理', 'chart'],
-  ['compare', '日期比較', 'compare'],
-  ['raw', '原始日誌', 'doc'],
-];
+const pad2 = (n: number) => String(n).padStart(2, '0');
 
-function RangeTable({
-  cols,
-  entries,
+/** 力竭標籤（屬性列）：依程度、附筆數 */
+function ExhTags({ counts }: { counts: Record<string, number> }) {
+  return (
+    <div className="tags">
+      {EXHAUSTION_ORDER.filter((k) => counts[k]).map((k) => (
+        <ExhBadge key={k} value={k} count={counts[k]} />
+      ))}
+    </div>
+  );
+}
+
+/** 一個動作的明細卡：序號格（部位色）、名稱＋影片段數、統計、組數格、感受／力竭／提示、影片縮圖 */
+function LineItem({
+  e,
+  ix,
   showDate,
-  showName,
-  peekId,
-  onDrill,
-  onOpenDay,
+  peeked,
+  onPeek,
 }: {
-  cols: string[];
-  entries: Entry[];
+  e: Entry;
+  ix: number;
   showDate: boolean;
-  showName: boolean;
-  peekId: string | undefined;
-  onDrill: (e: Entry) => void;
-  onOpenDay: (d: DateStr) => void;
+  peeked: boolean;
+  onPeek: (e: Entry) => void;
 }) {
   const ds = useDs();
+  const ex = exerciseOf(ds, e);
+  const pr = entryPr(ds, e);
+  const max = getMaxWeight(e.sets);
+  const vol = calcVolume(e.sets);
+  const stats = isCardio(ex) ? (
+    <>
+      {e.minutes != null && (
+        <span>
+          時間<b>{fmtN(e.minutes)}</b>分
+        </span>
+      )}
+      {e.distanceKm != null && (
+        <span>
+          距離<b>{fmtN(e.distanceKm)}</b>km
+        </span>
+      )}
+    </>
+  ) : (
+    <>
+      {max != null && (
+        <span>
+          最高<b>{fmtN(max)}</b>kg
+        </span>
+      )}
+      {vol != null && (
+        <span>
+          容量<b>{fmtN(vol)}</b>kg
+        </span>
+      )}
+    </>
+  );
+  const hasStats = isCardio(ex) ? e.minutes != null || e.distanceKm != null : max != null || vol != null;
+  const notes = [
+    e.feel && (
+      <>
+        <dt>感受</dt>
+        <dd>{e.feel}</dd>
+      </>
+    ),
+    e.exhaustion && e.exhaustion !== '—' && (
+      <>
+        <dt>力竭</dt>
+        <dd>
+          <ExhBadge value={e.exhaustion} />
+        </dd>
+      </>
+    ),
+    e.condition && e.condition !== '正常' && (
+      <>
+        <dt>身心狀態</dt>
+        <dd>{e.condition}</dd>
+      </>
+    ),
+    e.cue && (
+      <>
+        <dt>動作提示</dt>
+        <dd>
+          <div className="cue">{e.cue}</div>
+        </dd>
+      </>
+    ),
+  ].filter(Boolean);
+  const peek = () => onPeek(e);
   return (
-    <div className="table-wrap">
-      <table className="tbl fixed">
+    <article className={clsx('li', peeked && 'on')} {...{ [PEEK_ATTR]: '' }}>
+      <header className="li-h">
+        <span
+          className={clsx('ix', PART_DARK.has(ex.group) && 'dk')}
+          style={{ ['--g' as string]: gColor(ex.group) }}
+          data-tip={ex.group}
+        >
+          <b>{pad2(ix)}</b>
+          <small>{PART_CHAR[ex.group] ?? ex.group.slice(0, 1)}</small>
+        </span>
+        <div className="li-t">
+          <h3
+            role="button"
+            tabIndex={0}
+            onClick={peek}
+            onKeyDown={(k) => k.key === 'Enter' && peek()}
+            data-tip="看這個動作的歷史紀錄"
+          >
+            {ex.name}
+          </h3>
+          <EntryVideoBadge entry={e} />
+          <span className="m">
+            {ex.group} · 第 {entryNo(ds, e)} 次{showDate && ` · ${md(e.date)} 週${dowOf(e.date)}`}
+          </span>
+          {pr && (
+            <span className="bdg ok" data-tip={`原紀錄 ${fmtN(pr.from)} kg`}>
+              <Icon name="trophy" />
+              破紀錄 +{fmtN(pr.to - pr.from)} kg
+            </span>
+          )}
+        </div>
+        <span className="sp" />
+        {hasStats && <div className="li-kv">{stats}</div>}
+        <div className="li-a">
+          <ExerciseVideosButton exerciseId={ex.id} variant="alt" />
+          <button
+            type="button"
+            className={clsx('btn sm', peeked && 'on')}
+            aria-pressed={peeked}
+            onClick={peek}
+            data-tip={`「${ex.name}」的歷史紀錄`}
+          >
+            <Icon name="history" />
+            歷史
+          </button>
+        </div>
+      </header>
+      <div className="li-b">
+        <div className="li-sets">
+          <Sets entry={e} ex={ex} />
+        </div>
+        <dl className="dl">
+          {notes.length ? (
+            notes.map((n, i) => <Frag key={i}>{n}</Frag>)
+          ) : (
+            <>
+              <dt>備註</dt>
+              <dd className="na">—</dd>
+            </>
+          )}
+        </dl>
+        <div className="li-v">
+          <EntryVideoTile entry={e} />
+        </div>
+      </div>
+    </article>
+  );
+}
+const Frag = ({ children }: { children: React.ReactNode }) => <>{children}</>;
+
+/** 分組標頭（日期範圍或依日期／部位分組時） */
+function GroupHead({ g, closed, onToggle }: { g: RangeGroup; closed: boolean; onToggle: () => void }) {
+  const ds = useDs();
+  const ex = g.kind === 'exercise' ? ds.exerciseById.get(g.id) : undefined;
+  const color =
+    g.kind === 'exercise' ? gColor(ex?.group ?? '') : g.kind === 'group' ? gColor(g.id) : 'var(--ink)';
+  return (
+    <div
+      className={clsx('lgrp', closed && 'closed')}
+      style={{ ['--g' as string]: color }}
+      role="button"
+      tabIndex={0}
+      aria-expanded={!closed}
+      onClick={onToggle}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onToggle();
+        }
+      }}
+    >
+      <span className="chev">
+        <Icon name="down" />
+      </span>
+      {g.kind === 'exercise' && ex && <PartTile group={ex.group} />}
+      {g.kind === 'group' && <PartTile group={g.id} />}
+      <b>{g.kind === 'exercise' ? ex?.name : g.kind === 'date' ? `${md(g.id)} 週${dowOf(g.id)}` : g.id}</b>
+      <span className="cnt">{g.entries.length}</span>
+      {g.kind === 'date' && <DayVideoButton date={g.id} variant="icon" />}
+      <span className="m">
+        {g.maxWeight > 0 && (
+          <>
+            最高 <b>{fmtN(g.maxWeight)}</b> kg
+          </>
+        )}
+        {g.maxWeight > 0 && g.volume > 0 && ' · '}
+        {g.volume > 0 && (
+          <>
+            容量 <b>{fmtN(g.volume)}</b> kg
+          </>
+        )}
+      </span>
+    </div>
+  );
+}
+
+function RangeList({
+  date,
+  range,
+  groupBy,
+  sortBy,
+  peekId,
+  onPeek,
+}: {
+  date: DateStr;
+  range: number;
+  groupBy: RangeGroupBy;
+  sortBy: RangeSortKey;
+  peekId: string | undefined;
+  onPeek: (e: Entry) => void;
+}) {
+  const ds = useDs();
+  const [closed, setClosed] = useState<Set<string>>(new Set());
+  const groups = useMemo(
+    () => groupRangeEntries(ds, rangeEntries(ds, date, range, sortBy), groupBy, sortBy),
+    [ds, date, range, groupBy, sortBy],
+  );
+  if (!groups.length)
+    return (
+      <section className="pn">
+        <Empty title={range ? '這個範圍內沒有訓練紀錄' : '這天沒有訓練紀錄'}>
+          可以放大日期範圍，或從左側月曆選其他日子。
+        </Empty>
+      </section>
+    );
+  // 單日依動作：每組只有一筆，直接列明細卡，不需要分組標頭
+  const flat = range === 0 && groupBy === 'exercise';
+  // 每組第一筆的編號（收合的組也照算，編號不跳）
+  const starts = groups.map((_, i) => groups.slice(0, i).reduce((n, x) => n + x.entries.length, 0));
+  return (
+    <div className="day-list">
+      {groups.map((g, gi) => {
+        const c = closed.has(g.key);
+        const items = c
+          ? null
+          : g.entries.map((e, j) => (
+              <LineItem
+                key={e.id}
+                e={e}
+                ix={(starts[gi] ?? 0) + j + 1}
+                showDate={range > 0 && g.kind !== 'date'}
+                peeked={e.id === peekId}
+                onPeek={onPeek}
+              />
+            ));
+        if (flat) return items;
+        return (
+          <div className="day-grp" key={g.key}>
+            <GroupHead
+              g={g}
+              closed={c}
+              onToggle={() =>
+                setClosed((s) => {
+                  const n = new Set(s);
+                  if (n.has(g.key)) n.delete(g.key);
+                  else n.add(g.key);
+                  return n;
+                })
+              }
+            />
+            {items}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/** 日期比較的一格：最重那一組「重量 × 次數 / 組數」＋這天這個動作的影片 */
+function CmpCell({ e, ex }: { e: Entry; ex: Exercise }) {
+  const ds = useDs();
+  let body: React.ReactNode;
+  if (e.setsDisplay)
+    body = (
+      <span className="mono cmp-txt" data-tip={e.setsDisplay}>
+        {e.setsDisplay}
+      </span>
+    );
+  else if (isCardio(ex))
+    body = (
+      <span className="mono">
+        {[e.minutes != null && `${fmtN(e.minutes)} 分`, e.distanceKm != null && `${fmtN(e.distanceKm)} km`]
+          .filter(Boolean)
+          .join(' · ') || '有做'}
+      </span>
+    );
+  else {
+    const i = topSetIndex(e.sets);
+    const s = i >= 0 ? e.sets[i] : e.sets[0];
+    body = !s ? (
+      <span className="mono" style={{ color: 'var(--text-3)' }}>
+        有做
+      </span>
+    ) : (
+      <span className="mono">
+        <b>{s.weightKg === 0 && ex.zeroLabel ? ex.zeroLabel : s.weightKg == null ? '—' : fmtN(s.weightKg)}</b>
+        {s.weightKg != null && s.weightKg > 0 && <small>kg</small>} × {s.reps ?? '？'}
+        {ex.repUnit && <small>{ex.repUnit}</small>}{' '}
+        <span style={{ color: 'var(--text-3)' }}>/ {e.sets.length} 組</span>
+      </span>
+    );
+  }
+  return (
+    <span className="cmpc">
+      {body}
+      {entryVideo(ds, e) && <EntryVideoButton entry={e} xs />}
+    </span>
+  );
+}
+
+function ComparePanel({
+  date,
+  range,
+  onDrill,
+}: {
+  date: DateStr;
+  range: number;
+  onDrill: (id: string, d: DateStr) => void;
+}) {
+  const ds = useDs();
+  const cols = useMemo(() => compareColumns(ds, date, range), [ds, date, range]);
+  const ids = useMemo(() => exercisesOnDates(ds, cols), [ds, cols]);
+  const cell = (d: DateStr, id: string) => dayEntries(ds, d).find((e) => e.exerciseId === id);
+  if (!ids.length)
+    return <Empty title="這幾天沒有訓練紀錄">可以放大日期範圍，或從左側月曆選其他日子。</Empty>;
+  return (
+    <div className="cmp-wrap">
+      <table className="dg cmp">
         <thead>
           <tr>
-            {cols.map((c) => (
-              <th key={c} className={COL_W[c]}>
-                {c}
+            <th>動作</th>
+            {cols.map((d) => (
+              <th key={d} className={clsx(d === date && 'on')}>
+                <span className="cmph">
+                  <span>
+                    <span className="mono">{md(d)}</span> 週{dowOf(d)}
+                  </span>
+                  <DayVideoButton date={d} variant="icon" />
+                </span>
               </th>
             ))}
-            <th className="w-go" />
           </tr>
         </thead>
         <tbody>
-          {entries.map((e) => {
-            const ex = exerciseOf(ds, e);
-            const on = e.id === peekId;
-            const hist = (
-              <button
-                className={clsx('btn btn-soft hist-btn', on && 'on')}
-                aria-pressed={on}
-                title={`查看「${ex.name}」的歷史紀錄`}
-                onClick={(ev) => {
-                  ev.stopPropagation();
-                  onDrill(e);
-                }}
-              >
-                <Icon name="clock" />
-                歷史
-              </button>
-            );
+          {ids.map((id) => {
+            const ex = ds.exerciseById.get(id);
+            if (!ex) return null;
             return (
-              <tr
-                key={e.id}
-                className={clsx('clickable', on && 'tr-focus')}
-                {...{ [PEEK_ATTR]: '' }}
-                onClick={() => onDrill(e)}
-              >
-                {showDate && (
-                  <DateCell date={e.date} onOpen={() => onOpenDay(e.date)}>
-                    <span className="row-acts">
-                      {hist}
-                      <VideoButton entry={e} />
-                    </span>
-                  </DateCell>
-                )}
-                {showName && (
-                  <td className="c-name">
-                    <GDot group={ex.group} className="tw:mr-2" />
-                    {ex.name}
-                    {!showDate && (
-                      <span className="row-acts">
-                        {hist}
-                        <VideoButton entry={e} />
-                      </span>
-                    )}
-                  </td>
-                )}
-                <td className="c-sets">
-                  <Sets entry={e} ex={ex} />
+              <tr key={id}>
+                <td>
+                  <button
+                    type="button"
+                    className="cn cmp-name"
+                    onClick={() => onDrill(id, date)}
+                    data-tip="看這個動作的完整歷程"
+                  >
+                    <PartTile group={ex.group} />
+                    <span>{ex.name}</span>
+                  </button>
                 </td>
-                <td className="c-vol">
-                  <VolCell ex={ex} h={e} />
-                </td>
-                <td className="c-feel">{e.feel ?? ''}</td>
-                <td className="c-exh">
-                  <ExhBadge value={e.exhaustion} />
-                </td>
-                <td className="c-cue">{e.cue ?? ''}</td>
-                <td className="c-go">
-                  <Icon name="right" />
-                </td>
+                {cols.map((d) => {
+                  const e = cell(d, id);
+                  return (
+                    <td key={d} className={clsx(d === date && 'on')}>
+                      {e ? <CmpCell e={e} ex={ex} /> : <span className="e mono">—</span>}
+                    </td>
+                  );
+                })}
               </tr>
             );
           })}
@@ -168,453 +461,35 @@ function RangeTable({
   );
 }
 
-const Metrics = ({ g }: { g: RangeGroup }) => (
-  <span className="rg-metrics">
-    {g.maxWeight > 0 && (
-      <span>
-        最高 <b>{fmtN(g.maxWeight)}</b> kg
-      </span>
-    )}
-    {g.volume > 0 && (
-      <span>
-        容量 <b>{fmtN(g.volume)}</b> kg
-      </span>
-    )}
-  </span>
-);
-
-function RangePanel({
-  date,
-  range,
-  groupBy,
-  sortBy,
-  peekId,
-  onDrill,
-  onOpenDay,
-}: {
-  date: DateStr;
-  range: number;
-  groupBy: RangeGroupBy;
-  sortBy: RangeSortKey;
-  peekId: string | undefined;
-  onDrill: (e: Entry) => void;
-  onOpenDay: (d: DateStr) => void;
-}) {
-  const ds = useDs();
-  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
-  const groups = useMemo(() => {
-    const entries = rangeEntries(ds, date, range, sortBy);
-    return groupRangeEntries(ds, entries, groupBy, sortBy);
-  }, [ds, date, range, groupBy, sortBy]);
-  if (!groups.length)
-    return <Empty title="這個範圍內沒有訓練紀錄">可以放大日期範圍，或從左側月曆選其他日子。</Empty>;
-  const toggle = (k: string) =>
-    setCollapsed((c) => {
-      const n = new Set(c);
-      if (n.has(k)) n.delete(k);
-      else n.add(k);
-      return n;
-    });
-  return (
-    <>
-      {groups.map((g) => {
-        let head: ReactNode;
-        let cols: string[];
-        let showDate = true;
-        let showName = false;
-        if (g.kind === 'exercise') {
-          const ex = ds.exerciseById.get(g.id);
-          head = (
-            <>
-              <GDot group={ex?.group ?? ''} />
-              <span className="rg-name">{ex?.name}</span>
-              <span className="rg-meta">
-                {ex?.group} · {g.entries.length} 次
-              </span>
-            </>
-          );
-          cols = ['日期', '重量 / 組次', '總容量', '感受度', '力竭', '動作提示'];
-        } else if (g.kind === 'date') {
-          head = (
-            <>
-              <span className="rg-name">{md(g.id)}</span>
-              <span className="rg-meta">
-                週{dowOf(g.id)} · {g.entries.length} 個動作
-              </span>
-              <DayVideoButton date={g.id} variant="compact" />
-            </>
-          );
-          cols = ['動作', '重量 / 組次', '總容量', '感受度', '力竭', '動作提示'];
-          showDate = false;
-          showName = true;
-        } else {
-          head = (
-            <>
-              <GDot group={g.id} />
-              <span className="rg-name">{g.id}</span>
-              <span className="rg-meta">{g.entries.length} 筆</span>
-            </>
-          );
-          cols = ['日期', '動作', '重量 / 組次', '總容量', '感受度', '力竭', '動作提示'];
-          showName = true;
-        }
-        const c = collapsed.has(g.key);
-        return (
-          <div key={g.key}>
-            <div
-              className={clsx('range-group-header', c && 'collapsed')}
-              role="button"
-              tabIndex={0}
-              aria-expanded={!c}
-              onClick={() => toggle(g.key)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  toggle(g.key);
-                }
-              }}
-            >
-              <span className="chev">
-                <Icon name="right" />
-              </span>
-              {head}
-              <Metrics g={g} />
-            </div>
-            {!c && (
-              <div className="range-group-body">
-                <RangeTable
-                  cols={cols}
-                  entries={g.entries}
-                  showDate={showDate}
-                  showName={showName}
-                  peekId={peekId}
-                  onDrill={onDrill}
-                  onOpenDay={onOpenDay}
-                />
-              </div>
-            )}
-          </div>
-        );
-      })}
-    </>
-  );
-}
-
-function DeltaKg({ d }: { d: number }) {
-  return (
-    <span className={clsx('delta', d > 0 ? 'up' : d < 0 ? 'down' : 'flat')}>
-      {d > 0 ? '+' : d < 0 ? '−' : '±'}
-      {fmtN(Math.abs(d))} kg
-    </span>
-  );
-}
-
-function CompareCol({
-  rows,
-  date,
-  onDrill,
-}: {
-  rows: CompareRow[];
-  date: DateStr;
-  onDrill: (id: string, d: DateStr) => void;
-}) {
-  const ds = useDs();
-  if (!rows.length) return <div className="empty">這天沒有訓練紀錄</div>;
-  return (
-    <>
-      {rows.map(({ entry: h, volume, maxWeight, other: o }) => {
-        const ex = exerciseOf(ds, h);
-        return (
-          <div
-            key={h.id}
-            className={clsx('compare-ex-row', o ? 'compare-match' : 'compare-only')}
-            onClick={() => onDrill(ex.id, date)}
-          >
-            <div className="cx-top">
-              <GDot group={ex.group} />
-              <span className="cx-name">{ex.name}</span>
-              <VideoButton entry={h} compact />
-              {o && o.maxWeight != null && maxWeight != null && <DeltaKg d={maxWeight - o.maxWeight} />}
-              {o && o.volume != null && volume != null && (
-                <>
-                  <span className="muted">容量</span>
-                  <DeltaKg d={volume - o.volume} />
-                </>
-              )}
-            </div>
-            <div className="cx-meta">
-              <Sets entry={h} ex={ex} />
-              {volume != null && <span className="num">{fmtN(volume)} kg</span>}
-              <ExhBadge value={h.exhaustion} />
-            </div>
-            {h.feel && h.feel !== '正常訓練' && <div className="cx-feel">{h.feel}</div>}
-          </div>
-        );
-      })}
-    </>
-  );
-}
-
-function ComparePanel({
-  date,
-  cmp,
-  onCommit,
-  onDrill,
-}: {
-  date: DateStr;
-  cmp: DateStr;
-  onCommit: (b: DateStr) => void;
-  onDrill: (id: string, d: DateStr) => void;
-}) {
-  const ds = useDs();
-  const [a, setA] = useState(date);
-  const [b, setB] = useState(cmp);
-  const [shown, setShown] = useState<[DateStr, DateStr]>([date, cmp]);
-  // 換了頁面日期：兩個日期都回到預設（當天 vs 7 天前）
-  const [prevDate, setPrevDate] = useState(date);
-  if (date !== prevDate) {
-    setPrevDate(date);
-    setA(date);
-    setB(cmp);
-    setShown([date, cmp]);
-  }
-  const [dA, dB] = shown;
-  const r = useMemo(() => compareDays(ds, dA, dB), [ds, dA, dB]);
-  const diff = r.totalA - r.totalB;
-  return (
-    <>
-      <div className="compare-pickers">
-        <div className="compare-picker-group">
-          <label htmlFor="cmp-date-a">日期 A</label>
-          <input
-            type="date"
-            className="date-input"
-            id="cmp-date-a"
-            value={a}
-            onChange={(e) => setA(e.target.value)}
-          />
-        </div>
-        <div className="compare-picker-group">
-          <label htmlFor="cmp-date-b">日期 B</label>
-          <input
-            type="date"
-            className="date-input"
-            id="cmp-date-b"
-            value={b}
-            onChange={(e) => setB(e.target.value)}
-          />
-        </div>
-        <button
-          className="btn btn-primary"
-          onClick={() => {
-            if (!a || !b) return;
-            setShown([a, b]);
-            onCommit(b);
-          }}
-        >
-          比較
-        </button>
-      </div>
-      <div className="cmp-summary">
-        <div className="cmp-stat">
-          <div className="k">
-            A · {md(dA)}（{dowOf(dA)}）
-          </div>
-          <div className="v">
-            {fmtN(r.totalA)}
-            <small>kg</small>
-          </div>
-          <div className="s">{r.a.length} 個動作</div>
-        </div>
-        <div className="cmp-stat">
-          <div className="k">
-            B · {md(dB)}（{dowOf(dB)}）
-          </div>
-          <div className="v">
-            {fmtN(r.totalB)}
-            <small>kg</small>
-          </div>
-          <div className="s">{r.b.length} 個動作</div>
-        </div>
-        <div className="cmp-stat">
-          <div className="k">容量差（A − B）</div>
-          <div
-            className={clsx(
-              'v',
-              diff > 0 ? 'compare-delta-pos' : diff < 0 ? 'compare-delta-neg' : 'compare-delta-zero',
-            )}
-          >
-            {diff > 0 ? '+' : diff < 0 ? '−' : ''}
-            {fmtN(Math.abs(diff))}
-            <small>kg</small>
-          </div>
-          <div className="s">{r.common} 個共同動作</div>
-        </div>
-      </div>
-      <div className="cmp-legend">
-        <span>
-          <i style={{ ['--mk' as string]: 'var(--pos)' }} />
-          兩天都有
-        </span>
-        <span>
-          <i style={{ ['--mk' as string]: 'var(--warn)' }} />
-          只有這天
-        </span>
-      </div>
-      <div className="compare-grid">
-        <div className="compare-col">
-          <div className="compare-col-header">
-            A · {slash(dA)}
-            <DayVideoButton date={dA} variant="compact" />
-          </div>
-          <CompareCol rows={r.a} date={dA} onDrill={onDrill} />
-        </div>
-        <div className="compare-col">
-          <div className="compare-col-header">
-            B · {slash(dB)}
-            <DayVideoButton date={dB} variant="compact" />
-          </div>
-          <CompareCol rows={r.b} date={dB} onDrill={onDrill} />
-        </div>
-      </div>
-    </>
-  );
-}
-
-function RawPanel({ date, range }: { date: DateStr; range: number }) {
+function RawPanels({ date, range }: { date: DateStr; range: number }) {
   const ds = useDs();
   const dates = rangeDates(date, range)
     .filter((d) => ds.journals.has(d))
     .sort((x, y) => y.localeCompare(x));
-  if (!dates.length) return <Empty title="這個範圍內沒有日誌" />;
-  return (
-    <>
-      {dates.map((d) => (
-        <article className="journal" key={d}>
-          <div className="journal-h">
-            <b>{longDate(d)}</b>
-            <span>星期{dowOf(d)}</span>
-            <DayVideoButton date={d} />
-          </div>
-          <div className="raw-journal">{stripJournalHeading(ds.journals.get(d) ?? '')}</div>
-        </article>
-      ))}
-    </>
-  );
-}
-
-function DayRail({ date, range, onOpenRaw }: { date: DateStr; range: number; onOpenRaw: () => void }) {
-  const ds = useDs();
-  const single = range === 0;
-  const dates = rangeDates(date, range);
-  const s = useMemo(() => rangeStats(ds, date, range), [ds, date, range]);
-  const mx = Math.max(1, ...Object.values(s.setsByGroup));
-  const jr = single ? ds.journals.get(date) : undefined;
-  return (
-    <aside className="day-rail" aria-label="詳細資料">
-      <section className="panel">
-        <div className="panel-head">
-          <span className="panel-title">詳細資料</span>
-          <span className="panel-title">
-            <span className="meta">
-              {single ? md(date) : `${md(dates[0] ?? date)} – ${md(dates[dates.length - 1] ?? date)}`}
-            </span>
-          </span>
-        </div>
-        <dl className="props">
-          <div>
-            <dt>{single ? '日期' : '期間'}</dt>
-            <dd>
-              {single
-                ? `${slash(date)}（${dowOf(date)}）`
-                : `${dates.length} 天 · ${s.trainingDays} 個訓練日`}
-            </dd>
-          </div>
-          <div>
-            <dt>動作</dt>
-            <dd>
-              {s.entries} {single ? '個' : '筆'}
-            </dd>
-          </div>
-          <div>
-            <dt>總組數</dt>
-            <dd>{s.sets} 組</dd>
-          </div>
-          <div>
-            <dt>總容量</dt>
-            <dd>{s.volume ? `${fmtN(s.volume)} kg` : '—'}</dd>
-          </div>
-          <div>
-            <dt>部位</dt>
-            <dd>
-              {s.groups.length ? (
-                <span className="gchips">
-                  {s.groups.map((g) => (
-                    <span key={g}>
-                      <i className="gdot" style={{ ['--c' as string]: gColor(g) }} />
-                      {g}
-                    </span>
-                  ))}
-                </span>
-              ) : (
-                '—'
-              )}
-            </dd>
-          </div>
-          <div>
-            <dt>身心狀態</dt>
-            <dd>{s.conditions.length ? s.conditions.join('；') : '正常'}</dd>
-          </div>
-        </dl>
-        {s.groups.length > 0 && (
-          <div className="rail-sec">
-            <div className="rail-sub">部位分布（組數）</div>
-            <div className="dist">
-              {s.groups.map((g) => (
-                <div className="dist-row" key={g}>
-                  <span>{g}</span>
-                  <span className="dist-bar">
-                    <i
-                      style={{
-                        ['--c' as string]: gColor(g),
-                        width: `${((s.setsByGroup[g] ?? 0) / mx) * 100}%`,
-                      }}
-                    />
-                  </span>
-                  <span className="n">{s.setsByGroup[g]}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-        {s.entries > 0 && (
-          <div className="rail-sec">
-            <div className="rail-sub">力竭分布</div>
-            <div className="exh-list">
-              {EXHAUSTION_ORDER.filter((k) => s.exhaustion[k]).map((k) => (
-                <span key={k} className={clsx('badge', k === '—' ? 'tone-mute' : exhTone(k))}>
-                  <i />
-                  {k === '—' ? '未標示' : k}
-                  <b>{s.exhaustion[k]}</b>
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
+  if (!dates.length)
+    return (
+      <section className="pn">
+        <Empty title={range ? '這個範圍內沒有日誌' : '這天沒有日誌'} />
       </section>
-      <RailVideos date={date} range={range} />
-      {jr && (
-        <section className="panel">
-          <div className="panel-head">
-            <span className="panel-title">當日日誌</span>
-            <a className="link" style={{ fontSize: 12.5 }} onClick={onOpenRaw}>
-              在分頁中開啟
-            </a>
-          </div>
-          <div className="rail-journal">{stripJournalHeading(jr)}</div>
-        </section>
-      )}
-    </aside>
+    );
+  return (
+    <div className="day-list">
+      {dates.map((d) => {
+        const text = stripJournalHeading(ds.journals.get(d) ?? '');
+        return (
+          <Panel
+            key={d}
+            title={range ? `${longDate(d)}（週${dowOf(d)}）` : '原始日誌'}
+            meta={`${text.length} 字`}
+            right={<DayVideoButton date={d} variant="label" />}
+          >
+            <div className="pn-b journal-b">
+              <div className="journal">{text}</div>
+            </div>
+          </Panel>
+        );
+      })}
+    </div>
   );
 }
 
@@ -628,7 +503,6 @@ export function DayPage() {
   const sortBy = search.sortBy ?? 'date-desc';
   const tab: DayTab = search.ex ? 'range' : (search.tab ?? 'range');
   const drillEx = search.ex ? ds.exerciseById.get(search.ex) : undefined;
-  const cmp = search.cmp ?? addDays(date, -7);
 
   // 範圍、分組、分頁等用 replace；換日期與下鑽用 push（瀏覽器返回鍵可回上一步）
   const setSearch = (patch: Partial<DaySearch>) =>
@@ -637,7 +511,7 @@ export function DayPage() {
     void navigate({
       to: '/days/$date',
       params: { date: d },
-      search: (prev) => ({ groupBy: prev.groupBy, sortBy: prev.sortBy }),
+      search: (prev) => ({ groupBy: prev.groupBy, sortBy: prev.sortBy, tab: prev.tab, range: prev.range }),
     });
   const drill = (exId: string, at: DateStr) =>
     void navigate({
@@ -648,220 +522,319 @@ export function DayPage() {
         ...(at !== date ? { at } : { at: undefined }),
       }),
     });
-  // 點動作列：右側滑出該動作的歷史紀錄（不換頁）；側欄內「完整歷程」才下鑽
+  // 點「歷史」：右側滑出該動作的歷史紀錄（不換頁）；側欄內「完整歷程」才下鑽
   const [peek, setPeek] = useState<Entry>();
   const peekEx = peek ? ds.exerciseById.get(peek.exerciseId) : undefined;
-  const [prevKey, setPrevKey] = useState(`${date}|${range}|${tab}|${search.ex ?? ''}`);
   const key = `${date}|${range}|${tab}|${search.ex ?? ''}`;
+  const [prevKey, setPrevKey] = useState(key);
   if (key !== prevKey) {
     setPrevKey(key);
     setPeek(undefined);
   }
   const goBack = () => void navigate({ search: (prev) => ({ ...prev, ex: undefined, at: undefined }) });
+  const setTab = (k: DayTab) =>
+    void navigate({
+      search: (prev) => ({ ...prev, ex: undefined, at: undefined, tab: k === 'range' ? undefined : k }),
+      replace: true,
+    });
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [date, search.ex]);
 
+  const s = useMemo(() => rangeStats(ds, date, range), [ds, date, range]);
+  const dates = rangeDates(date, range);
   const base: Crumb[] = [
-    { label: 'TrainLog', to: '/' },
+    { label: '首頁', to: '/' },
     { label: '訓練紀錄', to: '/days/$date', params: { date } },
   ];
-  let title: string;
-  let sub: string;
   let crumbs: Crumb[];
+  let title: string;
   if (drillEx) {
     title = drillEx.name;
-    sub = `${drillEx.group} · ${ds.entriesByExercise.get(drillEx.id)?.length ?? 0} 筆紀錄 · 從 ${slash(date)} 進入`;
     crumbs = [...base, { label: md(date), to: '/days/$date', params: { date } }, { label: drillEx.name }];
   } else if (range > 0) {
-    const k = rangeDates(date, range).filter((d) => ds.entriesByDate.has(d)).length;
-    title = `${slash(addDays(date, -range))} – ${slash(addDays(date, range))}`;
-    sub = `${range * 2 + 1} 天 · ${k} 個訓練日 · 以 ${md(date)} 為中心`;
+    title = `${slash(dates[0] ?? date)} – ${md(dates[dates.length - 1] ?? date)}`;
     crumbs = [...base, { label: `${md(date)} ±${range} 天` }];
   } else {
-    const n = ds.entriesByDate.get(date)?.length ?? 0;
-    title = longDate(date);
-    sub = `星期${dowOf(date)} · ${n ? `${n} 個動作 · ${dayGroups(ds, date).join('、')}` : '沒有訓練紀錄'}`;
+    title = `${slash(date)}（週${dowOf(date)}）`;
     crumbs = [...base, { label: slash(date) }];
   }
   useCrumbs(crumbs);
 
   const p = prevTrainingDate(ds, date);
   const n = nextTrainingDate(ds, date);
-  const first = ds.trainingDates[0];
-  const last = ds.trainingDates[ds.trainingDates.length - 1];
+  const nth = trainingDayNo(ds, date);
+  const journal = range === 0 ? ds.journals.get(date) : undefined;
+  const totalSets = Math.max(1, s.sets);
+
+  const attrs: Attr[] | undefined = drillEx
+    ? undefined
+    : [
+        ...(range > 0
+          ? [{ label: '訓練日', value: <AttrNum v={s.trainingDays} u={`/ ${dates.length} 天`} /> }]
+          : []),
+        { label: '動作', value: <AttrNum v={s.entries} u={range > 0 ? '筆' : '個'} /> },
+        { label: '組數', value: <AttrNum v={s.sets} u="組" /> },
+        {
+          label: '容量',
+          value: <AttrNum v={s.volume ? fmtN(s.volume) : '—'} u={s.volume ? 'kg' : undefined} />,
+        },
+        ...(s.groups.length
+          ? [
+              {
+                label: '部位',
+                wide: true,
+                value: (
+                  <>
+                    <div className="stk">
+                      {s.groups.map((g) => (
+                        <i
+                          key={g}
+                          style={{ flex: s.setsByGroup[g], background: gColor(g) }}
+                          data-tip={`${g} ${s.setsByGroup[g]} 組（${Math.round(((s.setsByGroup[g] ?? 0) / totalSets) * 100)}%）`}
+                        />
+                      ))}
+                    </div>
+                    <div className="lg">
+                      {s.groups.map((g) => (
+                        <span key={g}>
+                          <i style={{ background: gColor(g) }} />
+                          {g}
+                          <b>{s.setsByGroup[g]}</b>
+                        </span>
+                      ))}
+                    </div>
+                  </>
+                ),
+              },
+            ]
+          : []),
+        ...(s.entries ? [{ label: '力竭', wide: true, value: <ExhTags counts={s.exhaustion} /> }] : []),
+        {
+          label: '身心狀態',
+          wide: true,
+          value: <div className="t">{s.conditions.length ? s.conditions.join('、') : '正常'}</div>,
+        },
+      ];
+
+  const dnav = (
+    <div className="dnav">
+      <button
+        type="button"
+        disabled={!p}
+        onClick={() => p && openDay(p)}
+        data-tip={p ? `上一個訓練日 ${md(p)}` : '沒有更早的訓練日'}
+        aria-label="上一個訓練日"
+      >
+        <Icon name="left" />
+      </button>
+      <label className="d" data-tip="跳到日期">
+        <Icon name="calendar" />
+        {slash(date)}
+        <input
+          type="date"
+          value={date}
+          min={ds.trainingDates[0]}
+          max={ds.trainingDates[ds.trainingDates.length - 1]}
+          onClick={(e) => e.currentTarget.showPicker?.()}
+          onChange={(e) => e.target.value && openDay(e.target.value)}
+          aria-label="跳到日期"
+        />
+      </label>
+      <button
+        type="button"
+        disabled={!n}
+        onClick={() => n && openDay(n)}
+        data-tip={n ? `下一個訓練日 ${md(n)}` : '沒有更晚的訓練日'}
+        aria-label="下一個訓練日"
+      >
+        <Icon name="right" />
+      </button>
+    </div>
+  );
 
   return (
-    <section className="view active">
-      <PageHead
+    <>
+      <ObjectHeader
+        av={
+          drillEx ? (
+            <ObjIcon name="history" />
+          ) : range > 0 ? (
+            <ObjIcon name="calendar" />
+          ) : (
+            <ObjDate date={date} />
+          )
+        }
         title={title}
-        sub={sub}
+        tags={
+          drillEx ? (
+            <span className="tag">{drillEx.group}</span>
+          ) : range > 0 ? (
+            <span className="tag">以 {md(date)} 為中心</span>
+          ) : (
+            <>
+              {nth != null && <span className="tag">第 {nth} 個訓練日</span>}
+              <DayVideoTag date={date} />
+            </>
+          )
+        }
         actions={
           <>
-            {drillEx && (
-              <button className="btn" onClick={goBack}>
+            {drillEx ? (
+              <button type="button" className="btn" onClick={goBack}>
                 <Icon name="back" />
                 返回 {md(date)}
               </button>
+            ) : (
+              range === 0 && <DayVideoAction date={date} />
             )}
-            {!drillEx && range === 0 && <DayVideoButton date={date} variant="head" />}
-            <div className="btn-group">
-              <button
-                className="btn btn-icon"
-                disabled={!p}
-                onClick={() => p && openDay(p)}
-                title={p ? `上一個訓練日 ${md(p)}` : undefined}
-                aria-label="上一個訓練日"
-              >
-                <Icon name="left" />
-              </button>
-              <button
-                className="btn btn-icon"
-                disabled={!n}
-                onClick={() => n && openDay(n)}
-                title={n ? `下一個訓練日 ${md(n)}` : undefined}
-                aria-label="下一個訓練日"
-              >
-                <Icon name="right" />
-              </button>
-            </div>
-            <input
-              type="date"
-              className="date-input"
-              value={date}
-              min={first}
-              max={last}
-              onChange={(e) => e.target.value && openDay(e.target.value)}
-              aria-label="跳到日期"
-            />
+            {dnav}
+            <button type="button" className="btn" onClick={() => openDay(TODAY)}>
+              今天
+            </button>
+          </>
+        }
+        attrs={attrs}
+        tabs={
+          <>
+            <OTab on={tab === 'range'} icon="chart" count={s.entries} onClick={() => setTab('range')}>
+              訓練整理
+            </OTab>
+            <OTab on={tab === 'compare'} icon="compare" onClick={() => setTab('compare')}>
+              日期比較
+            </OTab>
+            <OTab on={tab === 'raw'} icon="doc" onClick={() => setTab('raw')}>
+              原始日誌
+            </OTab>
           </>
         }
       />
-      <div className="day-layout">
-        <div className="day-shell">
-          <div className="modal-tabs" role="tablist">
-            {TABS.map(([k, l, ic]) => (
-              <button
-                key={k}
-                className={clsx('modal-tab', tab === k && 'active')}
-                role="tab"
-                aria-selected={tab === k}
-                onClick={() =>
-                  void navigate({
-                    search: (prev) => ({
-                      ...prev,
-                      ex: undefined,
-                      at: undefined,
-                      tab: k === 'range' ? undefined : k,
-                    }),
-                    replace: true,
-                  })
-                }
-              >
-                <Icon name={ic} />
-                {l}
-              </button>
-            ))}
-          </div>
-          {tab === 'range' && !drillEx && (
-            <div className="modal-range-bar">
-              <Seg
-                label="日期範圍"
-                value={range}
-                options={RANGES}
-                onChange={(v) => setSearch({ range: v === 0 ? undefined : (v as Range) })}
-              />
-              <div className="list-ctrl">
-                <label className="field">
-                  分組
-                  <select
-                    className="select"
-                    value={groupBy}
-                    onChange={(e) =>
-                      setSearch({
-                        groupBy: e.target.value === 'exercise' ? undefined : (e.target.value as RangeGroupBy),
-                      })
-                    }
-                  >
-                    <option value="exercise">依動作</option>
-                    <option value="date">依日期</option>
-                    <option value="group">依部位</option>
-                  </select>
-                </label>
-                <label className="field">
-                  排序
-                  <select
-                    className="select"
-                    value={sortBy}
-                    onChange={(e) =>
-                      setSearch({
-                        sortBy: e.target.value === 'date-desc' ? undefined : (e.target.value as RangeSortKey),
-                      })
-                    }
-                  >
-                    <option value="date-desc">時間：新到舊</option>
-                    <option value="date-asc">時間：舊到新</option>
-                    <option value="vol-desc">容量：高到低</option>
-                    <option value="wt-desc">重量：高到低</option>
-                    <option value="name">名稱</option>
-                  </select>
-                </label>
-              </div>
-            </div>
-          )}
-          <div className="modal-content">
-            {tab === 'range' && (
-              <div className="modal-panel active">
-                {search.ex ? (
-                  drillEx ? (
-                    <div className="drill">
-                      <RecordPanel
-                        key={drillEx.id}
-                        ex={drillEx}
-                        initialTab="hist"
-                        focus={search.at ?? date}
-                        inDay
-                      />
-                    </div>
-                  ) : (
-                    <Empty title="找不到這個動作" />
-                  )
+      <div className="content">
+        <div className={clsx('day-grid', journal && !drillEx && 'has-aside')}>
+          <div>
+            {!drillEx && <DayVideoPanel date={date} range={range} />}
+            {tab === 'range' &&
+              (search.ex ? (
+                drillEx ? (
+                  <RecordPanel
+                    key={drillEx.id}
+                    ex={drillEx}
+                    initialTab="hist"
+                    focus={search.at ?? date}
+                    inDay
+                  />
                 ) : (
-                  <RangePanel
+                  <section className="pn">
+                    <Empty title="找不到這個動作" />
+                  </section>
+                )
+              ) : (
+                <>
+                  <section className="pn day-cmd">
+                    <div className="cmd">
+                      <Seg
+                        label="日期範圍"
+                        value={range}
+                        options={RANGES}
+                        onChange={(v) => setSearch({ range: v === 0 ? undefined : (v as Range) })}
+                      />
+                      <span className="vr" />
+                      <label className="sel">
+                        <em>分組</em>
+                        <select
+                          value={groupBy}
+                          onChange={(e) =>
+                            setSearch({
+                              groupBy:
+                                e.target.value === 'exercise' ? undefined : (e.target.value as RangeGroupBy),
+                            })
+                          }
+                        >
+                          <option value="exercise">依動作</option>
+                          <option value="date">依日期</option>
+                          <option value="group">依部位</option>
+                        </select>
+                        <Icon name="down" />
+                      </label>
+                      <label className="sel">
+                        <em>排序</em>
+                        <select
+                          value={sortBy}
+                          onChange={(e) =>
+                            setSearch({
+                              sortBy:
+                                e.target.value === 'date-desc' ? undefined : (e.target.value as RangeSortKey),
+                            })
+                          }
+                        >
+                          <option value="date-desc">新到舊</option>
+                          <option value="date-asc">舊到新</option>
+                          <option value="vol-desc">容量高到低</option>
+                          <option value="wt-desc">重量高到低</option>
+                          <option value="name">名稱</option>
+                        </select>
+                        <Icon name="down" />
+                      </label>
+                      <span className="sp" />
+                      <span className="m">
+                        <b>{s.entries}</b> {range ? '筆' : '個動作'} · <b>{s.sets}</b> 組 · 有影片{' '}
+                        <b>
+                          {dates.flatMap((d) => dayEntries(ds, d)).filter((e) => entryVideo(ds, e)).length}
+                        </b>{' '}
+                        {range ? '筆' : '個'}
+                      </span>
+                    </div>
+                  </section>
+                  <RangeList
                     date={date}
                     range={range}
                     groupBy={groupBy}
                     sortBy={sortBy}
                     peekId={peek?.id}
-                    onDrill={setPeek}
-                    onOpenDay={openDay}
+                    onPeek={setPeek}
                   />
-                )}
-              </div>
-            )}
+                </>
+              ))}
             {tab === 'compare' && (
-              <div className="modal-panel active">
-                <ComparePanel
-                  date={date}
-                  cmp={cmp}
-                  onCommit={(b) => setSearch({ cmp: b === addDays(date, -7) ? undefined : b })}
-                  onDrill={drill}
-                />
-              </div>
+              <section className="pn">
+                <div className="cmd">
+                  <Seg
+                    label="日期範圍"
+                    value={range}
+                    options={RANGES}
+                    onChange={(v) => setSearch({ range: v === 0 ? undefined : (v as Range) })}
+                  />
+                  <span className="sp" />
+                  <span className="m">
+                    {range ? '範圍內的訓練日並排' : '前 3 個訓練日、這天、後 1 個訓練日並排'} · 這天以主色標示
+                    · 點動作看完整歷程
+                  </span>
+                </div>
+                <ComparePanel date={date} range={range} onDrill={drill} />
+              </section>
             )}
-            {tab === 'raw' && (
-              <div className="modal-panel active">
-                <RawPanel date={date} range={range} />
-              </div>
-            )}
+            {tab === 'raw' && <RawPanels date={date} range={range} />}
           </div>
+          {journal && !drillEx && (
+            <aside className="aside">
+              <Panel
+                title="當日日誌"
+                meta={`${stripJournalHeading(journal).length} 字`}
+                right={
+                  <button type="button" className="lk" onClick={() => setTab('raw')}>
+                    分頁開啟
+                    <Icon name="arrow" />
+                  </button>
+                }
+              >
+                <div className="pn-b">
+                  <div className="journal">{stripJournalHeading(journal)}</div>
+                </div>
+              </Panel>
+            </aside>
+          )}
         </div>
-        <DayRail
-          date={date}
-          range={range}
-          onOpenRaw={() => setSearch({ tab: 'raw', ex: undefined, at: undefined })}
-        />
       </div>
       {peek && peekEx && (
         <HistorySheet
@@ -871,6 +844,6 @@ export function DayPage() {
           onOpenFull={() => drill(peek.exerciseId, peek.date)}
         />
       )}
-    </section>
+    </>
   );
 }

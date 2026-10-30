@@ -53,3 +53,16 @@ export function useCrumbs(crumbs: Crumb[]) {
 
 /** 部位色：CSS 變數（例如 var(--g0)） */
 export const gColor = (g: string) => `var(--${groupToken[g] ?? 'gray-8'})`;
+/** 部位字塊上的字（部位名稱裡最能代表的那個字） */
+export const PART_CHAR: Record<string, string> = {
+  腿部: '腿',
+  背部: '背',
+  胸部: '胸',
+  肩部: '肩',
+  手臂: '臂',
+  核心: '核',
+  髖部: '髖',
+  有氧: '氧',
+};
+/** 淺色部位（背部、手臂、核心）的字塊用深色字 */
+export const PART_DARK = new Set(['背部', '手臂', '核心']);

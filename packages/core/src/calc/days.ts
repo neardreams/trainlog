@@ -14,6 +14,9 @@ export function dayGroups(ds: Dataset, date: DateStr): string[] {
   return ds.groupOrder.filter((g) => ents.some((e) => ds.exerciseById.get(e.exerciseId)?.group === g));
 }
 export const exerciseOf = (ds: Dataset, e: Entry) => ds.exerciseById.get(e.exerciseId) as Exercise;
+/** 某一年的總組數（狀態列用） */
+export const yearSets = (ds: Dataset, year: number) =>
+  ds.trainingDates.filter((d) => d.startsWith(`${year}-`)).reduce((s, d) => s + daySets(ds, d), 0);
 
 /** 今天以前（含）最近一個訓練日 */
 export function latestTrainingDate(ds: Dataset, today: DateStr): DateStr | null {
@@ -23,6 +26,29 @@ export function latestTrainingDate(ds: Dataset, today: DateStr): DateStr | null 
 export const prevTrainingDate = (ds: Dataset, d: DateStr) =>
   ds.trainingDates.filter((x) => x < d).pop() ?? null;
 export const nextTrainingDate = (ds: Dataset, d: DateStr) => ds.trainingDates.find((x) => x > d) ?? null;
+
+/** 第幾個訓練日（1 起算）；不是訓練日回傳 null */
+export function trainingDayNo(ds: Dataset, d: DateStr): number | null {
+  const i = ds.trainingDates.indexOf(d);
+  return i < 0 ? null : i + 1;
+}
+/** 這筆紀錄是這個動作的第幾次（1 起算） */
+export const entryNo = (ds: Dataset, e: Entry) =>
+  (ds.entriesByExercise.get(e.exerciseId) ?? []).findIndex((x) => x.id === e.id) + 1;
+
+/** 日期比較（多天並排）的欄：沒有範圍時取前 3 個訓練日＋這天＋後 1 個訓練日；有範圍時取範圍內的訓練日 */
+export function compareColumns(ds: Dataset, centre: DateStr, days: number): DateStr[] {
+  if (days > 0) return rangeDates(centre, days).filter((d) => ds.entriesByDate.has(d));
+  const before = ds.trainingDates.filter((d) => d < centre).slice(-3);
+  const after = ds.trainingDates.filter((d) => d > centre).slice(0, 1);
+  return [...before, centre, ...after];
+}
+/** 這些日子出現過的動作（依第一次出現的順序，不重複） */
+export function exercisesOnDates(ds: Dataset, dates: readonly DateStr[]): string[] {
+  const seen = new Set<string>();
+  for (const d of dates) for (const e of dayEntries(ds, d)) seen.add(e.exerciseId);
+  return [...seen];
+}
 
 // ── 訓練紀錄頁：範圍、排序、分組 ──
 export type RangeSortKey = 'date-desc' | 'date-asc' | 'vol-desc' | 'wt-desc' | 'name';

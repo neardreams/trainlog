@@ -1,7 +1,7 @@
-// 日期格：側欄月曆與窄螢幕 14 天時間軸共用
+// 日期格（v14）：側欄月曆（.cd）與手機週條（.mw）共用；部位色帶、今天墨色框、選取主色、有影片右上角播放記號
 import clsx from 'clsx';
 import { useNavigate } from '@tanstack/react-router';
-import { dayGroups, dowOf, slash, type DateStr } from '@trainlog/core';
+import { dayGroups, daySets, dowOf, slash, type DateStr } from '@trainlog/core';
 import { gColor } from '@/lib/chrome';
 import { TODAY } from '@/lib/today';
 import { useDs } from '@/lib/useDs';
@@ -9,12 +9,13 @@ import { useDs } from '@/lib/useDs';
 export function DayCell({
   date,
   out,
-  showDow,
+  week,
   selected,
 }: {
   date: DateStr;
   out?: boolean;
-  showDow?: boolean;
+  /** 手機週條的格子（多一行星期） */
+  week?: boolean;
   selected?: boolean;
 }) {
   const ds = useDs();
@@ -22,21 +23,29 @@ export function DayCell({
   const trained = ds.entriesByDate.has(date);
   const clickable = trained || ds.journals.has(date);
   const groups = trained ? dayGroups(ds, date) : [];
+  const video = ds.videosByDate.has(date);
   const isToday = date === TODAY;
   const open = () => void navigate({ to: '/days/$date', params: { date } });
+  const lines = [
+    `${slash(date)}（週${dowOf(date)}）${trained ? ` · ${daySets(ds, date)} 組` : ''}`,
+    groups.join('、'),
+    video ? '有影片' : '',
+  ].filter(Boolean);
+  const title = lines.join('\n');
   return (
     <div
       className={clsx(
-        'day-cell',
-        trained ? 'trained' : 'rest',
+        week ? 'mw' : 'cd',
+        !out && 'in',
+        trained && 't',
+        clickable && 'go',
+        video && 'v',
         isToday && 'today',
-        date > TODAY && 'future',
-        out && 'out',
-        clickable && 'clickable',
-        selected && 'active-sel',
+        selected && 'sel',
       )}
       data-date={date}
-      title={`${slash(date)}（${dowOf(date)}）${groups.length ? ` · ${groups.join('、')}` : ''}${ds.videosByDate.has(date) ? ' · 有影片' : ''}`}
+      data-tip={title}
+      aria-label={lines.join('，')}
       {...(clickable
         ? {
             role: 'button',
@@ -51,13 +60,15 @@ export function DayCell({
           }
         : {})}
     >
-      {showDow && <span className="day-dow">{isToday ? '今天' : dowOf(date)}</span>}
-      <span className="day-num">{Number(date.slice(8))}</span>
-      <span className="day-dots">
-        {groups.slice(0, 4).map((g) => (
-          <span key={g} className="day-dot" style={{ ['--c' as string]: gColor(g) }} />
-        ))}
-      </span>
+      {week && <small>{isToday ? '今天' : dowOf(date)}</small>}
+      {Number(date.slice(8))}
+      {groups.length > 0 && (
+        <span className="bar">
+          {groups.slice(0, 4).map((g) => (
+            <i key={g} style={{ background: gColor(g) }} />
+          ))}
+        </span>
+      )}
     </div>
   );
 }

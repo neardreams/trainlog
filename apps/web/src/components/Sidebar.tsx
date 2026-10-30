@@ -1,20 +1,17 @@
-// 側欄：工作區導覽、整月月曆、部位導覽、同步狀態；可收合，<1024 為抽屜
+// 側邊導覽（v14）：工作區、月曆、部位（部位字塊）、系統；寬螢幕可收合成圖示列，<1024 是抽屜
 import clsx from 'clsx';
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
-import { slash } from '@trainlog/core';
 import { MonthCalendar } from './Calendars';
-import { GDot } from './ui';
-import { useChrome } from '@/lib/chrome';
+import { PartTile } from './ui';
+import { gColor, useChrome } from '@/lib/chrome';
 import type { ExercisesSearch } from '@/router';
 import { Icon } from '@/lib/icons';
-import { usePrefs } from '@/lib/prefs';
 import { useDs } from '@/lib/useDs';
 
 export function Sidebar() {
   const ds = useDs();
   const navigate = useNavigate();
-  const toggleCollapsed = usePrefs((s) => s.toggleCollapsed);
-  const { setPaletteOpen, setSidebarOpen, activeGroup, setPendingGroup } = useChrome();
+  const { setSidebarOpen, activeGroup, setPendingGroup } = useChrome();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const view = path.startsWith('/exercises')
     ? 'exercise'
@@ -23,7 +20,6 @@ export function Sidebar() {
       : path.startsWith('/spec')
         ? 'spec'
         : 'dashboard';
-  const last = ds.trainingDates[ds.trainingDates.length - 1];
   const goGroup = (g: string) => {
     setSidebarOpen(false);
     setPendingGroup(g);
@@ -41,105 +37,56 @@ export function Sidebar() {
     });
   };
   const counts = (g: string) => ds.exercises.filter((e) => e.group === g).length;
+  const close = () => setSidebarOpen(false);
   return (
-    <aside className="sidebar" id="sidebar" aria-label="主選單">
-      <div className="sb-head">
-        <span className="sb-logo">
-          <Icon name="logo" />
-        </span>
-        <div className="sb-ws">
-          <b>TrainLog</b>
-          <span>個人訓練空間</span>
-        </div>
-        <button
-          className="icon-btn sb-collapse-btn"
-          onClick={toggleCollapsed}
-          title="收合側欄"
-          aria-label="收合側欄"
+    <aside className="nav" id="sidebar" aria-label="主選單">
+      <nav aria-label="工作區">
+        <div className="ns-h">工作區</div>
+        <Link to="/" className={clsx('ni', view === 'dashboard' && 'on')} title="總覽" onClick={close}>
+          <Icon name="grid" />
+          <span>總覽</span>
+        </Link>
+        <Link to="/days" className={clsx('ni', view === 'day' && 'on')} title="訓練紀錄" onClick={close}>
+          <Icon name="calendar" />
+          <span>訓練紀錄</span>
+          <em>{ds.trainingDates.length}</em>
+        </Link>
+        <Link
+          to="/exercises"
+          className={clsx('ni', view === 'exercise' && 'on')}
+          title="動作庫"
+          onClick={close}
         >
-          <Icon name="panel" />
-        </button>
-      </div>
-      <div className="sb-scroll">
-        <button className="sb-search" onClick={() => setPaletteOpen(true)} title="搜尋（Ctrl K）">
-          <Icon name="search" />
-          <span>搜尋動作、日期…</span>
-          <kbd>Ctrl K</kbd>
-        </button>
-        <nav aria-label="工作區">
-          <div className="sb-label">工作區</div>
-          <Link
-            to="/"
-            className={clsx('nav-item', view === 'dashboard' && 'active')}
-            title="總覽"
-            onClick={() => setSidebarOpen(false)}
+          <Icon name="weight" />
+          <span>動作庫</span>
+          <em>{ds.exercises.length}</em>
+        </Link>
+      </nav>
+      <div className="ns-h cal-l">日曆</div>
+      <MonthCalendar />
+      <nav aria-label="部位">
+        <div className="ns-h">部位</div>
+        {ds.groupOrder.map((g) => (
+          <button
+            key={g}
+            className={clsx('ni sub', view === 'exercise' && activeGroup === g && 'on')}
+            style={{ ['--g' as string]: gColor(g) }}
+            onClick={() => goGroup(g)}
+            title={g}
           >
-            <Icon name="grid" />
-            <span>總覽</span>
-          </Link>
-          <Link
-            to="/exercises"
-            className={clsx('nav-item', view === 'exercise' && 'active')}
-            title="動作庫"
-            onClick={() => setSidebarOpen(false)}
-          >
-            <Icon name="list" />
-            <span>動作庫</span>
-            <em>{ds.exercises.length}</em>
-          </Link>
-          <Link
-            to="/days"
-            className={clsx('nav-item', view === 'day' && 'active')}
-            title="訓練紀錄"
-            onClick={() => setSidebarOpen(false)}
-          >
-            <Icon name="calendar" />
-            <span>訓練紀錄</span>
-            <em>{ds.trainingDates.length}</em>
-          </Link>
-          <button className="nav-item sb-expand" onClick={toggleCollapsed} title="展開側欄">
-            <Icon name="panel" />
+            <PartTile group={g} small />
+            <span>{g}</span>
+            <em>{counts(g)}</em>
           </button>
-        </nav>
-        <MonthCalendar />
-        <nav aria-label="部位">
-          <div className="sb-label">部位</div>
-          {ds.groupOrder.map((g) => (
-            <button
-              key={g}
-              className={clsx('gn-item', view === 'exercise' && activeGroup === g && 'active')}
-              onClick={() => goGroup(g)}
-              title={g}
-            >
-              <GDot group={g} />
-              <span>{g}</span>
-              <em>{counts(g)}</em>
-            </button>
-          ))}
-        </nav>
-        <nav aria-label="系統">
-          <div className="sb-label">系統</div>
-          <Link
-            to="/spec"
-            className={clsx('nav-item', view === 'spec' && 'active')}
-            title="設計規格"
-            onClick={() => setSidebarOpen(false)}
-          >
-            <Icon name="grid" />
-            <span>設計規格</span>
-          </Link>
-        </nav>
-      </div>
-      <div className="sb-foot">
-        <span className="who">TL</span>
-        <div className="meta">
-          <b>個人工作區</b>
-          <span>
-            <i />
-            已同步至 {last ? slash(last) : '—'}
-          </span>
-        </div>
-      </div>
+        ))}
+      </nav>
+      <nav aria-label="系統">
+        <div className="ns-h">系統</div>
+        <Link to="/spec" className={clsx('ni', view === 'spec' && 'on')} title="設計規格" onClick={close}>
+          <Icon name="spec" />
+          <span>設計規格</span>
+        </Link>
+      </nav>
     </aside>
   );
 }

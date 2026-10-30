@@ -1,9 +1,16 @@
-/* Tailwind 工具類一律加前綴 tw:（例如 tw:mr-2），避免和 v9 元件類名（.grid、.fixed、.hidden …）撞名 */
+/* Tailwind 工具類一律加前綴 tw:（例如 tw:mr-2），避免和元件類名（.grid、.fixed、.hidden …）撞名 */
 @import 'tailwindcss' prefix(tw);
 @import '@trainlog/tokens/theme.css';
 @import '@trainlog/tokens/tokens.css';
 @import '@fontsource-variable/geist';
 @import '@fontsource-variable/geist-mono';
 @import '@fontsource-variable/noto-sans-tc';
+/* 窄體斜體數字（v14 讀數用），只載入拉丁字元 */
+@import '@fontsource/barlow-condensed/latin-600.css';
+@import '@fontsource/barlow-condensed/latin-700.css';
+@import '@fontsource/barlow-condensed/latin-600-italic.css';
+@import '@fontsource/barlow-condensed/latin-700-italic.css';
+@import '@fontsource/barlow-condensed/latin-800-italic.css';
 @import './components.css' layer(components);
 @import './extras.css' layer(components);
+@import './v14.css' layer(components);

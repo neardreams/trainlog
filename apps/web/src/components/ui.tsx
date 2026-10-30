@@ -1,28 +1,65 @@
-// 小型共用元件（對應 v9 的 badge、status、delta、組數標記、空狀態、分段控制）
+// 小型共用元件（v14）：部位字塊、距今、力竭徽章、增減標籤、組數格、空狀態、分段控制
 import type { ReactNode } from 'react';
 import clsx from 'clsx';
 import {
   daysLabel,
   daysTone,
-  dowOf,
+  entryPr,
+  entryVideo,
   exhTone,
+  fmtClock,
   fmtN,
-  md,
+  segmentsBySet,
   setBlocks,
+  topSetIndex,
   type Entry,
   type Exercise,
+  type Tone,
 } from '@trainlog/core';
-import { gColor } from '@/lib/chrome';
+import { gColor, PART_CHAR, PART_DARK } from '@/lib/chrome';
 import { Icon, type IconName } from '@/lib/icons';
+import { openVideo } from '@/lib/player';
+import { useDs } from '@/lib/useDs';
+
+/** core 的狀態色 → v14 的類名（ok／warn／bad／n） */
+const TONE: Record<Tone, string> = {
+  'tone-ok': 'ok',
+  'tone-warn': 'warn',
+  'tone-bad': 'bad',
+  'tone-mute': 'n',
+  'tone-none': 'n',
+};
+export const toneCls = (t: Tone) => TONE[t];
 
 export const GDot = ({ group, className }: { group: string; className?: string }) => (
   <i className={clsx('gdot', className)} style={{ ['--c' as string]: gColor(group) }} title={group} />
 );
 
+/** 部位字塊（v14）：部位色方塊＋代表字 */
+export const PartTile = ({ group, small }: { group: string; small?: boolean }) => (
+  <i
+    className={clsx('ptile', small && 's', PART_DARK.has(group) && 'dk')}
+    style={{ ['--g' as string]: gColor(group) }}
+    data-tip={group}
+    aria-hidden
+  >
+    {PART_CHAR[group] ?? group.slice(0, 1)}
+  </i>
+);
+
+/** 一排部位字塊（最多 5 個） */
+export const PartTiles = ({ groups }: { groups: string[] }) => (
+  <span className="ptiles">
+    {groups.slice(0, 5).map((g) => (
+      <PartTile key={g} group={g} small />
+    ))}
+  </span>
+);
+
 export function Status({ days }: { days: number }) {
   return (
-    <span className={clsx('status', daysTone(days))}>
-      <i />
+    <span className="ago">
+      <i className={clsx('sq', toneCls(daysTone(days)))} />
       {daysLabel(days)}
     </span>
   );
@@ -30,16 +67,16 @@ export function Status({ days }: { days: number }) {
 
 export function ExhBadge({ value, count }: { value: string | undefined; count?: number }) {
   const v = value || '—';
-  const tone = count != null && v === '—' ? 'tone-mute' : exhTone(v);
+  if (count == null && v === '—') return <span className="na">—</span>;
   return (
-    <span className={clsx('badge', tone)}>
-      <i />
+    <span className={clsx('bdg', toneCls(exhTone(v)))}>
       {count != null && v === '—' ? '未標示' : v}
-      {count != null && <b>{count}</b>}
+      {count != null && <span className="mono">{count}</span>}
     </span>
   );
 }
 
+/** 增減：斜切實心標籤，三角形表示方向（數字不帶正負號） */
 export function Delta({
   dir,
   value,
@@ -51,82 +88,95 @@ export function Delta({
   unit?: string;
   pct?: boolean;
 }) {
-  const sign = dir === 'up' ? '+' : dir === 'down' ? '−' : '±';
+  const sign = dir === 'up' ? '增加' : dir === 'down' ? '減少' : '';
+  const txt = `${fmtN(Math.abs(value))}${pct ? '%' : unit}`;
   return (
-    <span className={clsx('delta', dir)}>
-      {sign}
-      {fmtN(value)}
-      {pct ? '%' : unit}
+    <span
+      className={clsx('dt', dir === 'down' ? 'dn' : dir)}
+      aria-label={dir === 'flat' ? '持平' : `${sign} ${txt}`}
+    >
+      {dir === 'flat' ? '持平' : txt}
     </span>
   );
 }
-/** 由兩個數值算增減 */
-export const deltaDir = (d: number): 'up' | 'down' | 'flat' => (d > 0 ? 'up' : d < 0 ? 'down' : 'flat');
 
-/** 組數：每組一格（日曆頁樣式）——上方色帶寫重量（越深越重）、下方大字寫次數、左上小字是組號 */
-export function Sets({ entry, ex }: { entry: Entry; ex: Exercise }) {
+/**
+ * 組數格（v14）：每組一格「重量 × 次數」。最重的組（重量不同時）墨色實心；破紀錄那一組綠色；
+ * 影片拍到的組右上角有播放記號，點了從那一組開始播。mini 是表格裡的小格（不顯示組號）
+ */
+export function Sets({ entry, ex, mini }: { entry: Entry; ex: Exercise; mini?: boolean }) {
+  const ds = useDs();
   const r = setBlocks(entry, ex);
-  if (r.kind === 'text')
-    return (
-      <div className="sets">
-        <span className="set text">{r.text}</span>
+  if (r.kind === 'text') return <div className="sets-txt">{r.text}</div>;
+  if (r.kind === 'none')
+    return mini ? (
+      <span className="na">—</span>
+    ) : (
+      <div className="sets-none">
+        <Icon name="info" />
+        沒有記錄組數
       </div>
     );
-  if (r.kind === 'none') return <span className="na">—</span>;
-  if (r.kind === 'practice') return <span className="na">動作練習</span>;
+  if (r.kind === 'practice')
+    return mini ? <span className="na">動作練習</span> : <div className="sets-none">動作練習</div>;
+  // 小尺寸（表格內）不標影片：那一列有自己的影片欄
+  const ev = mini ? undefined : entryVideo(ds, entry);
+  const bySet = ev ? segmentsBySet(ev.segments) : undefined;
+  const prIdx = entryPr(ds, entry) ? topSetIndex(entry.sets) : -1;
   return (
-    <div className="setcards">
-      {r.blocks.map((b) => {
-        const w = b.zeroLabel ?? (b.weightKg == null ? null : fmtN(b.weightKg));
+    <div className={clsx('sets', mini && 'mini')}>
+      {r.blocks.map((b, i) => {
+        const w = b.zeroLabel ?? (b.weightKg == null ? '—' : fmtN(b.weightKg));
         const reps = b.reps == null ? '？' : Number.isInteger(b.reps) ? String(b.reps) : b.reps.toFixed(1);
-        const unit = b.unit ?? '下';
-        const tip = `第 ${b.no} 組 · ${w == null ? '' : b.zeroLabel ? `${w} · ` : `${w} kg × `}${reps} ${unit}`;
-        return (
-          <span key={b.no} className={clsx('setcard', `lv${b.level}`)} title={tip}>
-            <span className="sc-w">
-              {w == null ? '—' : w}
-              {w != null && !b.zeroLabel && <small>kg</small>}
+        const pr = i === prIdx;
+        const cls = clsx('set', pr ? 'pr' : b.level === 3 && 'heavy');
+        const no = String(b.no).padStart(2, '0');
+        const body = (
+          <>
+            <span className="n">
+              {no}
+              {pr && ' · 破紀錄'}
             </span>
-            <span className="sc-r">
-              <span className="sc-no">{b.no}</span>
+            <span className="v">
+              {w}
+              {b.weightKg != null && b.weightKg > 0 && <small>kg</small>}
+              <span className="x">×</span>
               {reps}
               {b.unit && <small>{b.unit}</small>}
             </span>
-          </span>
+          </>
+        );
+        const tip = `第 ${b.no} 組 · ${b.zeroLabel ? `${w} · ` : b.weightKg == null ? '' : `${w} kg × `}${reps} ${b.unit ?? '下'}${pr ? ' · 破紀錄' : ''}`;
+        const segs = bySet?.get(b.no);
+        if (!ev || !segs?.length)
+          return (
+            <span key={b.no} className={cls} title={tip}>
+              {body}
+            </span>
+          );
+        const first = segs[0];
+        return (
+          <button
+            key={b.no}
+            type="button"
+            className={clsx(cls, 'hv')}
+            title={`${tip}\n從第 ${b.no} 組開始播（${segs.map((x) => `${x.side ? `${x.side} ` : ''}${fmtClock(x.start)}`).join('、')}）`}
+            aria-label={`播放第 ${b.no} 組的影片`}
+            onClick={(e) => {
+              e.stopPropagation();
+              openVideo(
+                { video: ev.video, exerciseId: entry.exerciseId, start: first?.start ?? 0 },
+                e.currentTarget,
+              );
+            }}
+          >
+            {body}
+          </button>
         );
       })}
     </div>
   );
 }
-
-export function DateCell({
-  date,
-  onOpen,
-  children,
-}: {
-  date: string;
-  onOpen?: () => void;
-  children?: ReactNode;
-}) {
-  return (
-    <td className="c-date">
-      <a
-        className="link"
-        onClick={(e) => {
-          e.stopPropagation();
-          onOpen?.();
-        }}
-      >
-        {md(date)}
-      </a>
-      <span className="dow">週{dowOf(date)}</span>
-      {children}
-    </td>
-  );
-}
-
-export const Count = ({ n, hidden }: { n: number | string; hidden?: boolean }) =>
-  hidden ? null : <span className="count">{n}</span>;
 
 export function Empty({
   title,
@@ -186,24 +236,32 @@ export function Seg<T extends string | number>({
   );
 }
 
-export function PageHead({ title, sub, actions }: { title: string; sub?: string; actions?: ReactNode }) {
+/** 面板（v14）：灰色標題列（主色斜切小標＋標題＋說明＋右側操作）、內容、底部統計 */
+export function Panel({
+  className,
+  title,
+  meta,
+  right,
+  foot,
+  children,
+}: {
+  className?: string;
+  title: ReactNode;
+  meta?: ReactNode;
+  right?: ReactNode;
+  foot?: ReactNode;
+  children: ReactNode;
+}) {
   return (
-    <div className="page-head">
-      <div>
-        <h1>{title}</h1>
-        {sub && <p>{sub}</p>}
-      </div>
-      {actions && <div className="page-actions">{actions}</div>}
-    </div>
+    <section className={clsx('pn', className)}>
+      <header className="pn-h">
+        <h2>{title}</h2>
+        {meta && <span className="m">{meta}</span>}
+        <span className="sp" />
+        {right}
+      </header>
+      {children}
+      {foot && <footer className="pn-f">{foot}</footer>}
+    </section>
   );
 }
-
-export const Num = ({ v, unit, dp }: { v: number | null | undefined; unit?: string; dp?: number }) =>
-  v == null || v === 0 ? (
-    <span className="na">—</span>
-  ) : (
-    <>
-      {fmtN(v, dp)}
-      {unit && <small>{unit}</small>}
-    </>
-  );

@@ -1,5 +1,5 @@
 // 由 src/tokens.json 產生所有平台用的 token 檔（不使用第三方套件，方便 AI 直接閱讀與修改）
-//   dist/tokens.css             網頁執行期 CSS 變數（html[data-m]、html[data-accent]）
+//   dist/tokens.css             網頁執行期 CSS 變數（html[data-m]、html[data-accent]；主色是 --a、--a-text…，見 v14 設計稿）
 //   dist/theme.css              Tailwind v4 @theme：把語意 token 對應成 utility（bg-surface、text-fg-2…）
 //   dist/nativewind.css         NativeWind（App）用：:root 淺色＋prefers-color-scheme 深色，值已解析
 //   dist/tailwind-v3-preset.cjs NativeWind 用的 Tailwind v3 preset
@@ -30,7 +30,7 @@ const modeVars = (m) => {
     ...x.surface,
   };
 };
-const accVars = (a, m) => Object.fromEntries(Object.entries(t.accent[a][m]).map(([k, v]) => [`acc-${k}`, v]));
+const accVars = (a, m) => ({ ...t.accent[a][m] });
 const header = '/* 自動產生，請勿手改。來源：packages/tokens/src/tokens.json */\n';
 
 // ── 1. tokens.css ──
@@ -39,7 +39,7 @@ for (const m of MODES) css += `html[data-m='${m}'] {\n  color-scheme: ${m};\n${d
 for (const a of ACCENTS)
   for (const m of MODES) css += `html[data-accent='${a}'][data-m='${m}'] {\n${decl(accVars(a, m))}\n}\n`;
 css += `html {\n${decl(t.semantic)}\n}\n`;
-for (const [key, v] of Object.entries(t.accentFgOverride)) {
+for (const [key, v] of Object.entries(t.accentFgOverride ?? {})) {
   const [m, a] = key.split('.');
   css += `html[data-m='${m}'][data-accent='${a}'] {\n  --accent-fg: ${v};\n}\n`;
 }
@@ -63,11 +63,14 @@ const colorLines = [
     .filter((k) => /^(gray|green|amber|red)-\d+$/.test(k) || /^g\d$/.test(k))
     .map((k) => `  --color-${k}: var(--${k});`),
   ...Object.keys(accVars(ACCENTS[0], 'light')).map((k) => `  --color-${k}: var(--${k});`),
+  ...['canvas', 'panel', 'head', 'th', 'nav', 'line', 'line-2', 'ctl', 'ink', 'ink-fg', 'empty'].map(
+    (k) => `  --color-${k}: var(--${k});`,
+  ),
 ];
 const theme =
   header +
   `@theme inline {\n${colorLines.join('\n')}\n` +
-  `  --font-sans: var(--font);\n  --font-mono: var(--mono);\n` +
+  `  --font-sans: var(--font);\n  --font-mono: var(--mono);\n  --font-disp: var(--disp);\n` +
   `  --radius-xs: var(--r-xs);\n  --radius-sm: var(--r-sm);\n  --radius-md: var(--r);\n  --radius-lg: var(--r-lg);\n  --radius-xl: var(--r-xl);\n` +
   ['xs', 'sm', 'md', 'lg'].map((s) => `  --shadow-${s}: var(--shadow-${s});`).join('\n') +
   `\n  --ease-out: var(--ease);\n}\n`;
@@ -76,7 +79,7 @@ writeFileSync(resolve(out, 'theme.css'), theme);
 // ── 3. 解析成實際值（RN 不支援 CSS 變數）──
 const resolveAll = (m, a) => {
   const vars = { ...t.base, ...modeVars(m), ...accVars(a, m), ...t.semantic };
-  const ov = t.accentFgOverride[`${m}.${a}`];
+  const ov = t.accentFgOverride?.[`${m}.${a}`];
   if (ov) vars['accent-fg'] = ov;
   const res = (v, depth = 0) =>
     depth > 10
@@ -117,8 +120,9 @@ writeFileSync(
         theme: {
           colors: v3colors,
           extend: {
-            fontFamily: { sans: ['var(--font)'], mono: ['var(--mono)'] },
-            borderRadius: { xs: '4px', sm: '6px', md: '8px', lg: '12px', xl: '16px' },
+            fontFamily: { sans: ['var(--font)'], mono: ['var(--mono)'], disp: ['var(--disp)'] },
+            // v14 一律方角
+            borderRadius: { xs: '0px', sm: '0px', md: '0px', lg: '0px', xl: '0px' },
           },
         },
       },

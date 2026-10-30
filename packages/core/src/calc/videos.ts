@@ -32,6 +32,29 @@ export function exerciseVideos(ds: Dataset, exerciseId: string): EntryVideo[] {
   return out.reverse();
 }
 
+/** 這個動作在其他天最近一次的影片（當天沒拍到這個動作時，改播這支） */
+export const otherExerciseVideo = (ds: Dataset, exerciseId: string, date: DateStr): EntryVideo | undefined =>
+  exerciseVideos(ds, exerciseId).find((x) => x.video.date !== date);
+
+/** date 之前最近一個有影片的日子（這天沒錄影時的「前一支影片」） */
+export function prevDayVideo(ds: Dataset, date: DateStr): DayVideo | undefined {
+  let best: DayVideo | undefined;
+  for (const [d, v] of ds.videosByDate) if (d < date && (!best || d > best.date)) best = v;
+  return best;
+}
+
+/** 依組號分組的段落（組數格上的影片記號用）；標不出組號的段落不列入 */
+export function segmentsBySet(segments: readonly VideoSegment[]): Map<number, VideoSegment[]> {
+  const out = new Map<number, VideoSegment[]>();
+  for (const s of segments) {
+    if (s.set == null) continue;
+    const g = out.get(s.set);
+    if (g) g.push(s);
+    else out.set(s.set, [s]);
+  }
+  return out;
+}
+
 /**
  * 最重那一組在影片中的段落（破紀錄的那一組）：同重量有好幾組時取第一組；
  * 片段標不出組號、或最重的那組沒拍到時，取這個動作的第一段

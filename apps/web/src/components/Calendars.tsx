@@ -1,7 +1,16 @@
-// 側欄整月月曆（≥1024）與 14 天時間軸（<1024）
-import { useEffect, useRef, useState } from 'react';
+// 側欄月曆（≥1024 與抽屜）與手機週條（≤760）
+import { useState } from 'react';
 import { useRouterState } from '@tanstack/react-router';
-import { addDays, md, monthsBetween, parseDate, toDateStr, type DateStr } from '@trainlog/core';
+import {
+  addDays,
+  daysBetween,
+  md,
+  mondayOf,
+  monthsBetween,
+  parseDate,
+  toDateStr,
+  type DateStr,
+} from '@trainlog/core';
 import { DayCell } from './DayCell';
 import { Icon } from '@/lib/icons';
 import { TODAY } from '@/lib/today';
@@ -38,82 +47,91 @@ export function MonthCalendar() {
     const d = new Date(y, mo, 1 - lead + i);
     return { date: toDateStr(d), out: d.getMonth() !== mo };
   });
-  const trained = cells.filter((c) => !c.out && ds.entriesByDate.has(c.date)).length;
+  const inMonth = cells.filter((c) => !c.out);
+  const trained = inMonth.filter((c) => ds.entriesByDate.has(c.date)).length;
+  const withVideo = inMonth.filter((c) => ds.videosByDate.has(c.date)).length;
   return (
     <div className="cal">
-      <div className="cal-head">
-        <div className="t">
-          <b>
-            {y} 年 {mo + 1} 月
-          </b>
-          <span>{trained} 個訓練日</span>
-        </div>
-        <button
-          className="icon-btn"
-          onClick={() => setOffset((o) => o - 1)}
-          title="上個月"
-          aria-label="上個月"
-        >
+      <div className="cal-h">
+        <b>
+          {y}/{String(mo + 1).padStart(2, '0')}
+        </b>
+        <button onClick={() => setOffset((o) => o - 1)} title="上個月" aria-label="上個月">
           <Icon name="left" />
         </button>
-        <button className="btn" onClick={() => setOffset(0)}>
+        <button className="td" onClick={() => setOffset(0)}>
           今天
         </button>
-        <button
-          className="icon-btn"
-          onClick={() => setOffset((o) => o + 1)}
-          title="下個月"
-          aria-label="下個月"
-        >
+        <button onClick={() => setOffset((o) => o + 1)} title="下個月" aria-label="下個月">
           <Icon name="right" />
         </button>
       </div>
-      <div className="cal-grid">
+      <div className="cal-g">
         {['一', '二', '三', '四', '五', '六', '日'].map((d) => (
-          <span key={d} className="cal-h">
+          <div key={d} className="cal-w">
             {d}
-          </span>
+          </div>
         ))}
         {cells.map((c) => (
           <DayCell key={c.date} date={c.date} out={c.out} selected={c.date === selected} />
         ))}
       </div>
+      <div className="cal-f">
+        <span>
+          本月 <b>{trained}</b> 天
+        </span>
+        <span>
+          <i className="vflag" />
+          有影片 <b>{withVideo}</b> 天
+        </span>
+      </div>
     </div>
   );
 }
 
-export function WeekStrip() {
+/** 手機的本週（週一到週日），可前後翻週；選了別週的日期時跟著跳過去 */
+export function MobileWeek() {
   const selected = useSelectedDate();
+  const path = useRouterState({ select: (s) => s.location.pathname });
+  const base = selected ?? TODAY;
   const [off, setOff] = useState(0);
-  const strip = useRef<HTMLDivElement>(null);
-  const days = [...Array(14)].map((_, i) => addDays(TODAY, off - 6 + i));
-  // 只橫向捲到今天，不帶動整頁捲動（修正 v6 的問題）
-  useEffect(() => {
-    const el = strip.current;
-    const t = el?.querySelector<HTMLElement>('.today');
-    if (el && t) el.scrollLeft = t.offsetLeft - el.clientWidth / 2 + t.clientWidth / 2;
-  }, [off]);
+  const [prevBase, setPrevBase] = useState(base);
+  if (base !== prevBase) {
+    setPrevBase(base);
+    setOff(0);
+  }
+  // 同設計稿：只在總覽與訓練紀錄顯示
+  if (!(path === '/' || path.startsWith('/days'))) return null;
+  const mon = addDays(mondayOf(base), off * 7);
+  const days = [...Array(7)].map((_, i) => addDays(mon, i));
+  const thisWeek = mon === mondayOf(TODAY);
   return (
-    <section className="panel week-panel">
-      <div className="panel-head">
-        <div className="panel-title">
-          近 14 天<span className="meta">{`${md(days[0] ?? TODAY)} – ${md(days[13] ?? TODAY)}`}</span>
-        </div>
-        <div className="btn-group">
+    <div className="mweek">
+      <div className="mweek-h">
+        <b>
+          {thisWeek ? '本週' : '那一週'}
+          <span>
+            {md(days[0] ?? mon)}–{md(days[6] ?? mon)}
+          </span>
+        </b>
+        <div className="bgrp">
           <button
-            className="btn btn-icon"
-            onClick={() => setOff((o) => o - 7)}
+            className="btn sm icon"
+            onClick={() => setOff((o) => o - 1)}
             aria-label="前一週"
             title="前一週"
           >
             <Icon name="left" />
           </button>
-          <button className="btn" onClick={() => setOff(0)}>
+          <button
+            className="btn sm"
+            onClick={() => setOff(Math.round(daysBetween(mondayOf(base), mondayOf(TODAY)) / 7))}
+          >
             今天
           </button>
           <button
-            className="btn btn-icon"
-            onClick={() => setOff((o) => o + 7)}
+            className="btn sm icon"
+            onClick={() => setOff((o) => o + 1)}
             aria-label="後一週"
             title="後一週"
           >
@@ -121,11 +139,11 @@ export function WeekStrip() {
           </button>
         </div>
       </div>
-      <div className="week-strip" ref={strip}>
+      <div className="mweek-g">
         {days.map((d) => (
-          <DayCell key={d} date={d} showDow selected={d === selected} />
+          <DayCell key={d} date={d} week selected={d === selected} />
         ))}
       </div>
-    </section>
+    </div>
   );
 }

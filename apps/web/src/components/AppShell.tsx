@@ -1,67 +1,113 @@
-// App 外框：資料載入、側欄、頂部列、窄螢幕時間軸、指令面板、通知、全域快捷鍵
-import { Fragment, useEffect } from 'react';
-import { Link, Outlet } from '@tanstack/react-router';
-import { slash } from '@trainlog/core';
+// App 外框（v14）：全寬深色殼層列、左側淺色導覽、手機週條、底部狀態列；資料載入、指令面板、通知、全域快捷鍵
+import { useEffect } from 'react';
+import { Outlet } from '@tanstack/react-router';
+import { md, slash, yearSets } from '@trainlog/core';
 import { DataLoadError, useDataset } from '@trainlog/data-client';
 import { CommandPalette } from './CommandPalette';
 import { Sidebar } from './Sidebar';
 import { Toast } from './Toast';
 import { VideoPlayerHost } from './VideoPlayerDialog';
-import { WeekStrip } from './Calendars';
+import { MobileWeek } from './Calendars';
 import { useChrome } from '@/lib/chrome';
 import { Icon } from '@/lib/icons';
 import { usePrefs, usePrefsEffect } from '@/lib/prefs';
+import { useDataTips } from '@/lib/tip';
+import { TODAY } from '@/lib/today';
 
-function Topbar({ lastDate }: { lastDate: string | undefined }) {
-  const { crumbs, setSidebarOpen, setPaletteOpen } = useChrome();
-  const { mode, toggleMode } = usePrefs();
+/** 窄螢幕（側欄是抽屜）時，選單鈕打開抽屜；寬螢幕時收合側欄 */
+const isNarrow = () => matchMedia('(max-width: 1023px)').matches;
+
+function Shell({ lastDate }: { lastDate: string | undefined }) {
+  const { crumbs, sidebarOpen, setSidebarOpen, setPaletteOpen } = useChrome();
+  const { mode, toggleMode, density, setDensity, toggleCollapsed } = usePrefs();
+  const title = crumbs[crumbs.length - 1]?.label ?? 'TrainLog';
   return (
-    <header className="topbar">
-      <button className="icon-btn only-mobile" onClick={() => setSidebarOpen(true)} aria-label="開啟選單">
+    <header className="shell">
+      <button
+        className="sh-menu"
+        onClick={() => (isNarrow() ? setSidebarOpen(!sidebarOpen) : toggleCollapsed())}
+        title="選單"
+        aria-label="選單"
+        aria-controls="sidebar"
+      >
         <Icon name="menu" />
       </button>
-      <nav className="crumbs" aria-label="麵包屑">
-        {crumbs.map((c, i) =>
-          i === crumbs.length - 1 || !c.to ? (
-            <Fragment key={i}>
-              <b>{c.label}</b>
-              {i < crumbs.length - 1 && <Icon name="right" />}
-            </Fragment>
-          ) : (
-            <Fragment key={i}>
-              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any -- 麵包屑目標由各頁宣告 */}
-              <Link to={c.to as any} params={c.params as any} search={(c.search ?? {}) as any}>
-                {c.label}
-              </Link>
-              <Icon name="right" />
-            </Fragment>
-          ),
-        )}
-      </nav>
-      <div className="tb-right">
-        <button
-          className="icon-btn"
-          onClick={() => setPaletteOpen(true)}
-          title="搜尋（Ctrl K）"
-          aria-label="搜尋"
-        >
-          <Icon name="search" />
-        </button>
-        <span className="sync-pill" title="training_data.json 最新紀錄">
-          <i />
-          資料更新至 {lastDate ? slash(lastDate) : '—'}
+      <div className="sh-brand">
+        <span className="logo">
+          <Icon name="logo" />
         </span>
-        <span className="tb-sep" />
-        <button className="icon-btn" onClick={toggleMode} title="切換深色／淺色" aria-label="切換深色／淺色">
-          <Icon name={mode === 'dark' ? 'sun' : 'moon'} />
-        </button>
+        <b>TrainLog</b>
+        <span>個人訓練管理</span>
+      </div>
+      <b className="sh-title">{title}</b>
+      <button className="sh-search" onClick={() => setPaletteOpen(true)} title="搜尋（Ctrl K）">
+        <Icon name="search" />
+        <span>搜尋動作、日期、訓練紀錄…</span>
+        <kbd>Ctrl K</kbd>
+      </button>
+      <span className="sh-sp" />
+      <span className="sh-sync" title="training_data.json 最新紀錄">
+        <i className="sq ok live" />
+        已同步 · {lastDate ? md(lastDate) : '—'}
+      </span>
+      <button className="sh-ib mob" onClick={() => setPaletteOpen(true)} title="搜尋" aria-label="搜尋">
+        <Icon name="search" />
+      </button>
+      <button
+        className="sh-ib dens"
+        onClick={() => setDensity(density === 'compact' ? 'comfortable' : 'compact')}
+        title={`切換密度（目前：${density === 'compact' ? '緊密' : '標準'}）`}
+        aria-label="切換密度"
+      >
+        <Icon name="rows" />
+      </button>
+      <button className="sh-ib" onClick={toggleMode} title="切換深色／淺色" aria-label="切換深色／淺色">
+        <Icon name={mode === 'dark' ? 'sun' : 'moon'} />
+      </button>
+      <div className="sh-user">
+        <span className="av">TL</span>
+        <span>個人工作區</span>
       </div>
     </header>
   );
 }
 
+function StatusBar({ lastDate }: { lastDate: string | undefined }) {
+  const ds = useDataset().data;
+  const density = usePrefs((s) => s.density);
+  const year = Number(TODAY.slice(0, 4));
+  if (!ds) return null;
+  return (
+    <footer className="stb">
+      <span>
+        <i className="sq ok" />
+        <b>同步正常</b>
+      </span>
+      <span>資料至 {lastDate ? slash(lastDate) : '—'}</span>
+      <span>
+        訓練日 <b>{ds.trainingDates.length}</b>
+      </span>
+      <span>
+        動作 <b>{ds.exercises.length}</b>
+      </span>
+      <span>
+        {year} 年 <b>{yearSets(ds, year).toLocaleString('en-US')}</b> 組
+      </span>
+      <span className="sp" />
+      <span>
+        密度 <b>{density === 'compact' ? '緊密' : '標準'}</b>
+      </span>
+      <span>
+        <b>Ctrl K</b> 指令面板
+      </span>
+      <span>TrainLog</span>
+    </footer>
+  );
+}
+
 export function AppShell() {
   usePrefsEffect();
+  useDataTips();
   const { data, error, isPending } = useDataset();
   const { sidebarOpen, setSidebarOpen, paletteOpen, setPaletteOpen } = useChrome();
 
@@ -104,17 +150,19 @@ export function AppShell() {
       </div>
     );
 
+  const last = data.trainingDates[data.trainingDates.length - 1];
   return (
     <>
-      <Sidebar />
-      <div className="scrim" onClick={() => setSidebarOpen(false)} />
-      <div className="main">
-        <Topbar lastDate={data.trainingDates[data.trainingDates.length - 1]} />
-        <main className="page">
-          <WeekStrip />
+      <Shell lastDate={last} />
+      <div className="app">
+        <Sidebar />
+        <div className="scrim" onClick={() => setSidebarOpen(false)} />
+        <main className="main">
+          <MobileWeek />
           <Outlet />
         </main>
       </div>
+      <StatusBar lastDate={last} />
       {paletteOpen && <CommandPalette />}
       <VideoPlayerHost />
       <Toast />

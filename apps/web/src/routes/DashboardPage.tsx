@@ -1,5 +1,6 @@
-// 總覽：期間切換、指標卡、每週訓練量、部位分布、熱度圖、破紀錄、最近訓練、久未練、力竭分布
+// 總覽（v14）：物件標頭（統計期間）、5 張指標磚、每週訓練量、部位分布、最近訓練、最近破紀錄、全年熱度、久未練動作、力竭分布
 import { useMemo, useState } from 'react';
+import clsx from 'clsx';
 import { Link, useNavigate } from '@tanstack/react-router';
 import {
   EXHAUSTION_ORDER,
@@ -24,52 +25,72 @@ import {
   type Period,
   type WeekStat,
 } from '@trainlog/core';
-import { Heatmap, KSpark, WeekChart, type WeekMetric } from '@/components/charts';
-import { Delta, GDot, PageHead, Seg, Status } from '@/components/ui';
-import { DayVideoButton, TopSetButton } from '@/components/VideoLinks';
+import { Heatmap, KpiSpark, WeekChart, type WeekMetric } from '@/components/charts';
+import { ObjectHeader, ObjIcon } from '@/components/ObjectHeader';
+import { Delta, Panel, PartTile, PartTiles, Seg, Status } from '@/components/ui';
+import { DayVideoButton, ExerciseVideosButton, TopSetButton } from '@/components/VideoLinks';
 import { gColor, useCrumbs } from '@/lib/chrome';
-import { Icon, type IconName } from '@/lib/icons';
+import { Icon } from '@/lib/icons';
+import { useCountUp, useEnter } from '@/lib/motion';
 import { TODAY } from '@/lib/today';
 import { useDs } from '@/lib/useDs';
 import { dashboardRoute } from '@/router';
 
+/** 力竭分布的顏色類名 */
 const EXC: Record<string, string> = {
-  輕鬆: 'var(--green-9)',
-  普通: 'var(--gray-8)',
-  吃力: 'var(--amber-9)',
-  力竭: 'var(--red-9)',
-  '—': 'var(--gray-5)',
+  輕鬆: 'x-light',
+  普通: 'x-norm',
+  吃力: 'x-hard',
+  力竭: 'x-fail',
+  '—': 'x-none',
 };
 
-function StatCard({
+function KpiTile({
+  hero,
   label,
-  icon,
+  tag,
   value,
+  dp = 0,
   unit,
-  sub,
   spark,
+  streak,
+  foot,
+  onOpen,
 }: {
+  hero?: boolean;
   label: string;
-  icon: IconName;
-  value: string | number;
+  tag: string;
+  value: number;
+  dp?: number;
   unit: string;
-  sub: React.ReactNode;
-  spark?: number[];
+  spark: number[];
+  streak?: boolean;
+  foot: React.ReactNode;
+  onOpen: () => void;
 }) {
+  const shown = useCountUp(value, dp);
   return (
-    <div className="stat-card">
-      <div className="k">
-        {label}
-        <span className="ic">
-          <Icon name={icon} />
-        </span>
+    <div
+      className={clsx('kpi', hero && 'hero')}
+      role="link"
+      tabIndex={0}
+      onClick={onOpen}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') onOpen();
+      }}
+    >
+      <div className="kpi-h">
+        <span>{label}</span>
+        <em>{tag}</em>
       </div>
-      {spark && <KSpark values={spark} />}
-      <div className="v">
-        {value}
-        <small>{unit}</small>
+      <div className="kpi-m">
+        <div className="kpi-v" aria-label={`${fmtN(value, dp)} ${unit}`}>
+          {shown}
+          <span className="u">{unit}</span>
+        </div>
+        <KpiSpark values={spark} unit={unit} streak={streak} />
       </div>
-      <div className="s">{sub}</div>
+      <div className="kpi-f">{foot}</div>
     </div>
   );
 }
@@ -77,18 +98,24 @@ function StatCard({
 export function DashboardPage() {
   const ds = useDs();
   const navigate = useNavigate();
+  const enter = useEnter();
   const { period = 30 } = dashboardRoute.useSearch();
   const P = period as Period;
+  const per = `近 ${P} 天`;
   const [metric, setMetric] = useState<WeekMetric>('vol');
   const s = useMemo(() => dashboardStats(ds, TODAY, P), [ds, P]);
   const weeks = useMemo(() => weekSeries(ds, TODAY, 26), [ds]);
-  useCrumbs([{ label: 'TrainLog', to: '/' }, { label: '總覽' }]);
+  // 最近破紀錄不限期間（與 v9 相同）
+  const allPrs = useMemo(() => prEvents(ds), [ds]);
+  useCrumbs([{ label: '首頁', to: '/' }, { label: '總覽' }]);
 
+  const dataLast = ds.trainingDates[ds.trainingDates.length - 1];
   const last = ds.trainingDates.filter((d) => d <= TODAY).pop();
   const yr = TODAY.slice(0, 4);
   const ys = ds.trainingDates.filter((d) => d.startsWith(`${yr}-`) && d <= TODAY);
-  const bmx = Math.max(1, ...s.bal.map((b) => b.n));
+  const ysVideo = ys.filter((d) => ds.videosByDate.has(d)).length;
   const openDay = (d: string) => void navigate({ to: '/days/$date', params: { date: d } });
+  const openLatest = () => (last ? openDay(last) : void navigate({ to: '/days' }));
   const openEx = (id: string) => void navigate({ to: '/exercises', search: { ex: id } });
   const openWeek = (w: WeekStat) => {
     const d = ds.trainingDates.filter((x) => inRange(x, w.w, addDays(w.w, 6))).pop();
@@ -98,18 +125,25 @@ export function DashboardPage() {
   const dD = deltaOf(s.cur.length, s.prev.length);
   const dV = deltaOf(s.vC, s.vP, true);
   const dP = deltaOf(s.prC.length, s.prP);
-  const prs = useMemo(() => s.prC, [s]);
-  // 最近破紀錄不限期間（與 v9 相同）
-  const allPrs = useMemo(() => prEvents(ds), [ds]);
+  const balTotal = s.bal.reduce((a, b) => a + b.n, 0);
+  const balMax = Math.max(1, ...s.bal.map((b) => b.n));
+  const staleList = s.neg.slice(0, 7);
 
   return (
-    <section className="view active">
-      <PageHead
-        title="總覽"
-        sub={`資料更新至 ${slash(ds.trainingDates[ds.trainingDates.length - 1] ?? TODAY)}${last ? ` · 上次訓練 ${daysLabel(daysAgo(last, TODAY))}` : ''}`}
+    <>
+      <ObjectHeader
+        av={<ObjIcon name="grid" />}
+        title="訓練總覽"
+        tags={
+          <span className="tag">
+            <i className="sq ok" />
+            資料至 {dataLast ? md(dataLast) : '—'}
+          </span>
+        }
+        sub={`${slash(TODAY)} 週${dowOf(TODAY)}${last ? ` · 上次訓練 ${md(last)}（${daysLabel(daysAgo(last, TODAY))}）` : ''}`}
         actions={
           <>
-            <span className="field">統計期間</span>
+            <span className="lbl">統計期間</span>
             <Seg
               label="統計期間"
               value={P}
@@ -123,68 +157,95 @@ export function DashboardPage() {
           </>
         }
       />
-      <div className="dash">
-        <div className="kpi-row">
-          <StatCard
+      <div className={clsx('content', enter && 'enter')}>
+        <div className="kpis">
+          <KpiTile
+            hero
             label="本週訓練"
-            icon="calendar"
+            tag="週一至今"
             value={s.wk}
             unit="天"
             spark={s.kspark.days}
-            sub={
+            onOpen={openLatest}
+            foot={
               <>
-                <Delta {...dW} unit=" 天" />
-                上週同期 {s.lwk} 天
+                <Delta {...dW} />
+                <span>上週同期 {s.lwk} 天</span>
               </>
             }
           />
-          <StatCard
-            label={`近 ${P} 天訓練日`}
-            icon="clock"
+          <KpiTile
+            label="訓練日"
+            tag={per}
             value={s.cur.length}
             unit="天"
-            sub={
+            spark={s.kspark.days}
+            onOpen={openLatest}
+            foot={
               <>
-                <Delta {...dD} unit=" 天" />前 {P} 天 {s.prev.length} 天
+                <Delta {...dD} />
+                <span>
+                  前 {P} 天 {s.prev.length} 天
+                </span>
               </>
             }
           />
-          <StatCard
-            label={`近 ${P} 天總容量`}
-            icon="weight"
-            value={fmtN(s.vC / 1000)}
+          <KpiTile
+            label="總容量"
+            tag={per}
+            value={Math.round(s.vC / 100) / 10}
+            dp={1}
             unit="噸"
-            spark={s.kspark.vol}
-            sub={
+            spark={s.kspark.vol.map((v) => v / 1000)}
+            onOpen={openLatest}
+            foot={
               <>
-                {s.vP ? <Delta {...dV} pct /> : null}前 {P} 天 {fmtN(s.vP / 1000)} 噸
+                {s.vP ? <Delta {...dV} pct /> : null}
+                <span>
+                  前 {P} 天 {fmtN(s.vP / 1000)} 噸
+                </span>
               </>
             }
           />
-          <StatCard
-            label={`近 ${P} 天破紀錄`}
-            icon="trophy"
+          <KpiTile
+            label="破紀錄"
+            tag={per}
             value={s.prC.length}
             unit="次"
             spark={s.kspark.pr}
-            sub={
+            onOpen={() => void navigate({ to: '/exercises', search: { sort: 'progress' } })}
+            foot={
               <>
-                <Delta {...dP} unit=" 次" />
-                {prs[0] ? ds.exerciseById.get(prs[0].exerciseId)?.name : '—'}
+                <Delta {...dP} />
+                <span>
+                  {s.prC[0]
+                    ? `最近 ${ds.exerciseById.get(s.prC[0].exerciseId)?.name ?? ''}`
+                    : `前 ${P} 天 ${s.prP} 次`}
+                </span>
               </>
             }
           />
-          <StatCard label="連續訓練" icon="flame" value={s.streak} unit="週" sub="每週至少練 1 天" />
+          <KpiTile
+            label="連續訓練"
+            tag="連續"
+            value={s.streak}
+            unit="週"
+            spark={s.kspark.days}
+            streak
+            onOpen={openLatest}
+            foot={<span>每週至少練 1 天</span>}
+          />
         </div>
-        <div className="dash-grid">
-          <section className="dcard span-8">
-            <div className="dcard-h">
-              <div>
-                <div className="dcard-t">每週訓練量</div>
-                <div className="dcard-s">近 26 週 · 虛線為平均 · 點長條查看該週</div>
-              </div>
+
+        <div className="grid">
+          <Panel
+            className="c8"
+            title="每週訓練量"
+            meta="近 26 週 · 點長條看那一週"
+            right={
               <Seg
                 label="指標"
+                className="sm"
                 value={metric}
                 options={
                   [
@@ -195,226 +256,349 @@ export function DashboardPage() {
                 }
                 onChange={setMetric}
               />
-            </div>
-            <div className="dcard-b">
+            }
+          >
+            <div className="pn-b">
               <WeekChart weeks={weeks} metric={metric} onOpenWeek={openWeek} />
             </div>
-          </section>
-          <section className="dcard span-4">
-            <div className="dcard-h">
-              <div>
-                <div className="dcard-t">部位分布</div>
-                <div className="dcard-s">近 {P} 天組數 · 距上次訓練</div>
+          </Panel>
+
+          <Panel
+            className="c4"
+            title="部位分布"
+            meta={per}
+            right={
+              <Link className="lk" to="/exercises">
+                動作庫
+                <Icon name="arrow" />
+              </Link>
+            }
+          >
+            <div className="pn-b" style={{ paddingBottom: 10, flex: 'none' }}>
+              <div className="ptop">
+                <b>{balTotal}</b>
+                <span>組 · {s.bal.filter((b) => b.n).length} 個部位</span>
+              </div>
+              <div className="stk">
+                {s.bal
+                  .filter((b) => b.n)
+                  .map((b) => (
+                    <i
+                      key={b.g}
+                      style={{ flex: b.n, background: gColor(b.g) }}
+                      data-tip={`${b.g} ${b.n} 組（${Math.round((b.n / Math.max(1, balTotal)) * 100)}%）`}
+                    />
+                  ))}
               </div>
             </div>
-            <div className="dcard-b">
-              <div className="bal">
+            <table className="dg sm">
+              <thead>
+                <tr>
+                  <th>部位</th>
+                  <th>分布</th>
+                  <th className="r">組數</th>
+                  <th className="r">距上次</th>
+                </tr>
+              </thead>
+              <tbody>
                 {s.bal.map((b) => (
-                  <div className="bal-row" key={b.g}>
-                    <span>{b.g}</span>
-                    <span className="dist-bar">
-                      <i style={{ ['--c' as string]: gColor(b.g), width: `${(b.n / bmx) * 100}%` }} />
-                    </span>
-                    <span className="n">{b.n}</span>
-                    <span className="ago">
+                  <tr key={b.g}>
+                    <td>
+                      <div className="cn">
+                        <PartTile group={b.g} />
+                        <span>{b.g}</span>
+                      </div>
+                    </td>
+                    <td className="fill">
+                      <div className="bartrack">
+                        <i style={{ width: `${(b.n / balMax) * 100}%`, background: gColor(b.g) }} />
+                      </div>
+                    </td>
+                    <td className="r num b">{b.n || '—'}</td>
+                    <td className="r num">
                       {b.since == null ? <span className="na">—</span> : <Status days={b.since} />}
-                    </span>
-                  </div>
+                    </td>
+                  </tr>
                 ))}
+              </tbody>
+            </table>
+          </Panel>
+
+          <Panel
+            className="c7"
+            title="最近訓練"
+            meta="點一列看當天"
+            right={
+              <Link className="lk" to="/days">
+                所有紀錄
+                <Icon name="arrow" />
+              </Link>
+            }
+          >
+            <table className="dg">
+              <thead>
+                <tr>
+                  <th>日期</th>
+                  <th className="mh">星期</th>
+                  <th>訓練內容</th>
+                  <th className="r">組數</th>
+                  <th className="r">容量 kg</th>
+                  <th className="c mh">影片</th>
+                </tr>
+              </thead>
+              <tbody>
+                {s.recent.map((d) => {
+                  const es = dayEntries(ds, d);
+                  const v = dayVol(ds, d);
+                  return (
+                    <tr key={d} className="click" onClick={() => openDay(d)}>
+                      <td className="num b">{md(d)}</td>
+                      <td className="mh mute">週{dowOf(d)}</td>
+                      <td className="fill">
+                        <div className="cn">
+                          <PartTiles groups={dayGroups(ds, d)} />
+                          <span>{es.map((e) => ds.exerciseById.get(e.exerciseId)?.name).join('、')}</span>
+                        </div>
+                      </td>
+                      <td className="r num">{daySets(ds, d)}</td>
+                      <td className="r num b">{v ? fmtN(v) : <span className="na">—</span>}</td>
+                      <td className="mh">
+                        <div className="vbc">
+                          <DayVideoButton date={d} />
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </Panel>
+
+          <Panel
+            className="c5"
+            title="最近破紀錄"
+            meta="最高重量超越先前"
+            right={
+              <Link className="lk" to="/exercises" search={{ sort: 'progress' }}>
+                動作庫
+                <Icon name="arrow" />
+              </Link>
+            }
+          >
+            <table className="dg">
+              <thead>
+                <tr>
+                  <th>動作</th>
+                  <th className="mh">日期</th>
+                  <th className="r">新紀錄</th>
+                  <th className="r">增幅</th>
+                  <th className="c">影片</th>
+                </tr>
+              </thead>
+              <tbody>
+                {allPrs.slice(0, 6).map((p) => {
+                  const ex = ds.exerciseById.get(p.exerciseId);
+                  if (!ex) return null;
+                  const entry = ds.entriesByDate.get(p.date)?.find((e) => e.exerciseId === p.exerciseId);
+                  return (
+                    <tr key={`${p.exerciseId}${p.date}`} className="click" onClick={() => openEx(ex.id)}>
+                      <td className="fill">
+                        <div className="cn">
+                          <PartTile group={ex.group} />
+                          <span>{ex.name}</span>
+                        </div>
+                      </td>
+                      <td className="num mute mh">{md(p.date)}</td>
+                      <td className="r num b" data-tip={`原紀錄 ${fmtN(p.from)} kg`}>
+                        {fmtN(p.to)}
+                        <small>kg</small>
+                      </td>
+                      <td className="r">
+                        <Delta dir="up" value={p.to - p.from} />
+                      </td>
+                      <td>
+                        <div className="vbc">{entry && <TopSetButton entry={entry} />}</div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </Panel>
+
+          <Panel
+            className="c12"
+            title="訓練熱度"
+            meta={`${yr} 年每天的組數 · 點格子看當天`}
+            right={
+              <div className="leg" aria-hidden>
+                <span>少</span>
+                <i style={{ background: 'var(--empty)' }} />
+                <i className="hc l1" />
+                <i className="hc l2" />
+                <i className="hc l3" />
+                <i className="hc l4" />
+                <span>多</span>
+                <i className="hc l2 v" style={{ marginLeft: 10 }} />
+                <span>有影片</span>
               </div>
-            </div>
-          </section>
-          <section className="dcard span-8">
-            <div className="dcard-h">
-              <div>
-                <div className="dcard-t">訓練熱度</div>
-                <div className="dcard-s">{yr} 年每日組數 · 點格子查看當天</div>
-              </div>
-              <div className="heat-legend">
-                少<i className="lg0" />
-                <i className="lg1" />
-                <i className="lg2" />
-                <i className="lg3" />
-                <i className="lg4" />多
-              </div>
-            </div>
-            <div className="dcard-b">
-              <Heatmap today={TODAY} onOpenDay={openDay} />
-              <div className="heat-sum">
+            }
+            foot={
+              <div className="kvs">
                 <div>
                   <span>今年訓練日</span>
-                  <b>{ys.length}</b>
+                  <b>
+                    {ys.length}
+                    <small>天</small>
+                  </b>
                 </div>
                 <div>
                   <span>平均每週</span>
-                  <b>{fmtN(ys.length / s.wks)} 天</b>
+                  <b>
+                    {fmtN(ys.length / s.wks)}
+                    <small>天</small>
+                  </b>
+                </div>
+                <div>
+                  <span>有影片</span>
+                  <b>
+                    {ysVideo}
+                    <small>天</small>
+                  </b>
                 </div>
                 <div>
                   <span>最長連續</span>
-                  <b>{s.best} 天</b>
+                  <b>
+                    {s.best}
+                    <small>天</small>
+                  </b>
                 </div>
                 <div>
                   <span>今年總組數</span>
-                  <b>{fmtN(ys.reduce((a, d) => a + daySets(ds, d), 0))}</b>
+                  <b>
+                    {fmtN(ys.reduce((a, d) => a + daySets(ds, d), 0))}
+                    <small>組</small>
+                  </b>
                 </div>
               </div>
+            }
+          >
+            <div className="pn-b">
+              <Heatmap today={TODAY} onOpenDay={openDay} />
             </div>
-          </section>
-          <section className="dcard span-4">
-            <div className="dcard-h">
-              <div>
-                <div className="dcard-t">最近破紀錄</div>
-                <div className="dcard-s">最高重量超越先前紀錄</div>
-              </div>
-              <Link className="link" style={{ fontSize: 12.5 }} to="/exercises" search={{ sort: 'progress' }}>
-                查看動作庫
+          </Panel>
+
+          <Panel
+            className="c8"
+            title="久未練動作"
+            meta="練過 3 次以上、超過 3 週沒練"
+            right={
+              <Link className="lk" to="/exercises" search={{ status: 'old' }}>
+                在動作庫篩選
+                <Icon name="arrow" />
               </Link>
-            </div>
-            <div className="dcard-b">
-              {allPrs.slice(0, 6).map((p) => {
-                const ex = ds.exerciseById.get(p.exerciseId);
-                if (!ex) return null;
-                const entry = ds.entriesByDate.get(p.date)?.find((e) => e.exerciseId === p.exerciseId);
-                return (
-                  <div className="drow" key={`${p.exerciseId}${p.date}`} onClick={() => openEx(ex.id)}>
-                    <GDot group={ex.group} />
-                    <div className="dmain">
-                      <div className="dn">{ex.name}</div>
-                      <div className="ds">
-                        {md(p.date)} · {daysLabel(daysAgo(p.date, TODAY))} · 原紀錄 {fmtN(p.from)} kg
-                      </div>
-                    </div>
-                    {entry && <TopSetButton entry={entry} />}
-                    <div className="dv">
-                      {fmtN(p.to)}
-                      <small>kg</small>
-                      <span className="delta up">+{fmtN(p.to - p.from)}</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-          <section className="dcard span-6">
-            <div className="dcard-h">
-              <div>
-                <div className="dcard-t">最近訓練</div>
-                <div className="dcard-s">點選查看當天內容</div>
-              </div>
-              <Link className="link" style={{ fontSize: 12.5 }} to="/days">
-                所有訓練紀錄
-              </Link>
-            </div>
-            <div className="dcard-b">
-              {s.recent.map((d) => {
-                const es = dayEntries(ds, d);
-                const v = dayVol(ds, d);
-                return (
-                  <div className="drow" key={d} onClick={() => openDay(d)}>
-                    <div className="sess-date">
-                      <b>{md(d)}</b>
-                      <span>週{dowOf(d)}</span>
-                    </div>
-                    <div className="dmain">
-                      <div className="dn">
-                        {es.map((e) => ds.exerciseById.get(e.exerciseId)?.name).join('、')}
-                      </div>
-                      <div className="gchips" style={{ marginTop: 3 }}>
-                        {dayGroups(ds, d).map((g) => (
-                          <span key={g}>
-                            <GDot group={g} />
-                            {g}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <DayVideoButton date={d} variant="compact" />
-                    <div className="dv">
-                      {v ? (
-                        <>
-                          {fmtN(v)}
-                          <small>kg</small>
-                        </>
-                      ) : (
-                        <span className="na">—</span>
-                      )}
-                      <div className="ds">
-                        {es.length} 動作 · {daySets(ds, d)} 組
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-          <section className="dcard span-3">
-            <div className="dcard-h">
-              <div>
-                <div className="dcard-t">久未練動作</div>
-                <div className="dcard-s">練過 3 次以上、超過 3 週</div>
-              </div>
-            </div>
-            <div className="dcard-b">
-              {s.neg.map((id) => {
-                const ex = ds.exerciseById.get(id);
-                if (!ex) return null;
-                const ld = lastDate(ds, id);
-                return (
-                  <div className="drow" key={id} onClick={() => openEx(id)}>
-                    <GDot group={ex.group} />
-                    <div className="dmain">
-                      <div className="dn">{ex.name}</div>
-                      <div className="ds">
-                        {entriesOf(ds, id).length} 次 · 上次 {md(ld)}
-                      </div>
-                    </div>
-                    <span className="status tone-bad">
-                      <i />
-                      {daysAgo(ld, TODAY)} 天
-                    </span>
-                  </div>
-                );
-              })}
-              <div style={{ marginTop: 10 }}>
-                <Link className="link" style={{ fontSize: 12.5 }} to="/exercises" search={{ status: 'old' }}>
-                  篩選 30 天以上未練 →
-                </Link>
-              </div>
-            </div>
-          </section>
-          <section className="dcard span-3">
-            <div className="dcard-h">
-              <div>
-                <div className="dcard-t">力竭分布</div>
-                <div className="dcard-s">
-                  近 {P} 天 · {s.exTot} 筆動作
-                </div>
-              </div>
-            </div>
-            <div className="dcard-b">
-              <div className="stack">
+            }
+            foot={
+              <>
+                <span>
+                  共 <b>{s.neg.length}</b> 筆，顯示前 <b>{staleList.length}</b> 筆
+                </span>
+                <span>超過 60 天紅色</span>
+              </>
+            }
+          >
+            <table className="dg">
+              <thead>
+                <tr>
+                  <th>動作</th>
+                  <th className="mh">部位</th>
+                  <th className="r mh">次數</th>
+                  <th className="r">上次</th>
+                  <th className="r">未練</th>
+                  <th className="c">影片</th>
+                </tr>
+              </thead>
+              <tbody>
+                {staleList.map((id) => {
+                  const ex = ds.exerciseById.get(id);
+                  if (!ex) return null;
+                  const ld = lastDate(ds, id);
+                  const ago = daysAgo(ld, TODAY);
+                  return (
+                    <tr key={id} className="click" onClick={() => openEx(id)}>
+                      <td className="fill">
+                        <div className="cn">
+                          <PartTile group={ex.group} />
+                          <span>{ex.name}</span>
+                        </div>
+                      </td>
+                      <td className="mh mute">{ex.group}</td>
+                      <td className="r num mh">{entriesOf(ds, id).length}</td>
+                      <td className="r num mute">{md(ld)}</td>
+                      <td className="r">
+                        <span className={clsx('stale-d', ago > 60 ? 'bad' : 'warn')}>{ago}</span>{' '}
+                        <small>天</small>
+                      </td>
+                      <td>
+                        <div className="vbc">
+                          <ExerciseVideosButton exerciseId={id} />
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </Panel>
+
+          <Panel
+            className="c4"
+            title="力竭分布"
+            meta={per}
+            foot={
+              <span>
+                合計 <b>{s.exTot}</b> 筆
+              </span>
+            }
+          >
+            <div className="pn-b" style={{ flex: 'none', paddingBottom: 12 }}>
+              <div className="estk">
                 {EXHAUSTION_ORDER.filter((k) => s.ex[k]).map((k) => (
                   <i
                     key={k}
-                    style={{ width: `${((s.ex[k] ?? 0) / s.exTot) * 100}%`, background: EXC[k] }}
-                    title={`${k} ${s.ex[k]}`}
+                    className={EXC[k]}
+                    style={{ flex: s.ex[k] }}
+                    data-tip={`${k === '—' ? '未標示' : k} ${s.ex[k]} 筆（${Math.round(((s.ex[k] ?? 0) / s.exTot) * 100)}%）`}
                   />
                 ))}
               </div>
-              <div className="stack-legend">
-                {EXHAUSTION_ORDER.filter((k) => s.ex[k]).map((k) => (
-                  <span key={k}>
-                    <i style={{ background: EXC[k] }} />
-                    {k === '—' ? '未標示' : k}
-                    <b>{s.ex[k]}</b>
-                    <em>{Math.round(((s.ex[k] ?? 0) / s.exTot) * 100)}%</em>
-                  </span>
-                ))}
-              </div>
             </div>
-          </section>
+            <table className="dg">
+              <thead>
+                <tr>
+                  <th>程度</th>
+                  <th className="r">筆數</th>
+                  <th className="r">佔比</th>
+                </tr>
+              </thead>
+              <tbody>
+                {EXHAUSTION_ORDER.map((k) => (
+                  <tr key={k}>
+                    <td>
+                      <div className="cn">
+                        <span className={clsx('sw', EXC[k])} />
+                        <span>{k === '—' ? '未標示' : k}</span>
+                      </div>
+                    </td>
+                    <td className="r num b">{s.ex[k] ?? 0}</td>
+                    <td className="r num mute">{Math.round(((s.ex[k] ?? 0) / s.exTot) * 100)}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Panel>
         </div>
       </div>
-    </section>
+    </>
   );
 }

@@ -18,6 +18,12 @@ export function getMaxWeight(sets: readonly SetRow[]): number | null {
   return ws.length ? Math.max(...ws) : null;
 }
 
+/** 最重那一組的位置（0 起算；同重量取第一組）；沒有重量回傳 -1。破紀錄只標這一組 */
+export function topSetIndex(sets: readonly SetRow[]): number {
+  const mx = getMaxWeight(sets);
+  return mx == null ? -1 : sets.findIndex((s) => s.weightKg === mx);
+}
+
 export const isCardio = (ex: Pick<Exercise, 'kind'> | undefined) => ex?.kind === 'cardio';
 
 /** 有氧累計：分鐘與公里（四捨五入到小數一位） */

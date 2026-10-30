@@ -384,6 +384,27 @@ html[data-m='dark'] .sh-item.is-focus {
   padding-top: 6px;
   padding-bottom: 6px;
 }
+/* 沒有影片：位置和大小和有影片的按鈕一樣（版面不跳動），虛線框＋淡色表示沒有影片；
+   不能點（cursor 不變成手指），但仍接收滑鼠事件，滑過去才看得到原因、點了也不會觸發列本身 */
+.btn.is-empty,
+.btn.is-empty:hover,
+.btn.is-empty:active {
+  background: transparent;
+  border: 1px dashed var(--border-strong);
+  color: var(--text-4);
+  box-shadow: none;
+  transform: none;
+  cursor: default;
+}
+.btn.is-empty svg.i,
+.btn.is-empty:hover svg.i {
+  color: var(--text-4);
+}
+/* 當天影片的小按鈕固定寬度：列表裡有影片（圖示＋長度）和沒影片（只有圖示）的按鈕對齊 */
+.day-video-btn.compact {
+  min-width: 60px;
+  justify-content: center;
+}
 /* 總覽最近破紀錄：只有圖示的方形按鈕 */
 .icon-video-btn {
   flex: none;

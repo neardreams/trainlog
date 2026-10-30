@@ -31,6 +31,7 @@ import {
   Search,
   Sun,
   Trophy,
+  VideoOff,
   Volume2,
   X,
   type LucideIcon,
@@ -70,6 +71,7 @@ const ICONS = {
   play: Play,
   external: ExternalLink,
   volume: Volume2,
+  novideo: VideoOff,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof ICONS;

@@ -1,5 +1,6 @@
 // 訓練影片入口：每筆紀錄的「影片」按鈕（這個動作在當天影片中的各段）、當天影片的動作清單、
-// 破紀錄那一組、動作的所有影片、訓練紀錄詳細資料欄的影片區塊。點了都在網站內的播放器播放（openVideo）
+// 破紀錄那一組、動作的所有影片、訓練紀錄詳細資料欄的影片區塊。點了都在網站內的播放器播放（openVideo）。
+// 按鈕一律顯示：沒有影片時換成「沒有影片」的樣式（NoVideo），版面不會因為有沒有影片而跳動
 import { createContext, useContext, useRef, type ReactNode } from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import clsx from 'clsx';
@@ -69,6 +70,36 @@ function VideoMenu({
 
 const stop = (e: React.SyntheticEvent) => e.stopPropagation();
 
+/**
+ * 沒有影片時的按鈕：和有影片的按鈕同一個位置、同樣大小，虛線框＋淡色＋「沒有影片」圖示；
+ * 不能點也不能用 Tab 停留（點了不會觸發列本身），滑過去顯示原因
+ */
+function NoVideo({
+  className,
+  title,
+  children,
+}: {
+  className?: string;
+  title: string;
+  children?: ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      className={clsx('btn video-btn is-empty', className)}
+      aria-disabled="true"
+      tabIndex={-1}
+      title={title}
+      aria-label={title}
+      onClick={stop}
+      onKeyDown={stop}
+    >
+      <Icon name="novideo" />
+      {children}
+    </button>
+  );
+}
+
 /** 選單中的一項：在網站內的播放器播放 */
 function PlayItem({ target, children }: { target: VideoTarget; children: ReactNode }) {
   const open = useContext(OpenCtx);
@@ -85,8 +116,20 @@ function PlayItem({ target, children }: { target: VideoTarget; children: ReactNo
 export function VideoButton({ entry, compact }: { entry: Entry; compact?: boolean }) {
   const ds = useDs();
   const ev = entryVideo(ds, entry);
-  if (!ev) return null;
   const name = ds.exerciseById.get(entry.exerciseId)?.name ?? '';
+  if (!ev)
+    return (
+      <NoVideo
+        className={clsx('hist-btn', compact && 'compact')}
+        title={
+          dayVideo(ds, entry.date)
+            ? `${md(entry.date)} 的影片沒有拍到「${name}」`
+            : `${md(entry.date)} 沒有拍影片`
+        }
+      >
+        {!compact && '無影片'}
+      </NoVideo>
+    );
   const { video, segments } = ev;
   const nDays = exerciseVideos(ds, entry.exerciseId).length;
   return (
@@ -144,7 +187,16 @@ export function VideoButton({ entry, compact }: { entry: Entry; compact?: boolea
 export function DayVideoButton({ date, variant }: { date: DateStr; variant?: 'head' | 'compact' }) {
   const ds = useDs();
   const v = dayVideo(ds, date);
-  if (!v) return null;
+  if (!v) {
+    const title = `${md(date)}（${dowOf(date)}）沒有拍影片`;
+    return variant === 'head' ? (
+      <NoVideo title={title}>沒有影片</NoVideo>
+    ) : (
+      <NoVideo className={clsx('hist-btn day-video-btn', variant === 'compact' && 'compact')} title={title}>
+        {variant !== 'compact' && '無影片'}
+      </NoVideo>
+    );
+  }
   const groups = segmentsByExercise(v);
   const label = `${md(date)}（${dowOf(date)}）的影片（${groups.length} 個動作 · ${fmtClock(v.durationSec)}）`;
   return (
@@ -217,8 +269,9 @@ export function TopSetButton({ entry }: { entry: Entry }) {
   const ds = useDs();
   const ev = entryVideo(ds, entry);
   const seg = ev && topSetSegment(entry, ev.segments);
-  if (!ev || !seg) return null;
   const name = ds.exerciseById.get(entry.exerciseId)?.name ?? '';
+  if (!ev || !seg)
+    return <NoVideo className="icon-video-btn" title={`沒有拍到「${name}」這次破紀錄的影片`} />;
   return (
     <button
       className="btn btn-soft video-btn icon-video-btn"
@@ -240,7 +293,7 @@ export function ExerciseVideosButton({ exerciseId }: { exerciseId: string }) {
   const ds = useDs();
   const days = exerciseVideos(ds, exerciseId);
   const latest = days[0];
-  if (!latest) return null;
+  if (!latest) return <NoVideo title="這個動作還沒有拍過影片">沒有影片</NoVideo>;
   return (
     <button
       className="btn btn-ghost"

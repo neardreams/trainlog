@@ -4720,6 +4720,78 @@
           "side": "右"
         }
       ]
+    },
+    {
+      "date": "2026-10-30",
+      "youtube_id": "8T1B8G_muWU",
+      "duration_sec": 587.347,
+      "canvas": "1920x1080",
+      "title": "2026/10/30（五）板凳槓鈴臥推、上斜啞鈴臥推、槓鈴肩推（實力推）",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 55.97,
+          "label": "第 1 組 60kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 55.97,
+          "end": 114.37,
+          "label": "第 2 組 60kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 114.37,
+          "end": 173.74,
+          "label": "第 3 組 60kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 173.74,
+          "end": 232.773,
+          "label": "第 4 組 60kg×6",
+          "set": 4
+        },
+        {
+          "exercise_id": "incline_db_press",
+          "start": 232.773,
+          "end": 311.243,
+          "label": "第 1 組 20kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "incline_db_press",
+          "start": 311.243,
+          "end": 389.943,
+          "label": "第 2 組 20kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "incline_db_press",
+          "start": 389.943,
+          "end": 457.777,
+          "label": "第 3 組 20kg×10",
+          "set": 3
+        },
+        {
+          "exercise_id": "overhead_press",
+          "start": 457.777,
+          "end": 526.747,
+          "label": "第 1 組 20kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "overhead_press",
+          "start": 526.747,
+          "end": 587.347,
+          "label": "第 2 組 20kg×10",
+          "set": 2
+        }
+      ]
     }
   ]
 }

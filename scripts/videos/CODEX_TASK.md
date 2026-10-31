@@ -22,11 +22,12 @@
 - 使用者的 Chrome 已經登入 YouTube（帳號 @neardreams）。
 - 用 **computer use 的電腦畫面操作**（截圖、點擊、輸入、按鍵）操作使用者已開啟的 Google Chrome 視窗，在裡面開 https://studio.youtube.com。**不要用 Chrome 擴充功能的瀏覽器工具**（computer-use 介面裡的 browser／chrome 後端）：從命令列啟動的 Codex 無法使用它（會回報「The browser access host is unavailable」）。
 - 如果 computer use 完全無法截圖 Chrome 視窗，立刻停止，回報錯誤訊息原文。
-- 按「選取檔案」後會跳出 Windows 的「開啟」對話框。它是另一個頂層視窗，**對話框裡的任何東西都不能用 `sky.click` 點**：不論座標或 `element_index`，都會被擋成「point … is over chrome.exe "", not target window …」。照下面只用鍵盤和 `set_value`：
-  1. 重新取 **Studio 那個 Chrome 視窗**的狀態：`sky.get_window_state({window: targetWindow, include_text: true})`。對話框的欄位會出現在這個視窗的 `accessibility.tree` 裡（`dialog Open`、`edit … File name`）。`sky.list_windows()` 不一定列得出對話框，列不出來也不用停。對話框已經開著（上次留下的）也一樣照做。
-  2. 用 `sky.set_value({window: state.window, element_index: <「File name」那個 edit 的 index>, value: '"' + file + '"'})` 把含雙引號的完整路徑填進檔案名稱欄。set_value 失敗時改用鍵盤：`sky.press_key({window: state.window, key: "Alt+n"})` 讓焦點到檔案名稱欄，取狀態確認 `focused_element` 是 File name 的 edit，再 `sky.type_text(...)` 輸入路徑。
-  3. 按 `sky.press_key({window: state.window, key: "Alt+o"})`（等於按「開啟」）。不要按 Return：焦點可能在對話框的搜尋框，Return 會變成搜尋。
-  4. 取 Studio 視窗的新狀態，確認對話框已關、開始上傳。
+- 按「選取檔案」後會跳出 Windows 的「開啟」對話框。它是另一個頂層視窗，**對話框裡的任何東西都不能用 `sky.click` 點**（不論座標或 `element_index`，都會被擋成「point … is over chrome.exe "", not target window …」或「element … is not available in cached app state」）。照下面做（2026-10-27 上傳成功就是這樣）：
+  1. 開始時如果已經有上次留下的「開啟」對話框，先 `sky.press_key({window: state.window, key: "Escape"})` 關掉，再重新按 Studio 的「選取檔案」，讓對話框重新開啟。
+  2. 對話框剛開啟時，鍵盤焦點就在「檔案名稱」欄。**不用點、也不要先確認焦點**：`focused_element` 常常誤報成「Search Box」，不要理它。直接 `sky.type_text({window: state.window, text: '"' + file + '"'})` 輸入含雙引號的完整路徑，再 `sky.press_key({window: state.window, key: "Return"})`。
+  3. 取 Studio 視窗的新狀態（`include_screenshot: true, include_text: true`），確認 tree 裡已經沒有 `dialog Open`、Studio 開始上傳。
+  4. 如果對話框還在（例如路徑被打進搜尋框、變成搜尋），按 `Escape` 關掉對話框，回到第 1 步重來；同一支連續失敗 3 次才停。
+  （備用：tree 裡 `dialog Open` 的 index 很小（例如個位數）時，也可以 `sky.set_value({window: state.window, element_index: <File name 的 edit>, value: '"' + file + '"'})` 再按 `Alt+o`；index 很大時 set_value 會失敗。`Alt+n` 沒用。）
 - **不要用 YouTube Data API 上傳**：未經 Google 稽核的 API 專案上傳的影片會被永久鎖成「私人」。
 - 遇到需要輸入密碼或登入的畫面就停下來回報。**不要輸入任何密碼**，也不要建立新的瀏覽器設定檔。
 

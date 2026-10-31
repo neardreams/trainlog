@@ -1,7 +1,8 @@
 # 任務：替已上傳的訓練影片補上 hashtag、錄製日期、類別、播放清單（YouTube「Marco's workout」頻道）
 
 > 這份由 `scripts/videos/metadata_prepare.py` 複製到 `local-media/training/_render/upload/`。上傳者（Codex）在那個資料夾執行。
-> 這一輪**不上傳任何檔案**，只在 YouTube Studio 修改已經上傳的影片和建立播放清單。可以用電腦操作工具或 Chrome 擴充功能工具。
+> 這一輪**不上傳任何檔案**，只在 YouTube Studio 修改已經上傳的影片和建立播放清單。
+> 用 **computer use 的電腦畫面操作**（截圖、點擊、輸入、按鍵）操作使用者已開啟的 Google Chrome 視窗。**不要用 Chrome 擴充功能的瀏覽器工具**：從命令列啟動的 Codex 無法使用它（「The browser access host is unavailable」）。**不要打開觀看頁**（youtube.com/watch、youtu.be）：computer use 在 Windows 上判斷不出那種分頁的網址時會直接結束工作；只在 studio.youtube.com 裡操作。
 
 所有內容都已經準備好。你只負責照清單設定，不要自己改內容。
 
@@ -21,7 +22,7 @@
   - `category`：類別，「運動」
   - `playlists`：這支要加入的播放清單標題
   - `metaHash`
-- `playlists-results.json`、`metadata-results.json`：進度檔，由你建立並維護，請用 **UTF-8（不要 BOM）** 寫入。
+- `playlists-results.json`、`metadata-results.json`：進度檔，由你建立並維護，請用 **UTF-8（不要 BOM）** 寫入。兩個檔都是**扁平物件的陣列**（格式見下方）；用 Node 的 `JSON.stringify` 寫，不要用 PowerShell 的 `ConvertTo-Json`（它會包成 `{"value": …, "Count": …}`，腳本讀不了）。
 
 ## 步驟
 1. 打開 https://studio.youtube.com，確認右上角的頻道是 **Marco's workout**；不是的話，用「切換帳戶」切過去。確認之前什麼都不要改。

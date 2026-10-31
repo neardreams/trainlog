@@ -4546,6 +4546,180 @@
           "side": "右"
         }
       ]
+    },
+    {
+      "date": "2026-10-27",
+      "youtube_id": "I1e_twJ_v6Q",
+      "duration_sec": 267.343,
+      "canvas": "1080x1920",
+      "title": "2026/10/27（二）背槓深蹲",
+      "segments": [
+        {
+          "exercise_id": "back_squat",
+          "start": 0.0,
+          "end": 60.17,
+          "label": "第 1 組 90kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 60.17,
+          "end": 126.54,
+          "label": "第 2 組 90kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 126.54,
+          "end": 199.31,
+          "label": "第 3 組 90kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "back_squat",
+          "start": 199.31,
+          "end": 267.343,
+          "label": "第 4 組 90kg×6",
+          "set": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-10-29",
+      "youtube_id": "vOBoZx8c0Rw",
+      "duration_sec": 934.28,
+      "canvas": "1080x1920",
+      "title": "2026/10/29（四）單腳 RDL、後腳抬高蹲、單手啞鈴划船",
+      "segments": [
+        {
+          "exercise_id": "single_leg_rdl",
+          "start": 0.0,
+          "end": 77.6,
+          "label": "第 1 組（左）15kg×10",
+          "set": 1,
+          "side": "左"
+        },
+        {
+          "exercise_id": "single_leg_rdl",
+          "start": 77.6,
+          "end": 149.1,
+          "label": "第 1 組（右）15kg×10",
+          "set": 1,
+          "side": "右"
+        },
+        {
+          "exercise_id": "single_leg_rdl",
+          "start": 149.1,
+          "end": 231.97,
+          "label": "第 2 組（左）15kg×10",
+          "set": 2,
+          "side": "左"
+        },
+        {
+          "exercise_id": "single_leg_rdl",
+          "start": 231.97,
+          "end": 300.003,
+          "label": "第 2 組（右）15kg×10",
+          "set": 2,
+          "side": "右"
+        },
+        {
+          "exercise_id": "single_leg_rdl",
+          "start": 300.003,
+          "end": 378.303,
+          "label": "第 3 組（左）15kg×10",
+          "set": 3,
+          "side": "左"
+        },
+        {
+          "exercise_id": "single_leg_rdl",
+          "start": 378.303,
+          "end": 450.137,
+          "label": "第 3 組（右）15kg×10",
+          "set": 3,
+          "side": "右"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 450.137,
+          "end": 502.47,
+          "label": "第 1 組（左）15kg×10",
+          "set": 1,
+          "side": "左"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 502.47,
+          "end": 548.103,
+          "label": "第 1 組（右）15kg×10",
+          "set": 1,
+          "side": "右"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 548.103,
+          "end": 598.237,
+          "label": "第 2 組（左）15kg×10",
+          "set": 2,
+          "side": "左"
+        },
+        {
+          "exercise_id": "bulgarian_split",
+          "start": 598.237,
+          "end": 650.437,
+          "label": "第 2 組（右）15kg×10",
+          "set": 2,
+          "side": "右"
+        },
+        {
+          "exercise_id": "db_row_single",
+          "start": 650.437,
+          "end": 700.437,
+          "label": "第 1 組（左）20kg×12",
+          "set": 1,
+          "side": "左"
+        },
+        {
+          "exercise_id": "db_row_single",
+          "start": 700.437,
+          "end": 747.507,
+          "label": "第 1 組（右）20kg×12",
+          "set": 1,
+          "side": "右"
+        },
+        {
+          "exercise_id": "db_row_single",
+          "start": 747.507,
+          "end": 794.24,
+          "label": "第 2 組（左）20kg×12",
+          "set": 2,
+          "side": "左"
+        },
+        {
+          "exercise_id": "db_row_single",
+          "start": 794.24,
+          "end": 843.61,
+          "label": "第 2 組（右）20kg×12",
+          "set": 2,
+          "side": "右"
+        },
+        {
+          "exercise_id": "db_row_single",
+          "start": 843.61,
+          "end": 889.08,
+          "label": "第 3 組（左）20kg×12",
+          "set": 3,
+          "side": "左"
+        },
+        {
+          "exercise_id": "db_row_single",
+          "start": 889.08,
+          "end": 934.28,
+          "label": "第 3 組（右）20kg×12",
+          "set": 3,
+          "side": "右"
+        }
+      ]
     }
   ]
 }

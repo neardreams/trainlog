@@ -214,7 +214,8 @@ local-media/training/
    - **已上傳的影片要改附加資料時**（例如 hashtag 表改了、某個動作滿 3 天而有了新的播放清單）：先跑 `upload_prepare.py`，再跑 `python scripts/videos/metadata_prepare.py`。它會列出附加資料和 `metadata-results.json` 紀錄不同的影片，寫進 `metadata.json`；接著讓 Codex 照 `CODEX_METADATA_TASK.md` 在 Studio 逐支修改，這一輪不用上傳檔案：
      ```bash
      codex exec -m gpt-6.1-terra -c 'model_reasoning_effort="xhigh"' -c 'service_tier="fast"' --skip-git-repo-check - < CODEX_METADATA_TASK.md
-     ```上傳需要 Chrome 的 ChatGPT 擴充功能（開啟「允許存取檔案網址」）；Codex 的工具清單裡沒有那個瀏覽器工具時，它會停下來，晚點重開一個工作階段再試。Claude in Chrome 一次只能交給網頁 10 MB 的檔案，沒辦法上傳這些影片。
+     ```
+   - Codex 用 computer use 直接操作使用者的 Chrome 視窗（截圖、點擊、輸入），選檔時在 Windows「開啟」對話框輸入完整路徑。上傳期間它會佔用滑鼠和鍵盤。從 Codex 26.1027（2026-10-30）起，命令列啟動的 Codex 不能用 Chrome 擴充功能的瀏覽器工具（「The browser access host is unavailable」），所以不要叫它用那個工具。Claude in Chrome 一次只能交給網頁 10 MB 的檔案，沒辦法上傳這些影片。
 7. 產生影片清單並驗證：
    ```bash
    python scripts/videos/build_videos_json.py

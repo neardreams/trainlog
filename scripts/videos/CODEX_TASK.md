@@ -20,8 +20,13 @@
 
 ## 怎麼上傳
 - 使用者的 Chrome 已經登入 YouTube（帳號 @neardreams）。
-- 用「Chrome 擴充功能的瀏覽器工具」操作 https://studio.youtube.com：要用能直接把檔案設定到網頁上傳欄位的那個工具，Chrome 的 ChatGPT 擴充功能要開啟「允許存取檔案網址」。
-- **如果你的工具清單裡沒有這個瀏覽器工具，立刻停止**，不要上傳、也不要改用其他方式。回報你有哪些工具、擴充功能的連線狀態。
+- 用 **computer use 的電腦畫面操作**（截圖、點擊、輸入、按鍵）操作使用者已開啟的 Google Chrome 視窗，在裡面開 https://studio.youtube.com。**不要用 Chrome 擴充功能的瀏覽器工具**（computer-use 介面裡的 browser／chrome 後端）：從命令列啟動的 Codex 無法使用它（會回報「The browser access host is unavailable」）。
+- 如果 computer use 完全無法截圖 Chrome 視窗，立刻停止，回報錯誤訊息原文。
+- 按「選取檔案」後會跳出 Windows 的「開啟」對話框。它是另一個頂層視窗，**對話框裡的任何東西都不能用 `sky.click` 點**：不論座標或 `element_index`，都會被擋成「point … is over chrome.exe "", not target window …」。照下面只用鍵盤和 `set_value`：
+  1. 重新取 **Studio 那個 Chrome 視窗**的狀態：`sky.get_window_state({window: targetWindow, include_text: true})`。對話框的欄位會出現在這個視窗的 `accessibility.tree` 裡（`dialog Open`、`edit … File name`）。`sky.list_windows()` 不一定列得出對話框，列不出來也不用停。對話框已經開著（上次留下的）也一樣照做。
+  2. 用 `sky.set_value({window: state.window, element_index: <「File name」那個 edit 的 index>, value: '"' + file + '"'})` 把含雙引號的完整路徑填進檔案名稱欄。set_value 失敗時改用鍵盤：`sky.press_key({window: state.window, key: "Alt+n"})` 讓焦點到檔案名稱欄，取狀態確認 `focused_element` 是 File name 的 edit，再 `sky.type_text(...)` 輸入路徑。
+  3. 按 `sky.press_key({window: state.window, key: "Alt+o"})`（等於按「開啟」）。不要按 Return：焦點可能在對話框的搜尋框，Return 會變成搜尋。
+  4. 取 Studio 視窗的新狀態，確認對話框已關、開始上傳。
 - **不要用 YouTube Data API 上傳**：未經 Google 稽核的 API 專案上傳的影片會被永久鎖成「私人」。
 - 遇到需要輸入密碼或登入的畫面就停下來回報。**不要輸入任何密碼**，也不要建立新的瀏覽器設定檔。
 
@@ -29,7 +34,7 @@
 1. 打開 YouTube Studio，確認右上角目前的頻道。預設是個人頻道「Yuwei Hu」，要先用「切換帳戶」切到 **Marco's workout**。在 Studio 確認頻道名稱之前，**一支都不要上傳**。
 2. 先讀 `results.json`，已經有紀錄的 `date` 跳過。
 3. 依 `manifest.json` 的順序，每一支影片：
-   1. 建立 → 上傳影片，把 `file` 交給上傳欄位（用工具直接設定檔案，不要開系統的檔案選擇視窗）。可以一次選多支（Studio 一次最多 15 支），但每支的細節都要逐支設定，不能留在「草稿」。
+   1. 建立 → 上傳影片，按「選取檔案」，在 Windows 的「開啟」對話框的檔案名稱欄輸入 `file` 的完整路徑（含雙引號），按 Enter。可以一次選多支（檔案名稱欄寫成 `"路徑1" "路徑2"`）（Studio 一次最多 15 支），但每支的細節都要逐支設定，不能留在「草稿」。
    2. **標題**：完全照 `title` 填，先清掉 YouTube 預設的檔名標題。
    3. **說明**：完全照 `description` 填，保留所有換行，不要增刪任何字。
    4. **播放清單**：勾選 `playlists` 裡的每一個。頻道上還沒有的，照 `playlists.json` 的標題、說明建立，瀏覽權限「不公開」；新建的播放清單 ID（網址 `list=` 後面那段）寫進 `playlists-results.json`：`{"key": "...", "title": "...", "playlistId": "PL...", "url": "..."}`。
@@ -42,7 +47,7 @@
       {"date": "2026-02-04", "file": "...", "videoId": "...", "url": "https://youtu.be/...", "visibility": "unlisted", "savedAt": "<時間>"}
       ```
       並在 `metadata-results.json` 加一筆：`{"date": "...", "videoId": "...", "metaHash": "<manifest 裡的 metaHash>", "savedAt": "<時間>"}`。
-4. 這次執行的第一支傳完，打開它的觀看頁，確認標題正確、瀏覽權限是「不公開」，有任何不對就先修正再繼續。章節要等 YouTube 處理完才會出現，不用等。
+4. 這次執行的第一支傳完，在 Studio 的「內容」清單確認標題正確、瀏覽權限是「不公開」，有任何不對就先修正再繼續。**不要打開觀看頁**（youtube.com/watch、youtu.be）：在 Windows 上 computer use 判斷不出那種分頁的網址時，會直接結束這次工作。章節要等 YouTube 處理完才會出現，不用等。
 
 ## 停止條件
 - 出現「已達每日上傳上限」之類的訊息：把已完成的寫進 `results.json`，回報停在哪一天。

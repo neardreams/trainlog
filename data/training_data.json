@@ -2643,6 +2643,22 @@
           "feel": "器械坐姿內收；RIR 1–2",
           "exhaustion": "吃力",
           "condition": "正常"
+        },
+        {
+          "date": "2026-11-04",
+          "sets": [
+            [
+              52,
+              10
+            ],
+            [
+              52,
+              10
+            ]
+          ],
+          "feel": "今天的重訓只做了這兩組",
+          "exhaustion": "普通",
+          "condition": "Deload 週"
         }
       ]
     },
@@ -21611,6 +21627,14 @@
           "date": "2026-11-02",
           "sets": [],
           "feel": "心率跟呼吸都在控制內，但股四頭很酸",
+          "exhaustion": "普通",
+          "condition": "Deload 週",
+          "sets_display": "10 + 10 + 10 分 · 檔位 2 · 組間休 2、3 分",
+          "minutes": 30
+        },
+        {
+          "date": "2026-11-04",
+          "sets": [],
           "exhaustion": "普通",
           "condition": "Deload 週",
           "sets_display": "10 + 10 + 10 分 · 檔位 2 · 組間休 2、3 分",

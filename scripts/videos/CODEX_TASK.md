@@ -21,7 +21,9 @@
 ## 怎麼上傳
 - 使用者的 Chrome 已經登入 YouTube（帳號 @neardreams）。
 - 用 **computer use 的電腦畫面操作**（截圖、點擊、輸入、按鍵）操作使用者已開啟的 Google Chrome 視窗，在裡面開 https://studio.youtube.com。**不要用 Chrome 擴充功能的瀏覽器工具**（computer-use 介面裡的 browser／chrome 後端）：從命令列啟動的 Codex 無法使用它（會回報「The browser access host is unavailable」）。
+- 通常已經有一個開著 Studio 的分頁，切過去用（標題含「YouTube Studio」的 Chrome 視窗，或在視窗裡切分頁）。**不要按 Ctrl+T 開空白分頁**：新分頁讀不到網址，computer use 會直接結束這次工作（「could not determine the current browser URL」）。也不要動其他網站的分頁。
 - 如果 computer use 完全無法截圖 Chrome 視窗，立刻停止，回報錯誤訊息原文。
+- 讀 `manifest.json` 要用 UTF-8，並用 Node 或 `$env:PYTHONIOENCODING='utf-8'` 輸出。如果 PowerShell 印出來的中文是亂碼，**絕對不能拿亂碼填進 Studio**：改用 Node 直接從檔案讀值，再傳給 `sky.type_text`／`sky.set_value`。
 - 按「選取檔案」後會跳出 Windows 的「開啟」對話框。它是另一個頂層視窗，**對話框裡的任何東西都不能用 `sky.click` 點**（不論座標或 `element_index`，都會被擋成「point … is over chrome.exe "", not target window …」或「element … is not available in cached app state」）。照下面做（2026-10-27 上傳成功就是這樣）：
   1. 開始時如果已經有上次留下的「開啟」對話框，先 `sky.press_key({window: state.window, key: "Escape"})` 關掉，再重新按 Studio 的「選取檔案」，讓對話框重新開啟。
   2. 對話框剛開啟時，鍵盤焦點就在「檔案名稱」欄。**不用點、也不要先確認焦點**：`focused_element` 常常誤報成「Search Box」，不要理它。直接 `sky.type_text({window: state.window, text: '"' + file + '"'})` 輸入含雙引號的完整路徑，再 `sky.press_key({window: state.window, key: "Return"})`。

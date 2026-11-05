@@ -4792,6 +4792,57 @@
           "set": 2
         }
       ]
+    },
+    {
+      "date": "2026-11-03",
+      "youtube_id": "wxTvk3QVMMc",
+      "duration_sec": 381.807,
+      "canvas": "1080x1920",
+      "title": "2026/11/03（二）板凳槓鈴臥推、上斜啞鈴臥推",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 56.133,
+          "label": "第 1 組 50kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 56.133,
+          "end": 114.103,
+          "label": "第 2 組 50kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 114.103,
+          "end": 173.773,
+          "label": "第 3 組 50kg×6",
+          "set": 3
+        },
+        {
+          "exercise_id": "incline_db_press",
+          "start": 173.773,
+          "end": 245.573,
+          "label": "第 1 組 15kg×10",
+          "set": 1
+        },
+        {
+          "exercise_id": "incline_db_press",
+          "start": 245.573,
+          "end": 312.407,
+          "label": "第 2 組 15kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "incline_db_press",
+          "start": 312.407,
+          "end": 381.807,
+          "label": "第 3 組 15kg×10",
+          "set": 3
+        }
+      ]
     }
   ]
 }

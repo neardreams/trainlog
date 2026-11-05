@@ -60,7 +60,19 @@ def playlist_plan(days, td, names):
     return playlists, by_date
 
 
+META_KEYS = ("title", "description", "recordingDate", "category", "playlists")
+
+
+def _fingerprint(values):
+    return hashlib.sha1(json.dumps(values, ensure_ascii=False).encode()).hexdigest()[:12]
+
+
 def meta_hash(entry):
-    """影片附加資料的指紋：內容變了才需要重新設定"""
-    keys = ("title", "description", "recordingDate", "category", "playlists")
-    return hashlib.sha1(json.dumps([entry.get(k) for k in keys], ensure_ascii=False).encode()).hexdigest()[:12]
+    """影片附加資料的指紋：內容變了才需要重新設定。
+    播放清單只看加入哪些、不看順序：動作播放清單依天數排序，新增一天可能讓兩個動作換位置，那不算改變。"""
+    return _fingerprint([sorted(entry.get(k) or []) if k == "playlists" else entry.get(k) for k in META_KEYS])
+
+
+def legacy_meta_hash(entry):
+    """2026-10-31 以前的指紋（播放清單照順序算）；只給 metadata_prepare.py 把舊紀錄換成新版用"""
+    return _fingerprint([entry.get(k) for k in META_KEYS])

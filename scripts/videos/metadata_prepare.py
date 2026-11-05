@@ -6,10 +6,12 @@
   metadata.json              已上傳、而且附加資料和 metadata-results.json 紀錄不同（或還沒設定）的影片
   CODEX_METADATA_TASK.md     給 Codex 的任務說明（建立播放清單、逐支設定；完成的寫進 metadata-results.json）
 """
+import datetime as dt
 import os
 import shutil
 
 from _common import TEMPLATES, UPLOAD, load, save
+from _meta import legacy_meta_hash
 
 manifest = load(os.path.join(UPLOAD, "manifest.json"))
 if not manifest:
@@ -17,7 +19,22 @@ if not manifest:
 if "metaHash" not in manifest[0]:
     raise SystemExit("manifest.json 是舊格式（沒有播放清單、錄製日期），先重跑 upload_prepare.py")
 uploaded = {r["date"]: r["videoId"] for r in load(os.path.join(UPLOAD, "results.json"), []) if r.get("videoId")}
-done = {r["videoId"]: r.get("metaHash") for r in load(os.path.join(UPLOAD, "metadata-results.json"), [])}
+results_path = os.path.join(UPLOAD, "metadata-results.json")
+results = load(results_path, [])
+
+# 2026-10-31 起 metaHash 不看播放清單順序。紀錄的指紋等於 manifest 現在內容的舊版指紋 → 其實已是最新，換成新版（先備份）。
+# 舊紀錄都換完、也沒有用舊 manifest 的 Codex 在跑之後，這段和 legacy_meta_hash 可以刪掉。
+current = {uploaded[m["date"]]: m for m in manifest if m["date"] in uploaded}
+legacy = [r for r in results if r.get("videoId") in current and r.get("metaHash") != current[r["videoId"]]["metaHash"]
+          and r.get("metaHash") == legacy_meta_hash(current[r["videoId"]])]
+if legacy:
+    backup = results_path.replace(".json", f".backup-{dt.datetime.now():%Y%m%d-%H%M%S}.json")
+    shutil.copyfile(results_path, backup)
+    for r in legacy:
+        r["metaHash"] = current[r["videoId"]]["metaHash"]
+    save(results_path, results, indent=2)
+    print(f"metadata-results.json：{len(legacy)} 筆舊版指紋換成新版（不看播放清單順序），原檔備份成 {os.path.basename(backup)}")
+done = {r["videoId"]: r.get("metaHash") for r in results}
 
 todo = []
 for m in manifest:

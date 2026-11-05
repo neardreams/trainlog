@@ -1,6 +1,36 @@
 {
   "videos": [
     {
+      "date": "2025-12-27",
+      "youtube_id": "vkoK5K2GRMs",
+      "duration_sec": 17.9,
+      "canvas": "1920x1080",
+      "title": "2025/12/27（六）Cable 三頭下拉",
+      "segments": [
+        {
+          "exercise_id": "tricep_pushdown",
+          "start": 0.0,
+          "end": 17.9,
+          "label": "片段 1"
+        }
+      ]
+    },
+    {
+      "date": "2026-01-20",
+      "youtube_id": "oVTL3xBEVIw",
+      "duration_sec": 24.98,
+      "canvas": "1920x1080",
+      "title": "2026/01/20（二）趴凳槓鈴划船",
+      "segments": [
+        {
+          "exercise_id": "prone_barbell_row",
+          "start": 0.0,
+          "end": 24.98,
+          "label": "片段 1"
+        }
+      ]
+    },
+    {
       "date": "2026-02-04",
       "youtube_id": "7pbBffak09k",
       "duration_sec": 103.13,

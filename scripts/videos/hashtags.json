@@ -3,6 +3,7 @@
   "general": ["#重訓"],
   "exercises": {
     "bench_press": ["#臥推", "#BenchPress"],
+    "prone_barbell_row": ["#海豹划船", "#SealRow"],
     "back_squat": ["#深蹲", "#BackSquat"],
     "rdl": ["#羅馬尼亞硬舉", "#RDL"],
     "single_leg_rdl": ["#單腳羅馬尼亞硬舉", "#SingleLegRDL"],

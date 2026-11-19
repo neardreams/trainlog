@@ -677,22 +677,22 @@
           "exercise_id": "ssb_squat",
           "start": 0.0,
           "end": 59.733,
-          "label": "第 2 組 55kg×10",
-          "set": 2
+          "label": "第 1 組 55kg×10",
+          "set": 1
         },
         {
           "exercise_id": "ssb_squat",
           "start": 59.733,
           "end": 120.967,
-          "label": "第 3 組 55kg×10",
-          "set": 3
+          "label": "第 2 組 55kg×10",
+          "set": 2
         },
         {
           "exercise_id": "ssb_squat",
           "start": 120.967,
           "end": 179.0,
-          "label": "第 4 組 55kg×10",
-          "set": 4
+          "label": "第 3 組 55kg×10",
+          "set": 3
         },
         {
           "exercise_id": "leg_press",

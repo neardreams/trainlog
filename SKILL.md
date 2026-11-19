@@ -141,6 +141,10 @@ python3 <trainlog>/scripts/sync_journals.py \
 - 主項標明「熱身組」的組數不放進 `sets`，寫在 `feel`（例：「熱身 20×10、60×3」）
 - 正式訓練中的輔助／復健動作要記：前臂復健（旋前、旋後、尺偏、橈偏）、肩胛／核心啟動（Y-raise、Pallof press、側棒式、單腳臀橋、單腳提踵、反向北歐彎舉…）、RDL 持槓握力練習
 - 同一動作但不同器械或單／雙側版本拆成不同動作（例：三樓蝴蝶機夾胸 vs Panatta Standing Multi-Flight；三樓腿伸展 vs 一樓分腿腿伸展），重量才可比較
+- 腿「踢」和腿「勾」是相反的動作，不能混：
+  - 坐姿踢腿機、坐姿腿踢、機械腿踢、器械腿踢、腿屈伸、腿伸展（Leg Extension）都是**腿屈伸**（練股四頭）→ 三樓雙腿 `leg_extension`、一樓分腿／單腳 `leg_extension_single`。2026-04-24 原文誤寫「坐姿腿推 32 公斤」也是這個。
+  - 腿勾、腿後勾、腿捲（Leg Curl）是**腿後勾**（練腿後側）→ 坐姿 `leg_curl_seated`、趴姿 `leg_curl_prone`、一樓站姿單腳 `leg_curl_standing_single`
+  - 「垂直腿踢」通常是垂直腿推 `leg_press` 的口誤
 - 單手、單腳、啞鈴、Panatta 分邊器械記「單邊」重量；輔助引體／雙槓記輔助公斤數（負 64 公斤 → 64）；器械空重或自重記 0
 - `exhaustion` 依 RIR 判斷：RIR 0（或「半下」）→ 力竭；RIR 1–2 → 吃力；RIR 2–3 以上 → 普通；只有左邊力竭 → 力竭（左）
 - 時間／距離類動作在 exercise 上設 `rep_unit`（`"秒"` 或 `"米"`），次數欄就填秒數或米數；重量 0 的顯示文字用 `zero_label`（`"空重"`／`"自重"`／`"空槓"`）

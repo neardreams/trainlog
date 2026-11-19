@@ -32,6 +32,7 @@ TrainLogs/
     │   ├── .sync_hashes.json      ← HTML body hash 基準
     │   └── .pending_updates.json  ← 待確認的舊條目更新（暫存）
     ├── scripts/
+    │   ├── find_sources.py        ← 找 iCloud 的日誌匯出與新影片、匯入影片、找 codex.exe
     │   └── sync_journals.py       ← 核心解析腳本
     ├── generate_v6.py             ← 舊版 HTML 生成器（已停用）
     └── index.html                 ← GitHub Pages 頁面
@@ -41,13 +42,29 @@ TrainLogs/
 
 ## 完整執行流程
 
-### Step 1: 腳本同步 raw data
+使用者叫你「更新」時，**不要問來源在哪**：先跑 Step 0 自己找，接著一路做完日誌（Step 1–5）和影片（「訓練影片」），只在下面標明要問使用者的地方停下來。
 
-找到 `Apple日誌條目` 和 `trainlog` 的實際路徑後執行：
+### Step 0: 自己找 iCloud 同步進來的來源
+
+```bash
+cd <trainlog>
+PYTHONIOENCODING=utf-8 python scripts/find_sources.py          # 給人看
+PYTHONIOENCODING=utf-8 python scripts/find_sources.py --json   # 給你讀（讀 JSON 時也要 PYTHONIOENCODING=utf-8，否則 cp950 會弄壞內容）
+```
+
+它會列出：
+- **日誌來源**：iCloud Drive 的 `Apple日誌條目/Entries`（目前是 `~/iCloudDrive/daily/Apple日誌條目/Entries`）和 FreeFileSync 複本 `../raw/Entries`，自動挑最新的那個（複本常落後，例如 2026-11-19 時複本只到 10/30）。Step 1 的 `--entries-dir` 用它給的路徑。
+- **還沒同步的日誌日期**（不在 `journals_raw.json` 的）。
+- **新影片**：iCloud 照片資料夾（`~/Pictures/iCloud Photos/Photos`，實際在 `E:\iCloudPhoto\Photos`）裡，local-media 最後一個影片日之後拍的 .MOV/.MP4，依拍攝日分組，標出那天有沒有日誌、哪些已匯入（用檔案大小比對；IMG 編號會重複使用，不能靠編號）。
+- **codex.exe 的目前路徑**（hash 資料夾每次更新都會變）。
+
+都沒有新東西就告訴使用者「日誌和影片都是最新的」並結束。來源找不到時才問使用者，並用 `--journal-dir`／`--photos-dir` 指定。
+
+### Step 1: 腳本同步 raw data
 
 ```bash
 python3 <trainlog>/scripts/sync_journals.py \
-  --entries-dir "<Apple日誌條目>/Entries" \
+  --entries-dir "<Step 0 的日誌來源>" \
   --data-dir "<trainlog>/data"
 ```
 
@@ -191,7 +208,9 @@ local-media/training/
 
 ### 新影片進來時
 
-1. 把影片依日期、動作分類到 `local-media/training/<日期>/<動作名稱>/`，不確定的放「待確認」。
+日誌同步（Step 1–3）做完、`training_data.json` 已有那天的紀錄之後再處理影片：檢查和驗證要對照當天的組數。
+
+1. 匯入：`PYTHONIOENCODING=utf-8 python scripts/find_sources.py --import`，把**有日誌**的訓練日的新影片從 iCloud 照片複製到 `local-media/training/<日期>/待確認/`（雲端檔會先下載；`IMG_6079(1).MOV` 這種重複檔名會改回 `IMG_6079.MOV`）。沒有日誌的日子（例如 11/07 晚上 2 支）可能不是訓練：先跟使用者確認，要收再用 `--import --dates <日期>`。分到哪個動作由第 3 步的檢查決定，`review_apply.py` 會從「待確認」搬到 `<日期>/<動作名稱>/`。
 2. 量格式：`python scripts/videos/probe.py`
 3. 逐支檢查：
    1. `python scripts/videos/review_prepare.py`：替還沒檢查的日子產生預覽圖和 `_review/batches/batch-N.json`。
@@ -206,14 +225,18 @@ local-media/training/
    3. `python scripts/videos/upload_prepare.py` 產生 `manifest.json`、每天的 `.txt`、`playlists.json` 和 `CODEX_TASK.md`。說明欄要先給使用者看過再上傳。
       - 說明欄最後一行是 hashtag：每個動作各一個中文和英文（對照表在 `scripts/videos/hashtags.json`，新動作要補上），再加 `#重訓`。使用者想點 hashtag 參考別人的影片。
       - 每支都會設定錄製日期（訓練日）、類別「運動」，並加入播放清單：全部訓練、每個月，以及錄過 3 天以上的動作各一個、教練課。播放清單一律不公開。
-6. 上傳（使用者交給 Codex）：在 `_render/upload/` 執行
+6. 上傳（交給 Codex，模型一律 **gpt-6.1-terra**；`~/.codex/config.toml` 的預設是別的模型，所以 `-m` 一定要寫）：
+   - 先在同一則訊息裡把說明欄給使用者看，並提醒上傳期間不要碰滑鼠鍵盤、不要按 Esc（每支約 10 分鐘），使用者同意後再開始。
+   - 先開 Studio 分頁：`Start-Process chrome https://studio.youtube.com`（不要讓 Codex 開空白分頁或 watch 頁，會中斷）。
+   - 用 Step 0 給的 codex.exe 完整路徑（不要寫死 hash 資料夾），在 `_render/upload/` 背景執行：
    ```bash
-   codex exec -m gpt-6.1-terra -c 'model_reasoning_effort="xhigh"' -c 'service_tier="fast"' --skip-git-repo-check - < CODEX_TASK.md
+   "<codex.exe>" exec -m gpt-6.1-terra -c 'model_reasoning_effort="xhigh"' -c 'service_tier="fast"' --skip-git-repo-check - < CODEX_TASK.md
    ```
+   - 結束後**看 `results.json`**，不要看結束碼：失敗（例如 401 `token_revoked`，要請使用者 `codex login`）時結束碼也可能是 0。
    Codex 依 `results.json` 續傳，已傳的會跳過。上傳時會同時設定播放清單、錄製日期和類別。
    - **已上傳的影片要改附加資料時**（例如 hashtag 表改了、某個動作滿 3 天而有了新的播放清單）：先跑 `upload_prepare.py`，再跑 `python scripts/videos/metadata_prepare.py`。它會列出附加資料和 `metadata-results.json` 紀錄不同的影片，寫進 `metadata.json`；接著讓 Codex 照 `CODEX_METADATA_TASK.md` 在 Studio 逐支修改，這一輪不用上傳檔案：
      ```bash
-     codex exec -m gpt-6.1-terra -c 'model_reasoning_effort="xhigh"' -c 'service_tier="fast"' --skip-git-repo-check - < CODEX_METADATA_TASK.md
+     "<codex.exe>" exec -m gpt-6.1-terra -c 'model_reasoning_effort="xhigh"' -c 'service_tier="fast"' --skip-git-repo-check - < CODEX_METADATA_TASK.md
      ```
    - Codex 用 computer use 直接操作使用者的 Chrome 視窗（截圖、點擊、輸入），選檔時在 Windows「開啟」對話框輸入完整路徑。上傳期間它會佔用滑鼠和鍵盤。從 Codex 26.1027（2026-10-30）起，命令列啟動的 Codex 不能用 Chrome 擴充功能的瀏覽器工具（「The browser access host is unavailable」），所以不要叫它用那個工具。Claude in Chrome 一次只能交給網頁 10 MB 的檔案，沒辦法上傳這些影片。
 7. 產生影片清單並驗證：

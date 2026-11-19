@@ -85,6 +85,7 @@ trainlog/
 
 | 用途 | 指令 |
 |---|---|
+| 找日誌與影片來源（見 SKILL.md Step 0） | `python scripts/find_sources.py`（`--import` 匯入新影片） |
 | 同步日誌（見 SKILL.md） | `python scripts/sync_journals.py --entries-dir "<Apple日誌條目>/Entries" --data-dir data` |
 | 舊版頁面生成 | `python generate_v6.py` |
 | v14 設計稿預覽 | 啟動 `.claude/launch.json` 的 `redesign`（`python -m http.server 5191`），開 http://localhost:5191/redesign/v14/mock.html（資料更新後先跑 `python redesign/v14/build_mock_data.py`） |

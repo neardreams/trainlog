@@ -556,29 +556,29 @@
           "exercise_id": "zercher_squat",
           "start": 0.0,
           "end": 61.267,
-          "label": "第 2 組 45kg×10",
-          "set": 2
+          "label": "第 1 組 45kg×10",
+          "set": 1
         },
         {
           "exercise_id": "zercher_squat",
           "start": 61.267,
           "end": 125.867,
-          "label": "第 3 組 45kg×10",
-          "set": 3
+          "label": "第 2 組 45kg×10",
+          "set": 2
         },
         {
           "exercise_id": "zercher_squat",
           "start": 125.867,
           "end": 195.967,
-          "label": "第 4 組 45kg×10",
-          "set": 4
+          "label": "第 3 組 45kg×10",
+          "set": 3
         },
         {
           "exercise_id": "zercher_squat",
           "start": 195.967,
           "end": 276.517,
-          "label": "第 5 組 45kg×10",
-          "set": 5
+          "label": "第 4 組 45kg×10",
+          "set": 4
         }
       ]
     },

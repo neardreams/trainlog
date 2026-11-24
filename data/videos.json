@@ -4995,6 +4995,36 @@
           "set": 5
         }
       ]
+    },
+    {
+      "date": "2026-11-19",
+      "youtube_id": "THARsqm0nGE",
+      "duration_sec": 171.9,
+      "canvas": "1920x1080",
+      "title": "2026/11/19（四）槓鈴肩推（實力推）",
+      "segments": [
+        {
+          "exercise_id": "overhead_press",
+          "start": 0.0,
+          "end": 55.633,
+          "label": "第 2 組 25kg×10",
+          "set": 2
+        },
+        {
+          "exercise_id": "overhead_press",
+          "start": 55.633,
+          "end": 112.667,
+          "label": "第 3 組 25kg×10",
+          "set": 3
+        },
+        {
+          "exercise_id": "overhead_press",
+          "start": 112.667,
+          "end": 171.9,
+          "label": "第 4 組 25kg×10",
+          "set": 4
+        }
+      ]
     }
   ]
 }

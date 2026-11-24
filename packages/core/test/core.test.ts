@@ -30,6 +30,7 @@ import {
   segmentAt,
   segmentsByExercise,
   setBlocks,
+  hasCompleteSets,
   setRuns,
   stripJournalHeading,
   topSetSegment,
@@ -183,6 +184,34 @@ describe('計算', () => {
       kind: 'text',
       text: '19:00 階梯有氧課',
     });
+  });
+  it('有覆寫文字時：每組資料完整就照畫格子、文字當補充說明，不完整才只顯示文字', () => {
+    const lr = setBlocks(
+      {
+        ...e([
+          [17.5, 10],
+          [17.5, 10],
+          [17.5, 10],
+        ]),
+        setsDisplay: '左 17.5kg × 10 × 3；右 20kg × 10 × 3',
+      },
+      {},
+    );
+    expect(lr.kind).toBe('blocks');
+    expect(lr.kind === 'blocks' && lr.blocks.length).toBe(3);
+    expect(lr.kind === 'blocks' && lr.note).toBe('左 17.5kg × 10 × 3；右 20kg × 10 × 3');
+    // 教練課只記最重、沒有次數
+    expect(setBlocks({ ...e([[85, null]]), setsDisplay: '最重 85kg（教練課）' }, {})).toEqual({
+      kind: 'text',
+      text: '最重 85kg（教練課）',
+    });
+    // 沒有重量、也沒有次數單位
+    expect(setBlocks({ ...e([[null, 10]]), setsDisplay: '3×10' }, {}).kind).toBe('text');
+    // 有次數單位（秒）時，沒有重量也算完整
+    expect(setBlocks({ ...e([[null, 30]]), setsDisplay: '2組×30秒' }, { repUnit: '秒' }).kind).toBe('blocks');
+    expect(hasCompleteSets(e([]), {})).toBe(false);
+    // 沒有覆寫文字時不會有補充說明
+    expect('note' in setBlocks(e([[20, 10]]), {})).toBe(false);
   });
   it('組數合併與文字格式（沿用 v6）', () => {
     const en = e([

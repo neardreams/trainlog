@@ -123,7 +123,7 @@ export function Sets({ entry, ex, mini }: { entry: Entry; ex: Exercise; mini?: b
   const ev = mini ? undefined : entryVideo(ds, entry);
   const bySet = ev ? segmentsBySet(ev.segments) : undefined;
   const prIdx = entryPr(ds, entry) ? topSetIndex(entry.sets) : -1;
-  return (
+  const chips = (
     <div className={clsx('sets', mini && 'mini')}>
       {r.blocks.map((b, i) => {
         const w = b.zeroLabel ?? (b.weightKg == null ? '—' : fmtN(b.weightKg));
@@ -174,6 +174,14 @@ export function Sets({ entry, ex, mini }: { entry: Entry; ex: Exercise; mini?: b
           </button>
         );
       })}
+    </div>
+  );
+  if (!r.note) return chips;
+  // 包一層：不論外層是不是 flex，補充說明都在格子下面
+  return (
+    <div className="sets-w">
+      {chips}
+      <div className={clsx('sets-note', mini && 'mini')}>{r.note}</div>
     </div>
   );
 }

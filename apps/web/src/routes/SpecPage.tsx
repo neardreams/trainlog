@@ -7,6 +7,7 @@ import {
   entryVideo,
   exerciseVideos,
   fmtN,
+  hasCompleteSets,
   prEvents,
   type Entry,
 } from '@trainlog/core';
@@ -146,7 +147,12 @@ export function SpecPage() {
   const pr = prEvents(ds)[0];
   const prEntry = pr ? ds.entriesByExercise.get(pr.exerciseId)?.find((h) => h.date === pr.date) : undefined;
   const all = days.flatMap((d) => dayEntries(ds, d));
-  const txtEntry = all.find((e) => e.setsDisplay);
+  const txtEntry = all.find(
+    (e) => e.setsDisplay && !hasCompleteSets(e, ds.exerciseById.get(e.exerciseId) ?? {}),
+  );
+  const noteEntry = all.find(
+    (e) => e.setsDisplay && hasCompleteSets(e, ds.exerciseById.get(e.exerciseId) ?? {}),
+  );
   const noneEntry = all.find((e) => !e.sets.length && !e.setsDisplay && !e.minutes);
   const exOf = (e: Entry) => ds.exerciseById.get(e.exerciseId)!;
   const noVidEx = ds.exercises.find((e) => exerciseVideos(ds, e.id).length === 0);
@@ -384,6 +390,11 @@ export function SpecPage() {
               {vEntry && (
                 <Line label="表格內（小）">
                   <Sets entry={vEntry} ex={exOf(vEntry)} mini />
+                </Line>
+              )}
+              {noteEntry && (
+                <Line label="組數＋補充說明">
+                  <Sets entry={noteEntry} ex={exOf(noteEntry)} />
                 </Line>
               )}
               {txtEntry && (

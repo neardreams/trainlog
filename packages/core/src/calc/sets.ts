@@ -89,10 +89,18 @@ export type SetBlocks =
   | { kind: 'text'; text: string }
   | { kind: 'none' }
   | { kind: 'practice' }
-  | { kind: 'blocks'; blocks: SetBlock[] };
+  /** note：有 sets_display 但每組資料完整時，格子照畫，覆寫文字當補充說明（例如左右重量不同） */
+  | { kind: 'blocks'; blocks: SetBlock[]; note?: string };
+
+/** 每組都有次數，而且有重量（或次數單位，例如秒）：可以畫成每組一格 */
+export function hasCompleteSets(entry: Entry, ex: Pick<Exercise, 'repUnit'>): boolean {
+  return (
+    entry.sets.length > 0 && entry.sets.every((s) => s.reps != null && (s.weightKg != null || !!ex.repUnit))
+  );
+}
 
 export function setBlocks(entry: Entry, ex: Pick<Exercise, 'repUnit' | 'zeroLabel'>): SetBlocks {
-  if (entry.setsDisplay) return { kind: 'text', text: entry.setsDisplay };
+  if (entry.setsDisplay && !hasCompleteSets(entry, ex)) return { kind: 'text', text: entry.setsDisplay };
   const sets = entry.sets;
   if (!sets.length) return { kind: 'none' };
   const unit = ex.repUnit;
@@ -111,6 +119,7 @@ export function setBlocks(entry: Entry, ex: Pick<Exercise, 'repUnit' | 'zeroLabe
       ...(unit ? { unit } : {}),
       level: level(s.weightKg ?? 0),
     })),
+    ...(entry.setsDisplay ? { note: entry.setsDisplay } : {}),
   };
 }
 

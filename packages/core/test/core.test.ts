@@ -31,6 +31,8 @@ import {
   segmentsByExercise,
   setBlocks,
   hasCompleteSets,
+  entryPerSide,
+  weightUnit,
   setRuns,
   stripJournalHeading,
   topSetSegment,
@@ -115,6 +117,25 @@ describe('adapter', () => {
     const journalOnly = ds.sessions.filter((s) => s.hasJournal && s.entryIds.length === 0);
     const expected = Object.keys(journals).filter((d) => !ds.entriesByDate.has(d));
     expect(journalOnly.map((s) => s.date)).toEqual(expected.sort());
+  });
+  it('每邊重量：動作的 per_side 帶到領域模型，紀錄本身的 per_side 會覆蓋', () => {
+    const d = clone();
+    const i = d.exercises.findIndex((x: { history: unknown[] }) => x.history.length >= 2);
+    d.exercises[i].per_side = true;
+    d.exercises[i].history[0].per_side = false;
+    const r = parseDataset(d);
+    if (!r.ok) throw new Error(r.issues.join('\n'));
+    const ex = r.dataset.exercises[i]!;
+    const [h0, h1] = r.dataset.entriesByExercise.get(ex.id)!;
+    expect(ex.perSide).toBe(true);
+    expect(entryPerSide(h0!, ex)).toBe(false);
+    expect(entryPerSide(h1!, ex)).toBe(true);
+    // 沒標的動作不會多出欄位
+    const plain = r.dataset.exercises.find((x) => x.id !== ex.id && !x.perSide)!;
+    expect('perSide' in plain).toBe(false);
+    // 欄位型別錯誤會失敗
+    d.exercises[i].per_side = 'yes';
+    expect(parseDataset(d).ok).toBe(false);
   });
   it('去掉日誌標題', () => expect(stripJournalHeading('# 2026年10月19日\n\n今天')).toBe('今天'));
 });
@@ -235,6 +256,21 @@ describe('計算', () => {
       ),
     ).toBe('2×40秒　(自重)');
     expect(formatSets(e([[null, 10]]), {})).toBe('動作練習');
+  });
+  it('每邊的重量寫「kg/邊」，紀錄本身有標就照紀錄', () => {
+    const en = e([
+      [15, 10],
+      [15, 10],
+      [20, 8],
+    ]);
+    expect(formatSets(en, { perSide: true })).toBe('2×10　(15kg/邊) / 20kg/邊×8');
+    expect(formatSets({ ...en, perSide: false }, { perSide: true })).toBe('2×10　(15kg) / 20kg×8');
+    expect(formatSets({ ...en, perSide: true }, {})).toBe('2×10　(15kg/邊) / 20kg/邊×8');
+    // 空重、自重不加單位
+    expect(formatSets(e([[0, 10]]), { perSide: true, zeroLabel: '自重' })).toBe('自重×10');
+    expect(entryPerSide(en, undefined)).toBe(false);
+    expect(weightUnit(true)).toBe('kg/邊');
+    expect(weightUnit(false)).toBe('kg');
   });
   it('整齊刻度', () => {
     expect(niceTicks(45000)).toEqual({ step: 20000, max: 60000, ticks: [0, 20000, 40000, 60000] });

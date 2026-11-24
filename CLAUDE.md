@@ -127,6 +127,7 @@ type Exercise = {
   kind?: 'cardio'       // 有氧：用時間／距離取代重量與容量
   rep_unit?: '秒' | '米' // 次數欄改為秒數或米數
   zero_label?: string   // 重量為 0 時顯示：空重／自重／空槓
+  per_side?: boolean    // 重量記每邊（單手單腳、雙手各一顆啞鈴、左右分開的器械或繩索）：畫面顯示「kg/邊」
   history: HistoryEntry[] // 依日期由舊到新
 }
 type HistoryEntry = {
@@ -139,6 +140,7 @@ type HistoryEntry = {
   cue?: string                      // 教練提醒、技術重點
   minutes?: number | null           // 有氧
   distance_km?: number              // 有氧
+  per_side?: boolean                // 這筆的記法和動作的 per_side 不同時才加（例：平常記單手啞鈴，那天用槓鈴記總重）
 }
 ```
 `journals_raw.json`：`{ "YYYY-MM-DD": "日誌原文" }`，原文第一行通常是 `# 日期`，顯示時要去掉。

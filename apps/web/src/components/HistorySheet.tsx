@@ -13,6 +13,7 @@ import {
   md,
   prEvents,
   summarize,
+  weightUnit,
   type DateStr,
   type Exercise,
 } from '@trainlog/core';
@@ -100,7 +101,7 @@ export function HistorySheet({
               <>
                 <div>
                   <dt>最高重量</dt>
-                  <dd>{s.maxWeight ? `${fmtN(s.maxWeight)} kg` : '—'}</dd>
+                  <dd>{s.maxWeight ? `${fmtN(s.maxWeight)} ${weightUnit(!!ex.perSide)}` : '—'}</dd>
                 </div>
                 <div>
                   <dt>累計容量</dt>

@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import {
   daysLabel,
   daysTone,
+  entryPerSide,
   entryPr,
   entryVideo,
   exhTone,
@@ -12,6 +13,7 @@ import {
   segmentsBySet,
   setBlocks,
   topSetIndex,
+  weightUnit,
   type Entry,
   type Exercise,
   type Tone,
@@ -123,6 +125,9 @@ export function Sets({ entry, ex, mini }: { entry: Entry; ex: Exercise; mini?: b
   const ev = mini ? undefined : entryVideo(ds, entry);
   const bySet = ev ? segmentsBySet(ev.segments) : undefined;
   const prIdx = entryPr(ds, entry) ? topSetIndex(entry.sets) : -1;
+  // 每邊的重量（一手／一腳／一側）標「kg/邊」，提示寫「每邊」，避免和兩邊合計弄混
+  const ps = entryPerSide(entry, ex);
+  const kg = weightUnit(ps);
   const chips = (
     <div className={clsx('sets', mini && 'mini')}>
       {r.blocks.map((b, i) => {
@@ -139,14 +144,14 @@ export function Sets({ entry, ex, mini }: { entry: Entry; ex: Exercise; mini?: b
             </span>
             <span className="v">
               {w}
-              {b.weightKg != null && b.weightKg > 0 && <small>kg</small>}
+              {b.weightKg != null && b.weightKg > 0 && <small>{kg}</small>}
               <span className="x">×</span>
               {reps}
               {b.unit && <small>{b.unit}</small>}
             </span>
           </>
         );
-        const tip = `第 ${b.no} 組 · ${b.zeroLabel ? `${w} · ` : b.weightKg == null ? '' : `${w} kg × `}${reps} ${b.unit ?? '下'}${pr ? ' · 破紀錄' : ''}`;
+        const tip = `第 ${b.no} 組 · ${b.zeroLabel ? `${w} · ` : b.weightKg == null ? '' : `${ps ? '每邊 ' : ''}${w} kg × `}${reps} ${b.unit ?? '下'}${pr ? ' · 破紀錄' : ''}`;
         const segs = bySet?.get(b.no);
         if (!ev || !segs?.length)
           return (

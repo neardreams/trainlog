@@ -26,6 +26,17 @@ export function topSetIndex(sets: readonly SetRow[]): number {
 
 export const isCardio = (ex: Pick<Exercise, 'kind'> | undefined) => ex?.kind === 'cardio';
 
+/** 這筆紀錄的重量是不是每邊（一手／一腳／一側）：紀錄本身有標就照紀錄，否則看動作 */
+export function entryPerSide(
+  entry: Pick<Entry, 'perSide'>,
+  ex: Pick<Exercise, 'perSide'> | undefined,
+): boolean {
+  return entry.perSide ?? ex?.perSide ?? false;
+}
+
+/** 重量單位文字：每邊的重量寫「kg/邊」，避免和兩邊合計混淆 */
+export const weightUnit = (perSide: boolean) => (perSide ? 'kg/邊' : 'kg');
+
 /** 有氧累計：分鐘與公里（四捨五入到小數一位） */
 export function cardioTotals(entries: readonly Entry[]): { mins: number; km: number } {
   const mins = entries.reduce((s, h) => s + (h.minutes ?? 0), 0);
@@ -127,11 +138,12 @@ export function setBlocks(entry: Entry, ex: Pick<Exercise, 'repUnit' | 'zeroLabe
 const FULLWIDTH_SPACE = String.fromCharCode(0x3000);
 
 /** 純文字版的組數（用於 CSV、提示框、比較頁），格式沿用 v6 的 formatSets */
-export function formatSets(entry: Entry, ex: Pick<Exercise, 'repUnit' | 'zeroLabel'>): string {
+export function formatSets(entry: Entry, ex: Pick<Exercise, 'repUnit' | 'zeroLabel' | 'perSide'>): string {
   if (entry.setsDisplay) return entry.setsDisplay;
   const sets = entry.sets;
   if (!sets.length) return '-';
   const unit = ex.repUnit ?? '';
+  const kg = weightUnit(entryPerSide(entry, ex));
   if (sets[0]?.weightKg == null && !unit) return '動作練習';
   const parts: string[] = [];
   let i = 0;
@@ -145,7 +157,7 @@ export function formatSets(entry: Entry, ex: Pick<Exercise, 'repUnit' | 'zeroLab
     let c = 1;
     while (i + c < sets.length && sets[i + c]?.weightKg === w && sets[i + c]?.reps === r) c++;
     const rStr = (Number.isInteger(r) ? String(r) : r.toFixed(1)) + unit;
-    const wStr = w == null ? '' : w === 0 && ex.zeroLabel ? ex.zeroLabel : `${w}kg`;
+    const wStr = w == null ? '' : w === 0 && ex.zeroLabel ? ex.zeroLabel : `${w}${kg}`;
     if (!wStr) parts.push(c > 1 ? `${c}×${rStr}` : rStr);
     else parts.push(c > 1 ? `${c}×${rStr}${FULLWIDTH_SPACE}(${wStr})` : `${wStr}×${rStr}`);
     i += c;

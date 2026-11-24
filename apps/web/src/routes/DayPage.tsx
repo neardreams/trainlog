@@ -10,6 +10,7 @@ import {
   dayEntries,
   dowOf,
   entryNo,
+  entryPerSide,
   entryPr,
   entryVideo,
   exerciseOf,
@@ -30,6 +31,7 @@ import {
   stripJournalHeading,
   topSetIndex,
   trainingDayNo,
+  weightUnit,
   type DateStr,
   type Entry,
   type Exercise,
@@ -121,7 +123,8 @@ function LineItem({
     <>
       {max != null && (
         <span>
-          最高<b>{fmtN(max)}</b>kg
+          最高<b>{fmtN(max)}</b>
+          {weightUnit(entryPerSide(e, ex))}
         </span>
       )}
       {vol != null && (
@@ -189,9 +192,9 @@ function LineItem({
             {ex.group} · 第 {entryNo(ds, e)} 次{showDate && ` · ${md(e.date)} 週${dowOf(e.date)}`}
           </span>
           {pr && (
-            <span className="bdg ok" data-tip={`原紀錄 ${fmtN(pr.from)} kg`}>
+            <span className="bdg ok" data-tip={`原紀錄 ${fmtN(pr.from)} ${weightUnit(entryPerSide(e, ex))}`}>
               <Icon name="trophy" />
-              破紀錄 +{fmtN(pr.to - pr.from)} kg
+              破紀錄 +{fmtN(pr.to - pr.from)} {weightUnit(entryPerSide(e, ex))}
             </span>
           )}
         </div>
@@ -266,7 +269,7 @@ function GroupHead({ g, closed, onToggle }: { g: RangeGroup; closed: boolean; on
       <span className="m">
         {g.maxWeight > 0 && (
           <>
-            最高 <b>{fmtN(g.maxWeight)}</b> kg
+            最高 <b>{fmtN(g.maxWeight)}</b> {weightUnit(g.kind === 'exercise' && !!ex?.perSide)}
           </>
         )}
         {g.maxWeight > 0 && g.volume > 0 && ' · '}
@@ -380,7 +383,8 @@ function CmpCell({ e, ex }: { e: Entry; ex: Exercise }) {
     ) : (
       <span className="mono">
         <b>{s.weightKg === 0 && ex.zeroLabel ? ex.zeroLabel : s.weightKg == null ? '—' : fmtN(s.weightKg)}</b>
-        {s.weightKg != null && s.weightKg > 0 && <small>kg</small>} × {s.reps ?? '？'}
+        {s.weightKg != null && s.weightKg > 0 && <small>{weightUnit(entryPerSide(e, ex))}</small>} ×{' '}
+        {s.reps ?? '？'}
         {ex.repUnit && <small>{ex.repUnit}</small>}{' '}
         <span style={{ color: 'var(--text-3)' }}>/ {e.sets.length} 組</span>
       </span>

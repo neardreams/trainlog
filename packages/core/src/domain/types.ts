@@ -15,6 +15,8 @@ export interface Exercise {
   repUnit?: string;
   /** 重量為 0 時顯示的文字（空重／自重／空槓） */
   zeroLabel?: string;
+  /** 重量記每邊（一手／一腳／一側），畫面顯示「kg/邊」 */
+  perSide?: boolean;
   /** 在原始資料中的順序（排序的穩定基準） */
   order: number;
 }
@@ -37,6 +39,8 @@ export interface Entry {
   cue?: string;
   minutes?: number | null;
   distanceKm?: number;
+  /** 有值時覆蓋動作的 perSide（同一動作混了啞鈴與槓鈴時） */
+  perSide?: boolean;
 }
 
 /** 訓練日（有訓練或有日誌的日子） */

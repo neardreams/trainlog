@@ -7,6 +7,7 @@ import { useNavigate } from '@tanstack/react-router';
 import {
   SORT_LABELS,
   daysAgo,
+  entryPerSide,
   exerciseVideos,
   filterExercises,
   fmtN,
@@ -18,6 +19,7 @@ import {
   statusOf,
   summarize,
   topSetIndex,
+  weightUnit,
   type Exercise,
   type ExerciseFilter,
   type SortKey,
@@ -129,7 +131,7 @@ function LibRow({ ex, open, onToggle }: { ex: Exercise; open: boolean; onToggle:
           {t.weightKg ? (
             <>
               {fmtN(t.weightKg)}
-              <small>kg</small>
+              <small>{weightUnit(entryPerSide(lq, ex))}</small>
             </>
           ) : (
             (ex.zeroLabel ?? '0')
@@ -155,7 +157,7 @@ function LibRow({ ex, open, onToggle }: { ex: Exercise; open: boolean; onToggle:
   ) : s.maxWeight ? (
     <>
       {fmtN(s.maxWeight)}
-      <small>kg</small>
+      <small>{weightUnit(!!ex.perSide)}</small>
     </>
   ) : (
     <NA />
@@ -184,7 +186,7 @@ function LibRow({ ex, open, onToggle }: { ex: Exercise; open: boolean; onToggle:
     ) : (
       <span
         className={clsx('dtx', pg.delta > 0 ? 'up' : pg.delta < 0 ? 'dn' : 'flat')}
-        data-tip={`第一次最高 ${fmtN(pg.first)} kg → 最近 ${fmtN(pg.last)} kg`}
+        data-tip={`第一次最高 ${fmtN(pg.first)} ${weightUnit(!!ex.perSide)} → 最近 ${fmtN(pg.last)} ${weightUnit(!!ex.perSide)}`}
       >
         {fmtN(Math.abs(pg.delta))}
       </span>

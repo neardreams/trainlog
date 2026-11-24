@@ -20,6 +20,7 @@ export function fromRawJson(
     kind: e.kind === 'cardio' ? 'cardio' : 'strength',
     ...(e.rep_unit ? { repUnit: e.rep_unit } : {}),
     ...(e.zero_label ? { zeroLabel: e.zero_label } : {}),
+    ...(e.per_side ? { perSide: true } : {}),
     order,
   }));
   const entriesByExercise = new Map<string, Entry[]>();
@@ -37,6 +38,7 @@ export function fromRawJson(
       ...(h.cue ? { cue: h.cue } : {}),
       ...(h.minutes !== undefined ? { minutes: h.minutes } : {}),
       ...(h.distance_km != null ? { distanceKm: h.distance_km } : {}),
+      ...(h.per_side != null ? { perSide: h.per_side } : {}),
     }));
     entriesByExercise.set(e.id, list);
     for (const en of list) {

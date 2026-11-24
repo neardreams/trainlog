@@ -18,6 +18,8 @@ export const RawHistoryEntrySchema = z
     cue: optStr,
     minutes: z.number().nullish(),
     distance_km: z.number().nullish(),
+    /** 這筆紀錄的重量是不是每邊（一手／一腳／一側）的重量；有值時覆蓋動作的 per_side（同一動作混了啞鈴與槓鈴時用） */
+    per_side: z.boolean().optional(),
   })
   .strict();
 
@@ -31,6 +33,8 @@ export const RawExerciseSchema = z
     kind: z.literal('cardio').optional(),
     rep_unit: z.string().optional(),
     zero_label: z.string().optional(),
+    /** 重量記每邊（一手／一腳／一側）：單手單腳動作、雙手各拿一顆啞鈴、左右分開的器械或繩索 */
+    per_side: z.boolean().optional(),
     history: z.array(RawHistoryEntrySchema),
   })
   .strict();

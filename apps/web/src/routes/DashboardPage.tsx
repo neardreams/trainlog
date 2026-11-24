@@ -15,6 +15,7 @@ import {
   deltaOf,
   dowOf,
   entriesOf,
+  entryPerSide,
   fmtN,
   inRange,
   lastDate,
@@ -22,6 +23,7 @@ import {
   prEvents,
   slash,
   weekSeries,
+  weightUnit,
   type Period,
   type WeekStat,
 } from '@trainlog/core';
@@ -400,6 +402,7 @@ export function DashboardPage() {
                   const ex = ds.exerciseById.get(p.exerciseId);
                   if (!ex) return null;
                   const entry = ds.entriesByDate.get(p.date)?.find((e) => e.exerciseId === p.exerciseId);
+                  const kg = weightUnit(entry ? entryPerSide(entry, ex) : !!ex.perSide);
                   return (
                     <tr key={`${p.exerciseId}${p.date}`} className="click" onClick={() => openEx(ex.id)}>
                       <td className="fill">
@@ -409,9 +412,9 @@ export function DashboardPage() {
                         </div>
                       </td>
                       <td className="num mute mh">{md(p.date)}</td>
-                      <td className="r num b" data-tip={`原紀錄 ${fmtN(p.from)} kg`}>
+                      <td className="r num b" data-tip={`原紀錄 ${fmtN(p.from)} ${kg}`}>
                         {fmtN(p.to)}
-                        <small>kg</small>
+                        <small>{kg}</small>
                       </td>
                       <td className="r">
                         <Delta dir="up" value={p.to - p.from} />

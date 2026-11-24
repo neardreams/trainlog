@@ -15,6 +15,7 @@ import {
   progressOf,
   summarize,
   trendPoints,
+  weightUnit,
   type DateStr,
   type Entry,
   type Exercise,
@@ -236,7 +237,7 @@ export function RecordPanel({
                 <>
                   <F k="最高重量">
                     {s.maxWeight ? fmtN(s.maxWeight) : <NA />}
-                    {s.maxWeight > 0 && <U u="kg" />}
+                    {s.maxWeight > 0 && <U u={weightUnit(!!ex.perSide)} />}
                   </F>
                   <F
                     k="進步（首次→最近）"
@@ -250,7 +251,7 @@ export function RecordPanel({
                       <>
                         {pg.delta > 0 ? '+' : pg.delta < 0 ? '−' : ''}
                         {fmtN(Math.abs(pg.delta))}
-                        <U u="kg" />
+                        <U u={weightUnit(!!ex.perSide)} />
                       </>
                     ) : (
                       <NA />
@@ -262,7 +263,7 @@ export function RecordPanel({
                   </F>
                   <F k="首次最高">
                     {pg ? fmtN(pg.first) : <NA />}
-                    {pg && <U u="kg" />}
+                    {pg && <U u={weightUnit(!!ex.perSide)} />}
                   </F>
                 </>
               )}
@@ -274,7 +275,7 @@ export function RecordPanel({
             </div>
             {points.length >= 2 && (
               <>
-                <TrendChart points={points} unit={cardio ? '分' : 'kg'} />
+                <TrendChart points={points} unit={cardio ? '分' : weightUnit(!!ex.perSide)} />
                 <div className="trend-f">
                   <span>
                     {cardio ? '每次時間' : '每次最高重量'} · 共 {points.length} 次

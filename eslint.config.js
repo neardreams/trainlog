@@ -26,6 +26,7 @@ export default tseslint.config(
       '**/dist/**',
       '**/dist-server/**',
       '.wrangler/**',
+      'apps/api/src/generated/**',
       '**/node_modules/**',
       '**/.expo/**',
       '**/routeTree.gen.ts',

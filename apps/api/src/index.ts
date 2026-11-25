@@ -1,10 +1,42 @@
 // Cloudflare Worker：只處理 /mcp（wrangler.jsonc 的 run_worker_first），其他網址都直接由靜態資產（apps/web/dist）回應。
-// 資料從同一次部署的靜態資產 /data/*.json 讀取，所以和網頁永遠是同一份；每個 isolate 解析一次後快取。
-import { parseDataset, type Dataset } from '@trainlog/core';
+//
+// 效能設計（免費方案每個請求只有 10ms CPU）：
+// - 資料在建置時就驗證過（tools/prerender.mjs 用 zod 驗證後寫出 generated/dataset.txt），這裡不再驗證，
+//   冷啟動時省下約 15ms 的驗證。
+// - 資料打包進 Worker，在全域範圍（isolate 啟動時）就建好 Dataset 並把每個工具跑一次讓 JIT 熱身；
+//   啟動時間另有限制，不算進請求的 CPU，請求只剩查詢本身（通常 < 1ms）。
+// - 全域範圍不能用 Date（啟動時時間固定在 1970），所以熱身用資料裡的日期，「今天」在請求裡才算。
+import { AGENT_TOOLS, fromRawJson, SORT_KEYS } from '@trainlog/core';
 import { handleMessage, isRequest, PARSE_ERROR, INVALID_REQUEST, type JsonRpcResponse } from './mcp';
+import rawDataset from './generated/dataset.txt';
 
 interface Env {
   ASSETS: { fetch: (req: Request) => Promise<Response> };
+}
+
+type RawArgs = Parameters<typeof fromRawJson>;
+const RAW = JSON.parse(rawDataset) as { training: RawArgs[0]; journals: RawArgs[1]; videos: RawArgs[2] };
+const DATASET = fromRawJson(RAW.training, RAW.journals, RAW.videos);
+
+// JIT 熱身：每個工具用代表性的參數跑一次
+{
+  const last = DATASET.trainingDates.at(-1) ?? '2026-01-01';
+  const sample: Record<string, Record<string, unknown>> = {
+    get_exercise_history: { exercise: DATASET.exercises[0]?.id ?? '' },
+    get_training_day: { date: last },
+    compare_training_days: { a: last, b: DATASET.trainingDates.at(-2) ?? last },
+    search_notes: { query: '的' },
+  };
+  const runs: [string, Record<string, unknown>][] = [
+    ...AGENT_TOOLS.map((t): [string, Record<string, unknown>] => [t.name, sample[t.name] ?? {}]),
+    ...SORT_KEYS.map((sort): [string, Record<string, unknown>] => ['list_exercises', { sort }]),
+  ];
+  for (const [name, args] of runs)
+    try {
+      JSON.stringify(AGENT_TOOLS.find((t) => t.name === name)?.run(DATASET, last, args));
+    } catch {
+      /* 熱身失敗不影響服務，請求時會回錯誤 */
+    }
 }
 
 const CORS = {
@@ -20,30 +52,6 @@ const json = (body: unknown, status = 200) =>
     headers: { 'Content-Type': 'application/json; charset=utf-8', ...CORS },
   });
 
-let cached: Promise<Dataset> | null = null;
-function loadDataset(env: Env, origin: string): Promise<Dataset> {
-  const get = async (file: string, optional = false): Promise<unknown> => {
-    const res = await env.ASSETS.fetch(new Request(`${origin}/data/${file}`));
-    if (optional && res.status === 404) return undefined;
-    if (!res.ok) throw new Error(`無法讀取 ${file}（HTTP ${res.status}）`);
-    return res.json();
-  };
-  cached ??= (async () => {
-    const [t, j, v] = await Promise.all([
-      get('training_data.json'),
-      get('journals_raw.json'),
-      get('videos.json', true),
-    ]);
-    const r = parseDataset(t, j, v);
-    if (!r.ok) throw new Error('資料格式不正確');
-    return r.dataset;
-  })().catch((e: unknown) => {
-    cached = null;
-    throw e;
-  });
-  return cached;
-}
-
 /** 使用者在台灣：「今天」一律用台北時區（正式環境的 Worker 是 UTC、本機 wrangler dev 是電腦的時區） */
 const TAIPEI_DATE = new Intl.DateTimeFormat('en-CA', {
   timeZone: 'Asia/Taipei',
@@ -53,7 +61,7 @@ const TAIPEI_DATE = new Intl.DateTimeFormat('en-CA', {
 });
 const taipeiToday = () => TAIPEI_DATE.format(new Date());
 
-async function handleMcp(request: Request, env: Env): Promise<Response> {
+async function handleMcp(request: Request): Promise<Response> {
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS });
   if (request.method !== 'POST')
     // 無狀態伺服器：不提供 GET 的 SSE 串流
@@ -69,8 +77,7 @@ async function handleMcp(request: Request, env: Env): Promise<Response> {
     return json({ jsonrpc: '2.0', id: null, error: { code: PARSE_ERROR, message: 'JSON 格式錯誤' } }, 400);
   }
 
-  const origin = new URL(request.url).origin;
-  const getDataset = () => loadDataset(env, origin);
+  const getDataset = () => Promise.resolve(DATASET);
   const today = taipeiToday();
   const one = async (m: unknown): Promise<JsonRpcResponse | null> => {
     if (!isRequest(m))
@@ -102,7 +109,7 @@ async function handleMcp(request: Request, env: Env): Promise<Response> {
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const { pathname } = new URL(request.url);
-    if (pathname === '/mcp' || pathname === '/mcp/') return handleMcp(request, env);
+    if (pathname === '/mcp' || pathname === '/mcp/') return handleMcp(request);
     return env.ASSETS.fetch(request);
   },
 };

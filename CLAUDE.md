@@ -240,7 +240,7 @@ type Videos = {
 - **動作庫**：標頭屬性列（動作數、7 天內／8–30 天／超過 30 天、有影片）；搜尋、部位多選、狀態篩選、篩選標籤、8 種排序（含點表頭排序）、依部位分組可收合、固定表頭、每列影片欄、展開明細（分頁：概覽／歷程／動作要點；概覽是欄位格＋趨勢圖＋動作要點＋最近 5 次）、展開全部／收合全部、匯出 CSV（UTF-8 BOM）、底部筆數統計。
 - **訓練紀錄**：上一個／下一個訓練日、跳到日期、今天；範圍（當天、±3、±7、±14、±30 天）；分組（依動作／日期／部位）與排序；分頁（訓練整理／日期比較／原始日誌）；當天影片面板；每個動作一張明細卡（組數、感受、力竭、身心狀態、動作提示、影片縮圖、破紀錄）；日期比較是多天並排的矩陣（當天＝前 3 個訓練日＋這天＋後 1 個；範圍＝範圍內的訓練日）；點動作下鑽看全歷程並標出來源日期、可返回；標頭屬性列（動作、組數、容量、部位分布、力竭分布、身心狀態）；≥1600 寬右側當日日誌。
 - **網址**：路徑網址 `/`、`/exercises`、`/days/YYYY-MM-DD`、`/spec`（2026-11-25 從 hash 路由改過來）；舊的 `#/…` 與 `?date=YYYY-MM-DD`、`?exercise=<id>`、`?view=exercise|day` 開頁時自動轉成新網址（`legacyUrlToPath`）；預設進總覽。
-- **給爬蟲與 AI**：建置時預先渲染（SSR）總覽、動作庫、每個訓練日；`llms.txt`、`sitemap.xml`；唯讀查詢工具有兩個入口：網頁的 WebMCP（`apps/web/src/lib/webmcp.ts`）與 Worker 的 MCP 伺服器 `https://trainlog.x-hu.com/mcp`（`apps/api`，Streamable HTTP、無狀態、不需驗證，可加成 Claude／ChatGPT 的自訂連接器）；工具清單 `AGENT_TOOLS` 與查詢邏輯都在 `packages/core/src/calc/agent*.ts`，新增工具只改那裡。瀏覽器端用 `createRoot` 整個換掉預先渲染的 HTML（不 hydrate），所以元件不必和建置時輸出完全一致，但模組最上層不能直接碰 `document`／`window`（Node 裡沒有）。
+- **給爬蟲與 AI**：建置時預先渲染（SSR）總覽、動作庫、每個訓練日；`llms.txt`、`sitemap.xml`；唯讀查詢工具有兩個入口：網頁的 WebMCP（`apps/web/src/lib/webmcp.ts`）與 Worker 的 MCP 伺服器 `https://trainlog.x-hu.com/mcp`（`apps/api`，Streamable HTTP、無狀態、不需驗證，可加成 Claude／ChatGPT 的自訂連接器）；工具清單 `AGENT_TOOLS` 與查詢邏輯都在 `packages/core/src/calc/agent*.ts`，新增工具只改那裡。`/mcp` 的資料在建置時打包進 Worker（`tools/prerender.mjs` 驗證後寫出 `apps/api/src/generated/dataset.txt`，未納入版本控制），Worker 啟動時建好資料並熱身；免費方案每個請求只有 10ms CPU，新增工具後用 `npx wrangler tail trainlog --format json` 看 `cpuTime`。瀏覽器端用 `createRoot` 整個換掉預先渲染的 HTML（不 hydrate），所以元件不必和建置時輸出完全一致，但模組最上層不能直接碰 `document`／`window`（Node 裡沒有）。
 
 ---
 

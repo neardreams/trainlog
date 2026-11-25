@@ -521,39 +521,69 @@ function snippet(text: string, term: string): string {
 }
 
 /** 全文搜尋日誌、紀錄備註與動作要點；空白分隔的關鍵字都要出現（不分大小寫）；新到舊 */
+interface NoteDoc {
+  source: NoteSource;
+  date?: DateStr;
+  exercise?: string;
+  field?: string;
+  text: string;
+  /** 小寫的比對用文字（含動作名稱） */
+  low: string;
+}
+const noteIndexCache = new WeakMap<Dataset, NoteDoc[]>();
+/** 全文搜尋的索引：每份資料只建一次（日誌約 30 萬字，每次搜尋都轉小寫太花 CPU）；依日期新到舊 */
+function noteIndex(ds: Dataset): NoteDoc[] {
+  let docs = noteIndexCache.get(ds);
+  if (docs) return docs;
+  docs = [];
+  for (const [d, raw] of ds.journals) {
+    const text = stripJournalHeading(raw);
+    docs.push({ source: 'journal', date: d, text, low: text.toLowerCase() });
+  }
+  for (const [d, es] of ds.entriesByDate)
+    for (const e of es) {
+      const name = exOf(ds, e.exerciseId)?.name ?? e.exerciseId;
+      for (const field of ['feel', 'cue', 'condition', 'exhaustion'] as const) {
+        const text = e[field];
+        if (text)
+          docs.push({
+            source: 'entry',
+            date: d,
+            exercise: name,
+            field,
+            text,
+            low: `${name} ${text}`.toLowerCase(),
+          });
+      }
+    }
+  for (const ex of ds.exercises)
+    for (const text of ex.notes)
+      docs.push({ source: 'exercise', exercise: ex.name, text, low: `${ex.name} ${text}`.toLowerCase() });
+  docs.sort((x, y) => (y.date ?? '').localeCompare(x.date ?? ''));
+  noteIndexCache.set(ds, docs);
+  return docs;
+}
+
 export function agentSearchNotes(ds: Dataset, args: SearchNotesArgs) {
   const terms = args.query.toLowerCase().split(/\s+/).filter(Boolean);
   const first = terms[0];
   if (!first) return { error: 'query 不能是空的' };
   const src = new Set<NoteSource>(args.sources?.length ? args.sources : ['journal', 'entry', 'exercise']);
-  const inDate = (d: DateStr) => (!args.from || d >= args.from) && (!args.to || d <= args.to);
-  const hit = (t: string) => {
-    const low = t.toLowerCase();
-    return terms.every((x) => low.includes(x));
-  };
+  const ranged = !!(args.from || args.to);
   const out: { source: NoteSource; date?: DateStr; exercise?: string; field?: string; text: string }[] = [];
-  if (src.has('journal'))
-    for (const [d, raw] of ds.journals) {
-      if (!inDate(d)) continue;
-      const t = stripJournalHeading(raw);
-      if (hit(t)) out.push({ source: 'journal', date: d, text: snippet(t, first) });
-    }
-  if (src.has('entry'))
-    for (const [d, es] of ds.entriesByDate) {
-      if (!inDate(d)) continue;
-      for (const e of es)
-        for (const field of ['feel', 'cue', 'condition', 'exhaustion'] as const) {
-          const t = e[field];
-          const name = exOf(ds, e.exerciseId)?.name ?? e.exerciseId;
-          if (t && hit(`${name} ${t}`))
-            out.push({ source: 'entry', date: d, exercise: name, field, text: t });
-        }
-    }
-  if (src.has('exercise') && !args.from && !args.to)
-    for (const ex of ds.exercises)
-      for (const n of ex.notes)
-        if (hit(`${ex.name} ${n}`)) out.push({ source: 'exercise', exercise: ex.name, text: n });
-  out.sort((x, y) => (y.date ?? '').localeCompare(x.date ?? ''));
+  for (const d of noteIndex(ds)) {
+    if (!src.has(d.source)) continue;
+    // 動作要點沒有日期：有日期區間時不搜
+    if (d.date ? (args.from && d.date < args.from) || (args.to && d.date > args.to) : ranged) continue;
+    if (!terms.every((x) => d.low.includes(x))) continue;
+    out.push({
+      source: d.source,
+      ...(d.date ? { date: d.date } : {}),
+      ...(d.exercise ? { exercise: d.exercise } : {}),
+      ...(d.field ? { field: d.field } : {}),
+      text: d.source === 'journal' ? snippet(d.text, first) : d.text,
+    });
+  }
   return { totalMatching: out.length, results: out.slice(0, clampLimit(args.limit, 30, 200)) };
 }
 

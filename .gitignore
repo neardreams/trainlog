@@ -9,3 +9,4 @@ dist/
 dist-server/
 .wrangler/
 .expo/
+apps/api/src/generated/

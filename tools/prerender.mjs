@@ -1,5 +1,6 @@
 // 建置時預先渲染（SSR）：用 apps/web/dist-server/entry-server.js 把每一頁渲染成 HTML 寫進 apps/web/dist/，
-// 另外產生 sitemap.xml、robots.txt、llms.txt。由 apps/web 的 build 指令在 vite build 之後執行。
+// 另外產生 sitemap.xml、robots.txt、llms.txt，以及給 /mcp Worker 打包的 apps/api/src/generated/dataset.txt。
+// 由 apps/web 的 build 指令在 vite build 之後執行。
 import { readFileSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -20,11 +21,18 @@ const readJson = (f, optional = false) => {
 };
 
 const ssr = await import(pathToFileURL(resolve(SERVER, 'entry-server.js')).href);
-const ds = ssr.loadDataset(
-  readJson('training_data.json'),
-  readJson('journals_raw.json'),
-  readJson('videos.json', true),
-);
+const raw = {
+  training: readJson('training_data.json'),
+  journals: readJson('journals_raw.json'),
+  videos: readJson('videos.json', true) ?? { videos: [] },
+};
+// loadDataset 用 zod 驗證，資料有誤時建置直接失敗
+const ds = ssr.loadDataset(raw.training, raw.journals, raw.videos);
+
+// 給 /mcp Worker（apps/api）打包用：已驗證的原始資料，Worker 啟動時不必再驗證
+const API_DATA = resolve(ROOT, 'apps/api/src/generated/dataset.txt');
+mkdirSync(dirname(API_DATA), { recursive: true });
+writeFileSync(API_DATA, JSON.stringify(raw));
 
 const template = readFileSync(resolve(DIST, 'index.html'), 'utf8');
 if (!template.includes('<div id="root"></div>'))

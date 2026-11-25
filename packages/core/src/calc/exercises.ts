@@ -77,30 +77,32 @@ export const SORT_LABELS: Record<SortKey, string> = {
 /** 8 種排序（與 v6／v9 相同；JS 的 sort 是穩定排序，同值時維持原始順序） */
 export function sortExercises(ds: Dataset, key: SortKey): Exercise[] {
   const exs = [...ds.exercises];
-  const last = (e: Exercise) => lastDate(ds, e.id);
+  // 排序鍵每個動作只算一次（比較函式會被呼叫 n log n 次）
+  const by = (f: (e: Exercise) => number, dir: 1 | -1 = -1) => {
+    const k = new Map(exs.map((e) => [e, f(e)]));
+    return exs.sort((a, b) => dir * ((k.get(a) ?? 0) - (k.get(b) ?? 0)));
+  };
+  const byDate = (dir: 1 | -1) => {
+    const k = new Map(exs.map((e) => [e, lastDate(ds, e.id)]));
+    return exs.sort((a, b) => dir * (k.get(a) ?? '').localeCompare(k.get(b) ?? ''));
+  };
   switch (key) {
     case 'group': {
       const gi = new Map(ds.groupOrder.map((g, i) => [g, i]));
-      return exs.sort((a, b) => (gi.get(a.group) ?? 99) - (gi.get(b.group) ?? 99));
+      return by((e) => gi.get(e.group) ?? 99, 1);
     }
     case 'recent':
-      return exs.sort((a, b) => last(b).localeCompare(last(a)));
+      return byDate(-1);
     case 'overdue':
-      return exs.sort((a, b) => last(a).localeCompare(last(b)));
-    case 'maxwt': {
-      const mw = (e: Exercise) => Math.max(0, ...entriesOf(ds, e.id).map((h) => getMaxWeight(h.sets) ?? 0));
-      return exs.sort((a, b) => mw(b) - mw(a));
-    }
-    case 'volume': {
-      const tv = (e: Exercise) => entriesOf(ds, e.id).reduce((s, h) => s + (calcVolume(h.sets) ?? 0), 0);
-      return exs.sort((a, b) => tv(b) - tv(a));
-    }
+      return byDate(1);
+    case 'maxwt':
+      return by((e) => Math.max(0, ...entriesOf(ds, e.id).map((h) => getMaxWeight(h.sets) ?? 0)));
+    case 'volume':
+      return by((e) => entriesOf(ds, e.id).reduce((s, h) => s + (calcVolume(h.sets) ?? 0), 0));
     case 'sessions':
-      return exs.sort((a, b) => entriesOf(ds, b.id).length - entriesOf(ds, a.id).length);
-    case 'progress': {
-      const pg = (e: Exercise) => progressOf(ds, e.id)?.delta ?? 0;
-      return exs.sort((a, b) => pg(b) - pg(a));
-    }
+      return by((e) => entriesOf(ds, e.id).length);
+    case 'progress':
+      return by((e) => progressOf(ds, e.id)?.delta ?? 0);
     case 'name':
       return exs.sort((a, b) => a.name.localeCompare(b.name, 'zh-TW'));
   }
@@ -136,7 +138,17 @@ export interface PrEvent {
   from: number;
   to: number;
 }
-export function prEvents(ds: Dataset): PrEvent[] {
+const prEventsCache = new WeakMap<Dataset, readonly PrEvent[]>();
+/** 同一份資料只算一次（總覽、動作庫、AI 查詢都會重複呼叫）；回傳凍結的陣列，呼叫端不能修改 */
+export function prEvents(ds: Dataset): readonly PrEvent[] {
+  let v = prEventsCache.get(ds);
+  if (!v) {
+    v = Object.freeze(computePrEvents(ds));
+    prEventsCache.set(ds, v);
+  }
+  return v;
+}
+function computePrEvents(ds: Dataset): PrEvent[] {
   const out: PrEvent[] = [];
   for (const ex of ds.exercises) {
     if (isCardio(ex)) continue;

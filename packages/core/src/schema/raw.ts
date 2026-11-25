@@ -11,6 +11,8 @@ export const RawHistoryEntrySchema = z
   .object({
     date: z.string().regex(DATE_RE, '日期必須是 YYYY-MM-DD'),
     sets: z.array(RawSetSchema),
+    /** 熱身組（日誌標明「熱身組」的組）：和正式組分開，不算進組數、容量、最高重量與破紀錄 */
+    warmup_sets: z.array(RawSetSchema).min(1, 'warmup_sets 沒有內容時不要寫這個欄位').optional(),
     sets_display: optStr,
     feel: optStr,
     exhaustion: optStr,
@@ -39,6 +41,15 @@ export const RawExerciseSchema = z
   })
   .strict();
 
+/** 當天熱身清單的一項（滾筒放鬆、伸展、活動度、啟動動作…），依日誌順序 */
+export const RawWarmupItemSchema = z
+  .object({
+    name: z.string().min(1),
+    /** 組數、次數、秒數或部位，例如「2 組 × 10 下」「40 秒」「背、胸椎」 */
+    detail: optStr,
+  })
+  .strict();
+
 export const RawTrainingDataSchema = z
   .object({
     meta: z
@@ -49,6 +60,13 @@ export const RawTrainingDataSchema = z
       })
       .loose(),
     exercises: z.array(RawExerciseSchema),
+    /** 每天的熱身清單（日誌「今天的熱身」段落），和正式訓練分開 */
+    warmups: z
+      .record(
+        z.string().regex(DATE_RE, '熱身清單的 key 必須是 YYYY-MM-DD'),
+        z.array(RawWarmupItemSchema).min(1, '沒有熱身就不要寫那一天'),
+      )
+      .optional(),
   })
   .superRefine((d, ctx) => {
     const ids = new Set<string>();
@@ -136,5 +154,6 @@ export const RawVideosSchema = z
 export type RawTrainingData = z.infer<typeof RawTrainingDataSchema>;
 export type RawExercise = z.infer<typeof RawExerciseSchema>;
 export type RawHistoryEntry = z.infer<typeof RawHistoryEntrySchema>;
+export type RawWarmupItem = z.infer<typeof RawWarmupItemSchema>;
 export type RawJournals = z.infer<typeof RawJournalsSchema>;
 export type RawVideos = z.infer<typeof RawVideosSchema>;

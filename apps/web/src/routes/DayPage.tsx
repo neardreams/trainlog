@@ -38,6 +38,7 @@ import {
   type RangeGroup,
   type RangeGroupBy,
   type RangeSortKey,
+  type WarmupItem,
 } from '@trainlog/core';
 import { HistorySheet, PEEK_ATTR } from '@/components/HistorySheet';
 import { AttrNum, ObjDate, ObjectHeader, ObjIcon, OTab, type Attr } from '@/components/ObjectHeader';
@@ -236,6 +237,42 @@ function LineItem({
   );
 }
 const Frag = ({ children }: { children: React.ReactNode }) => <>{children}</>;
+
+/** 熱身清單：當天依日誌順序列出；日期範圍時每個有熱身的日子一列。沒有熱身紀錄就不顯示 */
+function WarmupPanel({ dates }: { dates: DateStr[] }) {
+  const ds = useDs();
+  const days = dates
+    .map((d) => [d, ds.warmupsByDate.get(d)] as const)
+    .filter((x): x is readonly [DateStr, WarmupItem[]] => !!x[1]?.length);
+  if (!days.length) return null;
+  const list = (items: WarmupItem[]) => (
+    <ol className="wu-list">
+      {items.map((w, i) => (
+        <li key={i}>
+          <b>{pad2(i + 1)}</b>
+          <span>{w.name}</span>
+          {w.detail && <small>{w.detail}</small>}
+        </li>
+      ))}
+    </ol>
+  );
+  const single = dates.length === 1;
+  const total = days.reduce((s, [, items]) => s + items.length, 0);
+  return (
+    <Panel title="熱身" meta={single ? `${total} 項 · 不算進組數與容量` : `${days.length} 天 · ${total} 項`}>
+      {single
+        ? list(days[0]![1])
+        : [...days].reverse().map(([d, items]) => (
+            <div key={d} className="wu-day">
+              <span className="d">
+                {md(d)} 週{dowOf(d)}
+              </span>
+              {list(items)}
+            </div>
+          ))}
+    </Panel>
+  );
+}
 
 /** 分組標頭（日期範圍或依日期／部位分組時） */
 function GroupHead({ g, closed, onToggle }: { g: RangeGroup; closed: boolean; onToggle: () => void }) {
@@ -790,6 +827,7 @@ export function DayPage() {
                       </span>
                     </div>
                   </section>
+                  <WarmupPanel dates={dates} />
                   <RangeList
                     date={date}
                     range={range}

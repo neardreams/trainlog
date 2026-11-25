@@ -134,6 +134,30 @@ export function setBlocks(entry: Entry, ex: Pick<Exercise, 'repUnit' | 'zeroLabe
   };
 }
 
+/** 熱身組只拿來顯示：組數、容量、最高重量、破紀錄都只看正式組（entry.sets） */
+const warmupAsEntry = (entry: Entry): Entry => ({
+  id: entry.id,
+  exerciseId: entry.exerciseId,
+  date: entry.date,
+  sets: entry.warmupSets ?? [],
+  ...(entry.perSide != null ? { perSide: entry.perSide } : {}),
+});
+
+/** 熱身組的格子（深淺一律最淺；沒有熱身組回傳空陣列） */
+export function warmupBlocks(entry: Entry, ex: Pick<Exercise, 'repUnit' | 'zeroLabel'>): SetBlock[] {
+  if (!entry.warmupSets?.length) return [];
+  const r = setBlocks(warmupAsEntry(entry), ex);
+  return r.kind === 'blocks' ? r.blocks.map((b) => ({ ...b, level: 1 })) : [];
+}
+
+/** 純文字版的熱身組（格式同 formatSets）；沒有熱身組回傳空字串 */
+export function formatWarmupSets(
+  entry: Entry,
+  ex: Pick<Exercise, 'repUnit' | 'zeroLabel' | 'perSide'>,
+): string {
+  return entry.warmupSets?.length ? formatSets(warmupAsEntry(entry), ex) : '';
+}
+
 /** 全形空白（v6 的組數文字格式使用） */
 const FULLWIDTH_SPACE = String.fromCharCode(0x3000);
 

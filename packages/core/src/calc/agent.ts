@@ -17,7 +17,7 @@ import {
   type SortKey,
 } from './exercises';
 import { exhaustionBucket } from './labels';
-import { calcVolume, entryPerSide, formatSets, getMaxWeight, isCardio } from './sets';
+import { calcVolume, entryPerSide, formatSets, formatWarmupSets, getMaxWeight, isCardio } from './sets';
 import { entryVideo, exerciseVideos, youtubeUrl } from './videos';
 import { stripJournalHeading } from '../adapters/fromRawJson';
 
@@ -29,6 +29,9 @@ export interface AgentEntry {
   /** 純文字的組數，例如「80kg×6 / 3×5 (85kg)」 */
   setsText: string;
   sets: { weightKg: number | null; reps: number | null }[];
+  /** 熱身組（不算進組數、容量、最高重量）；沒有熱身組就沒有這兩個欄位 */
+  warmupSetsText?: string;
+  warmupSets?: { weightKg: number | null; reps: number | null }[];
   /** 重量是每邊（一手／一腳／一側） */
   perSide: boolean;
   repUnit?: string;
@@ -90,6 +93,12 @@ export function agentEntry(ds: Dataset, e: Entry): AgentEntry {
     group: ex?.group ?? '',
     setsText: ex ? formatSets(e, ex) : '',
     sets: e.sets.map((s) => ({ weightKg: s.weightKg, reps: s.reps })),
+    ...(e.warmupSets?.length
+      ? {
+          warmupSetsText: ex ? formatWarmupSets(e, ex) : '',
+          warmupSets: e.warmupSets.map((s) => ({ weightKg: s.weightKg, reps: s.reps })),
+        }
+      : {}),
     perSide: ex ? entryPerSide(e, ex) : false,
     ...(ex?.repUnit ? { repUnit: ex.repUnit } : {}),
     maxWeightKg: getMaxWeight(e.sets),
@@ -280,6 +289,8 @@ export function agentDay(ds: Dataset, date: DateStr) {
     };
   return {
     ...daySummary(ds, date),
+    /** 當天熱身清單（滾筒、伸展、啟動動作…），和正式訓練分開 */
+    warmups: ds.warmupsByDate.get(date) ?? [],
     entries: entries.map((e) => agentEntry(ds, e)),
     journal: journal ? stripJournalHeading(journal).trim() : null,
     video: video ? dayVideoOut(ds, video) : null,

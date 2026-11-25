@@ -32,6 +32,8 @@ export interface Entry {
   exerciseId: string;
   date: DateStr;
   sets: SetRow[];
+  /** 熱身組：和正式組分開顯示，不算進組數、容量、最高重量與破紀錄 */
+  warmupSets?: SetRow[];
   setsDisplay?: string;
   feel?: string;
   exhaustion?: string;
@@ -41,6 +43,13 @@ export interface Entry {
   distanceKm?: number;
   /** 有值時覆蓋動作的 perSide（同一動作混了啞鈴與槓鈴時） */
   perSide?: boolean;
+}
+
+/** 當天熱身清單的一項（滾筒放鬆、伸展、活動度、啟動動作…） */
+export interface WarmupItem {
+  name: string;
+  /** 組數、次數、秒數或部位，例如「2 組 × 10 下」「40 秒」 */
+  detail?: string;
 }
 
 /** 訓練日（有訓練或有日誌的日子） */
@@ -89,4 +98,6 @@ export interface Dataset {
   journals: ReadonlyMap<DateStr, string>;
   /** 每個訓練日的合併影片（沒有影片的日子不在裡面） */
   videosByDate: ReadonlyMap<DateStr, DayVideo>;
+  /** 每天的熱身清單（沒記熱身的日子不在裡面） */
+  warmupsByDate: ReadonlyMap<DateStr, WarmupItem[]>;
 }

@@ -2706,6 +2706,106 @@ html[data-m='dark'] .hc.l3.v::after {
 .sets.mini .set.heavy {
   box-shadow: inset 0 2px 0 var(--a);
 }
+/* 熱身組：正式組上面另起一列，虛線、淡色、小一號，不和正式組混在一起 */
+.sets.wu {
+  display: flex;
+  margin-bottom: 5px;
+}
+.sets.wu .wu-l {
+  display: flex;
+  align-items: center;
+  padding: 0 7px;
+  margin: 0 -1px -1px 0;
+  border: 1px dashed var(--ctl);
+  background: var(--canvas);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-3);
+}
+.set.wu {
+  min-width: 0;
+  padding: 2px 7px 3px;
+  border-style: dashed;
+  background: var(--canvas);
+}
+.set.wu:hover {
+  border-style: solid;
+}
+.set.wu .v {
+  font-size: 15px;
+  line-height: 17px;
+  color: var(--text-3);
+}
+/* 熱身清單（訓練紀錄頁）：依日誌順序的小格 */
+.wu-list {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 10px 14px 12px;
+  gap: 0;
+}
+.wu-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 5px 10px 6px;
+  margin: 0 -1px -1px 0;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  font-size: 13px;
+  line-height: 18px;
+  min-width: 0;
+  max-width: 100%;
+}
+.wu-list li b {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-4);
+}
+.wu-list li small {
+  font-size: 12px;
+  color: var(--text-3);
+}
+.wu-day {
+  display: flex;
+  align-items: flex-start;
+  border-top: 1px solid var(--line);
+}
+.wu-day:first-of-type {
+  border-top: 0;
+}
+.wu-day > .d {
+  flex: none;
+  width: 76px;
+  padding: 15px 0 0 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.wu-day .wu-list {
+  flex: 1;
+  min-width: 0;
+  padding-left: 0;
+}
+.wu-day > .d {
+  white-space: nowrap;
+}
+@media (max-width: 760px) {
+  .wu-day {
+    flex-direction: column;
+  }
+  .wu-day > .d {
+    width: auto;
+    padding: 10px 14px 0;
+  }
+  .wu-day .wu-list {
+    padding-left: 14px;
+    padding-top: 6px;
+  }
+}
 .sets-none {
   display: inline-flex;
   align-items: center;

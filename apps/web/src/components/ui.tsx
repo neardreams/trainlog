@@ -12,6 +12,7 @@ import {
   fmtN,
   segmentsBySet,
   setBlocks,
+  warmupBlocks,
   topSetIndex,
   weightUnit,
   type Entry,
@@ -106,7 +107,42 @@ export function Delta({
  * 組數格（v14）：每組一格「重量 × 次數」。最重的組（重量不同時）墨色實心；破紀錄那一組綠色；
  * 影片拍到的組右上角有播放記號，點了從那一組開始播。mini 是表格裡的小格（不顯示組號）
  */
+/** 組數標記；有熱身組時，熱身組另起一列放在正式組上面（小尺寸不顯示熱身組） */
 export function Sets({ entry, ex, mini }: { entry: Entry; ex: Exercise; mini?: boolean }) {
+  const main = <WorkSets entry={entry} ex={ex} mini={mini} />;
+  const wb = mini ? [] : warmupBlocks(entry, ex);
+  if (!wb.length) return main;
+  const kg = weightUnit(entryPerSide(entry, ex));
+  return (
+    <div className="sets-w">
+      <div className="sets wu" aria-label="熱身組（不算進組數與容量）">
+        <span className="wu-l">熱身</span>
+        {wb.map((b) => {
+          const w = b.zeroLabel ?? (b.weightKg == null ? '—' : fmtN(b.weightKg));
+          const reps = b.reps == null ? '？' : fmtN(b.reps);
+          return (
+            <span
+              key={b.no}
+              className="set wu"
+              title={`熱身第 ${b.no} 組 · ${b.zeroLabel || b.weightKg == null ? `${w} · ` : `${w} kg × `}${reps} ${b.unit ?? '下'}（不算進組數與容量）`}
+            >
+              <span className="v">
+                {w}
+                {b.weightKg != null && b.weightKg > 0 && <small>{kg}</small>}
+                <span className="x">×</span>
+                {reps}
+                {b.unit && <small>{b.unit}</small>}
+              </span>
+            </span>
+          );
+        })}
+      </div>
+      {main}
+    </div>
+  );
+}
+
+function WorkSets({ entry, ex, mini }: { entry: Entry; ex: Exercise; mini?: boolean | undefined }) {
   const ds = useDs();
   const r = setBlocks(entry, ex);
   if (r.kind === 'text') return <div className="sets-txt">{r.text}</div>;

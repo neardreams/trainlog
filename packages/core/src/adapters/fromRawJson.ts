@@ -1,6 +1,6 @@
 // 現有 JSON → 領域模型。日後也是把 JSON 匯入資料庫的轉換程式。
 import type { DateStr } from '../dates';
-import type { Dataset, DayVideo, Entry, Exercise, Session } from '../domain/types';
+import type { Dataset, DayVideo, Entry, Exercise, Session, WarmupItem } from '../domain/types';
 import type { RawJournals, RawTrainingData, RawVideos } from '../schema/raw';
 
 /** 去掉日誌原文第一行的「# 日期」標題 */
@@ -31,6 +31,9 @@ export function fromRawJson(
       exerciseId: e.id,
       date: h.date,
       sets: h.sets.map(([w, r]) => ({ weightKg: w, reps: r })),
+      ...(h.warmup_sets?.length
+        ? { warmupSets: h.warmup_sets.map(([w, r]) => ({ weightKg: w, reps: r })) }
+        : {}),
       ...(h.sets_display ? { setsDisplay: h.sets_display } : {}),
       ...(h.feel ? { feel: h.feel } : {}),
       ...(h.exhaustion ? { exhaustion: h.exhaustion } : {}),
@@ -87,5 +90,11 @@ export function fromRawJson(
     sessions,
     journals,
     videosByDate,
+    warmupsByDate: new Map<DateStr, WarmupItem[]>(
+      Object.entries(raw.warmups ?? {}).map(([d, items]) => [
+        d,
+        items.map((w) => ({ name: w.name, ...(w.detail ? { detail: w.detail } : {}) })),
+      ]),
+    ),
   };
 }

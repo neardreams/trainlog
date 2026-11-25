@@ -53,6 +53,8 @@ import {
   entriesOf,
   progressOf,
   trendPoints,
+  warmupBlocks,
+  formatWarmupSets,
   type Entry,
 } from '../src';
 
@@ -135,6 +137,74 @@ describe('adapter', () => {
     expect('perSide' in plain).toBe(false);
     // 欄位型別錯誤會失敗
     d.exercises[i].per_side = 'yes';
+    expect(parseDataset(d).ok).toBe(false);
+  });
+  it('熱身組和正式組分開：不算進組數、容量、最高重量；格子與文字另外產生', () => {
+    const d = clone();
+    const i = d.exercises.findIndex(
+      (x: { kind?: string; history: { sets: [number | null, number | null][] }[] }) =>
+        !x.kind && x.history.some((h) => h.sets.length && h.sets.every(([w, r]) => w != null && r != null)),
+    );
+    const hi = d.exercises[i].history.findIndex(
+      (h: { sets: [number | null, number | null][] }) =>
+        h.sets.length && h.sets.every(([w, r]) => w != null && r != null),
+    );
+    const h = d.exercises[i].history[hi];
+    h.warmup_sets = [
+      [20, 6],
+      [40, 3],
+      [999, 1],
+    ];
+    const r = parseDataset(d);
+    if (!r.ok) throw new Error(r.issues.join('\n'));
+    const ex = r.dataset.exercises[i]!;
+    const en = r.dataset.entriesByExercise.get(ex.id)![hi]!;
+    const base = ds.entriesByExercise.get(ex.id)![hi]!;
+    expect(en.warmupSets).toEqual([
+      { weightKg: 20, reps: 6 },
+      { weightKg: 40, reps: 3 },
+      { weightKg: 999, reps: 1 },
+    ]);
+    // 正式組的計算完全不受影響（999 不會變成最高重量）
+    expect(en.sets).toEqual(base.sets);
+    expect(getMaxWeight(en.sets)).toBe(getMaxWeight(base.sets));
+    expect(calcVolume(en.sets)).toBe(calcVolume(base.sets));
+    expect(entryPr(r.dataset, en)).toEqual(entryPr(ds, base));
+    expect(daySets(r.dataset, en.date)).toBe(daySets(ds, base.date));
+    expect(warmupBlocks(en, ex).map((b) => [b.no, b.weightKg, b.reps, b.level])).toEqual([
+      [1, 20, 6, 1],
+      [2, 40, 3, 1],
+      [3, 999, 1, 1],
+    ]);
+    expect(formatWarmupSets(en, ex)).toContain('20');
+    expect(formatSets(en, ex)).toBe(formatSets(base, ex));
+    // 沒有熱身組：沒有欄位、沒有格子、空字串
+    expect('warmupSets' in base).toBe(false);
+    expect(warmupBlocks(base, ex)).toEqual([]);
+    expect(formatWarmupSets(base, ex)).toBe('');
+    // 空陣列不允許（沒有就不要寫）
+    h.warmup_sets = [];
+    expect(parseDataset(d).ok).toBe(false);
+  });
+  it('每天的熱身清單：依日誌順序；格式錯誤會失敗', () => {
+    const d = clone();
+    d.warmups = {
+      '2026-10-20': [{ name: '滾筒放鬆', detail: '背、胸椎' }, { name: '90/90 呼吸' }],
+    };
+    const r = parseDataset(d);
+    if (!r.ok) throw new Error(r.issues.join('\n'));
+    expect(r.dataset.warmupsByDate.get('2026-10-20')).toEqual([
+      { name: '滾筒放鬆', detail: '背、胸椎' },
+      { name: '90/90 呼吸' },
+    ]);
+    expect(ds.warmupsByDate.size).toBe(0);
+    // 熱身清單不會讓那天變成訓練日
+    expect(r.dataset.trainingDates).toEqual(ds.trainingDates);
+    d.warmups = { '2026/10/20': [{ name: '滾筒' }] };
+    expect(parseDataset(d).ok).toBe(false);
+    d.warmups = { '2026-10-20': [] };
+    expect(parseDataset(d).ok).toBe(false);
+    d.warmups = { '2026-10-20': [{ name: '滾筒', sets: 2 }] };
     expect(parseDataset(d).ok).toBe(false);
   });
   it('去掉日誌標題', () => expect(stripJournalHeading('# 2026年10月19日\n\n今天')).toBe('今天'));

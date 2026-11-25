@@ -5025,6 +5025,57 @@
           "set": 4
         }
       ]
+    },
+    {
+      "date": "2026-11-24",
+      "youtube_id": "AsTODbFJReE",
+      "duration_sec": 394.503,
+      "canvas": "1080x1920",
+      "title": "2026/11/24（二）板凳槓鈴臥推、槓鈴硬舉",
+      "segments": [
+        {
+          "exercise_id": "bench_press",
+          "start": 0.0,
+          "end": 66.4,
+          "label": "第 1 組 62.5kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 66.4,
+          "end": 140.333,
+          "label": "第 2 組 62.5kg×5",
+          "set": 2
+        },
+        {
+          "exercise_id": "bench_press",
+          "start": 140.333,
+          "end": 191.133,
+          "label": "第 3 組 60kg×4",
+          "set": 3
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 191.133,
+          "end": 265.2,
+          "label": "第 1 組 110kg×6",
+          "set": 1
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 265.2,
+          "end": 324.733,
+          "label": "第 2 組 110kg×6",
+          "set": 2
+        },
+        {
+          "exercise_id": "deadlift",
+          "start": 324.733,
+          "end": 394.503,
+          "label": "第 3 組 110kg×6",
+          "set": 3
+        }
+      ]
     }
   ]
 }

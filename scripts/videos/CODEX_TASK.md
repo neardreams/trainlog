@@ -20,9 +20,13 @@
 
 ## 怎麼上傳
 - 使用者的 Chrome 已經登入 YouTube（帳號 @neardreams）。
-- 用 **computer use 的電腦畫面操作**（截圖、點擊、輸入、按鍵）操作使用者已開啟的 Google Chrome 視窗，在裡面開 https://studio.youtube.com。**不要用 Chrome 擴充功能的瀏覽器工具**（computer-use 介面裡的 browser／chrome 後端）：從命令列啟動的 Codex 無法使用它（會回報「The browser access host is unavailable」）。
-- 通常已經有一個開著 Studio 的分頁，切過去用（標題含「YouTube Studio」的 Chrome 視窗，或在視窗裡切分頁）。**不要按 Ctrl+T 開空白分頁**：新分頁讀不到網址，computer use 會直接結束這次工作（「could not determine the current browser URL」）。也不要動其他網站的分頁。
-- 如果 computer use 完全無法截圖 Chrome 視窗，立刻停止，回報錯誤訊息原文。
+- **工具順序（使用者指定，2026-11-25）**：
+  1. **優先用 Chrome 工具**（ChatGPT Chrome 擴充功能的瀏覽器工具，computer-use 介面裡的 browser／chrome 後端）操作使用者的 Google Chrome，在 https://studio.youtube.com 裡做所有網頁操作。選影片檔時，如果 Chrome 工具能直接設定 Studio 的檔案欄位（`input[type=file]`，需要擴充功能已開「允許存取檔案網址」），就用它，不必經過 Windows 的「開啟」對話框；不行就只有選檔這一步用下面的 computer use 做法。
+  2. Chrome 工具不能用（例如回報「The browser access host is unavailable」，或根本沒有掛上）：先用 computer use 在 Chrome 視窗裡打開 **ChatGPT 擴充功能**（工具列的 ChatGPT 圖示／側邊欄），讓它連上，再重試 Chrome 工具；最多試 3 次。不要改環境變數、設定檔或擴充功能本身來繞過限制。
+  3. 真的還是不行，才退回 **computer use 的電腦畫面操作**（截圖、點擊、輸入、按鍵）操作同一個 Chrome 視窗，照下面的注意事項做。
+  - 最後回報要寫：實際用了哪一種工具、Chrome 工具失敗時的錯誤訊息原文。
+- 通常已經有一個開著 Studio 的分頁，切過去用（標題含「YouTube Studio」的 Chrome 視窗，或在視窗裡切分頁）。用 computer use 時**不要按 Ctrl+T 開空白分頁**：新分頁讀不到網址，computer use 會直接結束這次工作（「could not determine the current browser URL」）。也不要動其他網站的分頁。
+- 如果 Chrome 工具和 computer use 都完全無法操作 Chrome 視窗，立刻停止，回報錯誤訊息原文。
 - 讀 `manifest.json` 要用 UTF-8，並用 Node 或 `$env:PYTHONIOENCODING='utf-8'` 輸出。如果 PowerShell 印出來的中文是亂碼，**絕對不能拿亂碼填進 Studio**：改用 Node 直接從檔案讀值，再傳給 `sky.type_text`／`sky.set_value`。
 - 按「選取檔案」後會跳出 Windows 的「開啟」對話框。它是另一個頂層視窗，**對話框裡的任何東西都不能用 `sky.click` 點**（不論座標或 `element_index`，都會被擋成「point … is over chrome.exe "", not target window …」或「element … is not available in cached app state」）。照下面做（2026-10-27 上傳成功就是這樣）：
   1. 開始時如果已經有上次留下的「開啟」對話框，先 `sky.press_key({window: state.window, key: "Escape"})` 關掉，再重新按 Studio 的「選取檔案」，讓對話框重新開啟。

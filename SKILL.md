@@ -251,7 +251,7 @@ local-media/training/
      ```bash
      "<codex.exe>" exec -m gpt-6.1-terra -c 'model_reasoning_effort="xhigh"' -c 'service_tier="fast"' --skip-git-repo-check - < CODEX_METADATA_TASK.md
      ```
-   - Codex 用 computer use 直接操作使用者的 Chrome 視窗（截圖、點擊、輸入），選檔時在 Windows「開啟」對話框輸入完整路徑。上傳期間它會佔用滑鼠和鍵盤。從 Codex 26.1027（2026-10-30）起，命令列啟動的 Codex 不能用 Chrome 擴充功能的瀏覽器工具（「The browser access host is unavailable」），所以不要叫它用那個工具。Claude in Chrome 一次只能交給網頁 10 MB 的檔案，沒辦法上傳這些影片。
+   - 工具順序（使用者 2026-11-25 指定，寫在兩份 `CODEX_*TASK.md` 裡）：Codex **優先用 Chrome 工具**（ChatGPT Chrome 擴充功能的瀏覽器工具）；不能用時先用 computer use 在 Chrome 打開 ChatGPT 擴充功能、再重試 Chrome 工具；真的不行才退回 computer use 直接操作 Chrome 視窗（截圖、點擊、輸入，選檔時在 Windows「開啟」對話框輸入完整路徑）。從 Codex 26.1027 起，命令列啟動時 Chrome 工具都會回報「The browser access host is unavailable」：Chrome 工具要有桌面 app 傳給工作的存取通道（`BROWSER_USE_ACCESS_PIPE_PATH`、`BROWSER_USE_ACCESS_VERIFYING_IDENTITY`），`codex exec` 拿不到這兩個變數，而且這是權限檢查，不要繞過。這是已知問題（openai/codex#59334 等，2026-11-25 還沒修）。2026-11-25 用 CLI 0.167.0／app 26.1117 再試，打開 ChatGPT 側邊欄後也一樣失敗，所以實際上還是靠 computer use 上傳。要用 Chrome 工具只能在 Codex 桌面 app 裡開工作，貼上任務說明。用 computer use 時會佔用滑鼠和鍵盤。Claude in Chrome 一次只能交給網頁 10 MB 的檔案，沒辦法上傳這些影片。
 7. 產生影片清單並驗證：
    ```bash
    python scripts/videos/build_videos_json.py

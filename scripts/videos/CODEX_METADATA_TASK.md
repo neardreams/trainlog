@@ -2,7 +2,12 @@
 
 > 這份由 `scripts/videos/metadata_prepare.py` 複製到 `local-media/training/_render/upload/`。上傳者（Codex）在那個資料夾執行。
 > 這一輪**不上傳任何檔案**，只在 YouTube Studio 修改已經上傳的影片和建立播放清單。
-> 用 **computer use 的電腦畫面操作**（截圖、點擊、輸入、按鍵）操作使用者已開啟的 Google Chrome 視窗。**不要用 Chrome 擴充功能的瀏覽器工具**：從命令列啟動的 Codex 無法使用它（「The browser access host is unavailable」）。**不要打開觀看頁**（youtube.com/watch、youtu.be）：computer use 在 Windows 上判斷不出那種分頁的網址時會直接結束工作；只在 studio.youtube.com 裡操作。
+> **工具順序（使用者指定，2026-11-25）**：
+> 1. **優先用 Chrome 工具**（ChatGPT Chrome 擴充功能的瀏覽器工具，computer-use 介面裡的 browser／chrome 後端）操作使用者已開啟的 Google Chrome。
+> 2. Chrome 工具不能用（例如「The browser access host is unavailable」，或根本沒有掛上）：先用 computer use 在 Chrome 視窗裡打開 **ChatGPT 擴充功能**（工具列的 ChatGPT 圖示／側邊欄），讓它連上，再重試 Chrome 工具；最多試 3 次。不要改環境變數、設定檔或擴充功能本身來繞過限制。
+> 3. 真的還是不行，才退回 **computer use 的電腦畫面操作**（截圖、點擊、輸入、按鍵）操作同一個 Chrome 視窗。
+> 最後回報要寫：實際用了哪一種工具、Chrome 工具失敗時的錯誤訊息原文。
+> **不要打開觀看頁**（youtube.com/watch、youtu.be）：computer use 在 Windows 上判斷不出那種分頁的網址時會直接結束工作；只在 studio.youtube.com 裡操作。
 
 所有內容都已經準備好。你只負責照清單設定，不要自己改內容。
 

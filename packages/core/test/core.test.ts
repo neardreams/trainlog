@@ -19,7 +19,7 @@ import {
   heatLevel,
   isPortrait,
   latestTrainingDate,
-  legacyUrlToHash,
+  legacyUrlToPath,
   mondayOf,
   nextTrainingDate,
   niceTicks,
@@ -322,10 +322,12 @@ describe('計算', () => {
     expect(csv.split('\r\n')).toHaveLength(3);
   });
   it('舊網址轉換', () => {
-    expect(legacyUrlToHash('?date=2026-10-19')).toBe('#/days/2026-10-19');
-    expect(legacyUrlToHash('?exercise=back_squat')).toBe('#/exercises?ex=back_squat');
-    expect(legacyUrlToHash('?view=spec')).toBe('#/spec');
-    expect(legacyUrlToHash('?m=dark')).toBeNull();
+    expect(legacyUrlToPath('?date=2026-10-19')).toBe('/days/2026-10-19');
+    expect(legacyUrlToPath('?exercise=back_squat')).toBe('/exercises?ex=back_squat');
+    expect(legacyUrlToPath('?view=spec')).toBe('/spec');
+    expect(legacyUrlToPath('?m=dark')).toBeNull();
+    expect(legacyUrlToPath('', '#/days/2026-10-19?tab=raw')).toBe('/days/2026-10-19?tab=raw');
+    expect(legacyUrlToPath('', '#top')).toBeNull();
   });
 });
 

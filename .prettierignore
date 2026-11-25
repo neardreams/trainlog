@@ -13,6 +13,7 @@ trainlog-update.skill
 local-media/
 # 產生物
 **/dist/
+**/dist-server/
 **/node_modules/
 **/.expo/
 **/routeTree.gen.ts
@@ -21,3 +22,4 @@ apps/mobile/android/
 apps/mobile/ios/
 # 測試資料快照（data/ 的複本與 v9 擷取結果）
 **/test/fixtures/
+.wrangler/

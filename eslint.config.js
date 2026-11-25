@@ -24,6 +24,8 @@ export default tseslint.config(
   {
     ignores: [
       '**/dist/**',
+      '**/dist-server/**',
+      '.wrangler/**',
       '**/node_modules/**',
       '**/.expo/**',
       '**/routeTree.gen.ts',

@@ -40,7 +40,9 @@ const safeStorage: StateStorage = {
   },
 };
 
-const initialMode = (): Mode => (document.documentElement.dataset.m === 'dark' ? 'dark' : 'light');
+// 建置時預先渲染（Node）沒有 document，一律當淺色
+const initialMode = (): Mode =>
+  typeof document !== 'undefined' && document.documentElement.dataset.m === 'dark' ? 'dark' : 'light';
 
 export const usePrefs = create<Prefs>()(
   persist(

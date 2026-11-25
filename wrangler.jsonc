@@ -1,14 +1,22 @@
 {
   // Cloudflare Workers 靜態資產部署：https://trainlog.x-hu.com
-  // 建置指令：pnpm install && pnpm build（輸出 apps/web/dist，只含網頁、data/ 的兩個 JSON 與授權清單）
+  // 建置指令：pnpm install && pnpm build（輸出 apps/web/dist：預先渲染的網頁、data/ 的 JSON、授權清單、sitemap.xml、robots.txt、llms.txt）
   // 部署指令：npx wrangler deploy
   // 只公開 apps/web/dist/，不要把整個 repo 當成靜態目錄（data/ 其他檔案、SKILL.md、腳本都不能被公開存取）。
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "trainlog",
   "compatibility_date": "2026-10-01",
+  // Worker 只處理 /mcp（MCP 伺服器，apps/api）；其他網址由靜態資產直接回應，不經過 Worker
+  "main": "./apps/api/src/index.ts",
   "workers_dev": false,
   "routes": [{ "pattern": "trainlog.x-hu.com", "custom_domain": true }],
   "assets": {
     "directory": "./apps/web/dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/mcp", "/mcp/"],
+    // 預先渲染的頁面是 days/2026-11-24.html 這種檔名，網址不需要 .html 或結尾斜線
+    "html_handling": "auto-trailing-slash",
+    // 沒有預先渲染的路徑（/days、/spec、帶參數的網址）交給前端路由
+    "not_found_handling": "single-page-application",
   },
 }

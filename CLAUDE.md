@@ -44,7 +44,7 @@ trainlog/
 ├── apps/
 │   ├── web/          ← React + Vite + TypeScript + Tailwind v4 + shadcn/ui
 │   ├── mobile/       ← Expo（React Native）+ NativeWind（目前只是空架子）
-│   └── (api/)        ← 預留：之後的後端（Cloudflare Workers + Hono），尚未建立
+│   └── api/          ← Cloudflare Worker：目前只有 /mcp（MCP 伺服器，唯讀）；其他網址由靜態資產直接回應。之後的後端（Hono）也放這裡
 ├── packages/
 │   ├── core/         ← 領域模型、zod schema、adapter、所有計算邏輯（純函式）、DataSource 介面
 │   ├── data-client/  ← 資料來源實作（StaticJsonSource）＋ Provider ＋ TanStack Query hooks
@@ -95,7 +95,8 @@ trainlog/
 | 單元測試 | `pnpm test` |
 | 資料驗證 | `pnpm validate:data`（用 `packages/core` 的 zod schema 驗證 `data/*.json`） |
 | 畫面截圖測試（預定） | `pnpm test:e2e`（Playwright） |
-| 建置 | `pnpm build` → `apps/web/dist`（只複製 data/ 的 `training_data.json`、`journals_raw.json`，以及存在時的 `videos.json`） |
+| 建置 | `pnpm build` → `apps/web/dist`（只複製 data/ 的 `training_data.json`、`journals_raw.json`，以及存在時的 `videos.json`；之後 `tools/prerender.mjs` 用 `src/entry-server.tsx` 把每頁預先渲染成 HTML，並產生 `sitemap.xml`、`robots.txt`、`llms.txt`） |
+| 本機模擬正式網站（Cloudflare 的路由規則） | 建置後啟動 `.claude/launch.json` 的 `web-prod`（`wrangler dev`，http://localhost:8787） |
 | 訓練影片（檢查、合併、上傳準備、影片清單） | `python scripts/videos/<步驟>.py`，流程見 SKILL.md「訓練影片」 |
 | 程式檢查 | `pnpm lint`（ESLint＋Prettier） |
 | 授權檢查 | `pnpm licenses:check` |
@@ -199,7 +200,7 @@ type Videos = {
 
 ## 5. 設計系統（視覺規格的權威來源）
 
-**`redesign/v14/mock.html`（v14 企業版＋活力）與 `redesign/v14/PLAN.md` 是使用者認可的視覺規格**（2026-10-30 定案並實作）。外觀、元件狀態、互動都以它為準；有疑問時打開設計稿比對（網站內的「設計規格」頁 `#/spec` 列出實際元件）。v14 以 v12 為底：版面骨架（深色殼層列＋淺色側邊導覽＋物件標頭＋面板＋資料表格＋狀態列）、密度都沿用 v12，只改顏色、數字字型、色塊面積和動態。
+**`redesign/v14/mock.html`（v14 企業版＋活力）與 `redesign/v14/PLAN.md` 是使用者認可的視覺規格**（2026-10-30 定案並實作）。外觀、元件狀態、互動都以它為準；有疑問時打開設計稿比對（網站內的「設計規格」頁 `/spec` 列出實際元件）。v14 以 v12 為底：版面骨架（深色殼層列＋淺色側邊導覽＋物件標頭＋面板＋資料表格＋狀態列）、密度都沿用 v12，只改顏色、數字字型、色塊面積和動態。
 
 ### 字型
 - 英數：**Geist**；中文：**Noto Sans TC**；等寬：**Geist Mono**（以 `@fontsource-variable/*` 打包；CSS 字型名稱 `"Geist Variable"`、`"Noto Sans TC Variable"`、`"Geist Mono Variable"`）。
@@ -238,7 +239,8 @@ type Videos = {
 - **總覽**：統計期間（近 7／30／90 天）；指標卡 5 張（本週訓練、訓練日、總容量、破紀錄、連續週數，附增減與 12 週小圖）；每週訓練量（容量／天數／組數，26 週）；部位分布；全年熱度圖；最近破紀錄；最近訓練；久未練動作；力竭分布。各區塊可點擊跳轉。
 - **動作庫**：標頭屬性列（動作數、7 天內／8–30 天／超過 30 天、有影片）；搜尋、部位多選、狀態篩選、篩選標籤、8 種排序（含點表頭排序）、依部位分組可收合、固定表頭、每列影片欄、展開明細（分頁：概覽／歷程／動作要點；概覽是欄位格＋趨勢圖＋動作要點＋最近 5 次）、展開全部／收合全部、匯出 CSV（UTF-8 BOM）、底部筆數統計。
 - **訓練紀錄**：上一個／下一個訓練日、跳到日期、今天；範圍（當天、±3、±7、±14、±30 天）；分組（依動作／日期／部位）與排序；分頁（訓練整理／日期比較／原始日誌）；當天影片面板；每個動作一張明細卡（組數、感受、力竭、身心狀態、動作提示、影片縮圖、破紀錄）；日期比較是多天並排的矩陣（當天＝前 3 個訓練日＋這天＋後 1 個；範圍＝範圍內的訓練日）；點動作下鑽看全歷程並標出來源日期、可返回；標頭屬性列（動作、組數、容量、部位分布、力竭分布、身心狀態）；≥1600 寬右側當日日誌。
-- **網址參數**：`?date=YYYY-MM-DD`、`?exercise=<id>`、`?view=exercise|day`；預設進總覽。
+- **網址**：路徑網址 `/`、`/exercises`、`/days/YYYY-MM-DD`、`/spec`（2026-11-25 從 hash 路由改過來）；舊的 `#/…` 與 `?date=YYYY-MM-DD`、`?exercise=<id>`、`?view=exercise|day` 開頁時自動轉成新網址（`legacyUrlToPath`）；預設進總覽。
+- **給爬蟲與 AI**：建置時預先渲染（SSR）總覽、動作庫、每個訓練日；`llms.txt`、`sitemap.xml`；唯讀查詢工具有兩個入口：網頁的 WebMCP（`apps/web/src/lib/webmcp.ts`）與 Worker 的 MCP 伺服器 `https://trainlog.x-hu.com/mcp`（`apps/api`，Streamable HTTP、無狀態、不需驗證，可加成 Claude／ChatGPT 的自訂連接器）；工具清單 `AGENT_TOOLS` 與查詢邏輯都在 `packages/core/src/calc/agent*.ts`，新增工具只改那裡。瀏覽器端用 `createRoot` 整個換掉預先渲染的 HTML（不 hydrate），所以元件不必和建置時輸出完全一致，但模組最上層不能直接碰 `document`／`window`（Node 裡沒有）。
 
 ---
 

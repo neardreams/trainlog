@@ -1,6 +1,12 @@
-// 路由（TanStack Router、hash 路由：靜態主機不需要額外設定）
+// 路由（TanStack Router、路徑網址：建置時每頁預先渲染成 HTML，見 src/entry-server.tsx）
 // 網址參數都有型別；非法值一律回到預設值
-import { createHashHistory, createRootRoute, createRoute, createRouter } from '@tanstack/react-router';
+import {
+  createBrowserHistory,
+  createRootRoute,
+  createRoute,
+  createRouter,
+  type RouterHistory,
+} from '@tanstack/react-router';
 import {
   DATE_RE,
   PERIODS,
@@ -114,15 +120,18 @@ const routeTree = rootRoute.addChildren([
   specRoute,
 ]);
 
-export const router = createRouter({
-  routeTree,
-  history: createHashHistory(),
-  defaultPreload: false,
-  scrollRestoration: true,
-});
+/** 瀏覽器用 createBrowserHistory；建置時預先渲染用 createMemoryHistory */
+export function createAppRouter(history: RouterHistory = createBrowserHistory()) {
+  return createRouter({
+    routeTree,
+    history,
+    defaultPreload: false,
+    scrollRestoration: true,
+  });
+}
 
 declare module '@tanstack/react-router' {
   interface Register {
-    router: typeof router;
+    router: ReturnType<typeof createAppRouter>;
   }
 }

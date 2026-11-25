@@ -44,16 +44,21 @@ export function exercisesCsv(ds: Dataset, rows: Exercise[], today: DateStr): str
   return '﻿' + [CSV_HEADER, ...lines].map((r) => r.map(cell).join(',')).join('\r\n');
 }
 
-/** 舊網址（?date=、?exercise=、?view=）轉成新的 hash 路由；不需轉換時回傳 null */
-export function legacyUrlToHash(search: string): string | null {
+/**
+ * 舊網址轉成現在的路徑網址；不需轉換時回傳 null。
+ * - v6 的參數網址（?date=、?exercise=、?view=）
+ * - 2026-11 以前的 hash 路由（#/days/2026-10-19?tab=raw）
+ */
+export function legacyUrlToPath(search: string, hash = ''): string | null {
+  if (hash.startsWith('#/')) return hash.slice(1);
   const p = new URLSearchParams(search);
   const date = p.get('date');
   const ex = p.get('exercise');
   const view = p.get('view');
-  if (date && DATE_RE.test(date)) return `#/days/${date}`;
-  if (ex) return `#/exercises?ex=${encodeURIComponent(ex)}`;
-  if (view === 'exercise') return '#/exercises';
-  if (view === 'day') return '#/days';
-  if (view === 'spec') return '#/spec';
+  if (date && DATE_RE.test(date)) return `/days/${date}`;
+  if (ex) return `/exercises?ex=${encodeURIComponent(ex)}`;
+  if (view === 'exercise') return '/exercises';
+  if (view === 'day') return '/days';
+  if (view === 'spec') return '/spec';
   return null;
 }

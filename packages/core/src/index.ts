@@ -11,4 +11,6 @@ export * from './calc/dashboard';
 export * from './calc/palette';
 export * from './calc/misc';
 export * from './calc/videos';
+export * from './calc/agent';
+export * from './calc/agent-tools';
 export type { DataSource, WritableDataSource } from './ports/DataSource';

@@ -42,10 +42,13 @@ function trainlogData(): Plugin {
   };
 }
 
-export default defineConfig({
-  base: './',
-  plugins: [react(), tailwindcss(), trainlogData()],
+export default defineConfig(({ isSsrBuild }) => ({
+  // 路徑網址（/days/2026-11-24）需要絕對路徑的資源網址
+  base: '/',
+  plugins: [react(), tailwindcss(), ...(isSsrBuild ? [] : [trainlogData()])],
   resolve: { alias: { '@': resolve(import.meta.dirname, 'src') } },
   server: { port: 5180, strictPort: true },
-  build: { chunkSizeWarningLimit: 900 },
-});
+  build: { chunkSizeWarningLimit: 900, ...(isSsrBuild ? { copyPublicDir: false } : {}) },
+  // 建置時預先渲染（src/entry-server.tsx）：workspace 套件是 TS 原始碼，要一起打包
+  ssr: { noExternal: [/^@trainlog\//] },
+}));

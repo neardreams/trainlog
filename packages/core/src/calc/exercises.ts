@@ -12,6 +12,17 @@ export function lastDate(ds: Dataset, exId: string): DateStr {
 
 export const daysAgo = (date: DateStr, today: DateStr) => daysBetween(date, today);
 
+/** 同一個動作在這筆之前最近的 n 次（新到舊；同一天的不算） */
+export function prevEntries(ds: Dataset, e: Entry, n: number): Entry[] {
+  const out: Entry[] = [];
+  const h = entriesOf(ds, e.exerciseId);
+  for (let i = h.length - 1; i >= 0 && out.length < n; i--) {
+    const x = h[i] as Entry;
+    if (x.date < e.date) out.push(x);
+  }
+  return out;
+}
+
 export type ExerciseStatus = '7' | '30' | 'old';
 /** 狀態篩選：近 7 天（≤7）、8–30 天、30 天以上 */
 export function statusOf(ds: Dataset, exId: string, today: DateStr): ExerciseStatus {

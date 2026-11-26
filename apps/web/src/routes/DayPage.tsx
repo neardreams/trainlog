@@ -7,6 +7,7 @@ import {
   EXHAUSTION_ORDER,
   compareColumns,
   dayEntries,
+  daysBetween,
   dowOf,
   entryNo,
   entryPerSide,
@@ -23,6 +24,7 @@ import {
   longDate,
   md,
   nextTrainingDate,
+  prevEntries,
   prevTrainingDate,
   rangeDates,
   rangeEntries,
@@ -44,7 +46,7 @@ import {
 import { HistorySheet, PEEK_ATTR } from '@/components/HistorySheet';
 import { AttrNum, ObjDate, ObjectHeader, ObjIcon, OTab, type Attr } from '@/components/ObjectHeader';
 import { RecordPanel } from '@/components/RecordPanel';
-import { Empty, ExhBadge, Panel, PartTile, Seg, Sets } from '@/components/ui';
+import { Empty, ExhBadge, Panel, PartTile, Seg, Sets, SetsBrief } from '@/components/ui';
 import {
   DayVideoAction,
   DayVideoButton,
@@ -243,10 +245,52 @@ function LineItem({
           <EntryVideoTile entry={e} />
         </div>
       </div>
+      <PrevSessions e={e} ex={ex} />
     </article>
   );
 }
 const Frag = ({ children }: { children: React.ReactNode }) => <>{children}</>;
+
+/** 前兩次：明細卡最下方，和當天同樣三欄對齊：日期（幾天前）＋精簡組數｜力竭＋感受（一行）｜影片；點日期看那天 */
+function PrevSessions({ e, ex }: { e: Entry; ex: Exercise }) {
+  const ds = useDs();
+  const navigate = useNavigate();
+  const prev = prevEntries(ds, e, 2);
+  if (!prev.length) return null;
+  return (
+    <div className="li-prev" aria-label="前兩次紀錄">
+      {prev.map((p) => (
+        <div className="pv" key={p.id}>
+          <div className="pv-s">
+            <span className="pv-w">
+              <button
+                type="button"
+                className="pv-d"
+                data-tip={`看 ${md(p.date)}（週${dowOf(p.date)}）的訓練紀錄`}
+                onClick={() => void navigate({ to: '/days/$date', params: { date: p.date } })}
+              >
+                {md(p.date)}
+              </button>
+              <span className="pv-ago">{daysBetween(p.date, e.date)} 天前</span>
+            </span>
+            <SetsBrief entry={p} ex={ex} />
+          </div>
+          <div className="pv-n">
+            {p.exhaustion && p.exhaustion !== '—' && <ExhBadge value={p.exhaustion} />}
+            {p.feel && (
+              <span className="pv-f" title={p.feel}>
+                {p.feel}
+              </span>
+            )}
+          </div>
+          <div className="pv-v">
+            <EntryVideoBadge entry={p} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 /** 熱身清單：當天依日誌順序列出；日期範圍時每個有熱身的日子一列。沒有熱身紀錄就不顯示 */
 function WarmupPanel({ dates }: { dates: DateStr[] }) {

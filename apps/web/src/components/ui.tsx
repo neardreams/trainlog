@@ -17,6 +17,7 @@ import {
   weightUnit,
   type Entry,
   type Exercise,
+  type SetBlock,
   type Tone,
 } from '@trainlog/core';
 import { gColor, PART_CHAR, PART_DARK } from '@/lib/chrome';
@@ -138,6 +139,54 @@ export function Sets({ entry, ex, mini }: { entry: Entry; ex: Exercise; mini?: b
         })}
       </div>
       {main}
+    </div>
+  );
+}
+
+/** 精簡組數（訓練紀錄卡的「前兩次」）：連續相同的組併成一格、前面標組數；文字紀錄（有氧等）只顯示一行 */
+export function SetsBrief({ entry, ex }: { entry: Entry; ex: Exercise }) {
+  const r = setBlocks(entry, ex);
+  if (r.kind === 'text')
+    return (
+      <span className="sets-brief-t" title={r.text}>
+        {r.text}
+      </span>
+    );
+  if (r.kind !== 'blocks') return <span className="na">{r.kind === 'practice' ? '動作練習' : '—'}</span>;
+  const ps = entryPerSide(entry, ex);
+  const kg = weightUnit(ps);
+  const runs: { b: SetBlock; n: number }[] = [];
+  for (const b of r.blocks) {
+    const last = runs.at(-1);
+    const same =
+      last &&
+      last.b.weightKg === b.weightKg &&
+      last.b.reps === b.reps &&
+      last.b.unit === b.unit &&
+      last.b.zeroLabel === b.zeroLabel;
+    if (same) last.n++;
+    else runs.push({ b, n: 1 });
+  }
+  return (
+    <div className="sets mini brief">
+      {runs.map(({ b, n }) => {
+        const w = b.zeroLabel ?? (b.weightKg == null ? '—' : fmtN(b.weightKg));
+        const reps = b.reps == null ? '？' : Number.isInteger(b.reps) ? String(b.reps) : b.reps.toFixed(1);
+        const tip = `${n > 1 ? `${n} 組 · ` : `第 ${b.no} 組 · `}${b.zeroLabel ? `${w} · ` : b.weightKg == null ? '' : `${ps ? '每邊 ' : ''}${w} kg × `}${reps} ${b.unit ?? '下'}`;
+        return (
+          <span key={b.no} className="set" title={tip}>
+            <span className="v">
+              {n > 1 && <small className="k">{n}組</small>}
+              {w}
+              {b.weightKg != null && b.weightKg > 0 && <small>{kg}</small>}
+              <span className="x">×</span>
+              {reps}
+              {b.unit && <small>{b.unit}</small>}
+            </span>
+          </span>
+        );
+      })}
+      {r.note && <span className="sets-brief-t">{r.note}</span>}
     </div>
   );
 }

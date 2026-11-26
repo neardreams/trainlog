@@ -18,6 +18,7 @@ import {
   parseCardio,
   parseDataset,
   parseRir,
+  prevEntries,
   resolveExercise,
   rirBucket,
   rirMin,
@@ -241,6 +242,11 @@ describe('推估 1RM 與破紀錄', () => {
     expect(estimate1rm([{ weightKg: 100, reps: 1 }], X('hack_squat'))).toBe(100);
     expect(estimate1rm([{ weightKg: 50, reps: 20 }], X('hack_squat'))).toBeNull();
     expect(estimate1rm([{ weightKg: 20, reps: 40 }], X('plank'))).toBeNull();
+  });
+  it('前兩次：同動作在這天之前最近 n 次，新到舊，不含當天', () => {
+    const e = E('leg_extension_single', '2026-11-25');
+    expect(prevEntries(ds, e, 2).map((x) => x.date)).toEqual(['2026-10-20', '2026-10-02']);
+    expect(prevEntries(ds, E('leg_extension_single', '2026-10-02'), 2)).toEqual([]);
   });
   it('同重量做更多下算 reps 破紀錄（10/2 30×10 → 11/25 30×12）', () => {
     const p = strengthPrEvents(ds).filter((x) => x.exerciseId === 'leg_extension_single');

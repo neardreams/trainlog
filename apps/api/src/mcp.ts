@@ -10,7 +10,7 @@ export const SERVER_INFO = { name: 'trainlog', title: 'TrainLog 訓練紀錄', v
 const INSTRUCTIONS =
   '一個人的重量訓練紀錄（繁體中文，重量單位 kg；perSide／「kg/邊」是每邊重量；' +
   '容量＝Σ 重量×次數，左右兩邊都算（每邊重量或每邊次數 ×2），秒數／米數動作與有氧沒有容量）。' +
-  '分析今天或最近一次訓練：直接 get_training_day（不給 date＝最近一個訓練日）加 includeRecentHistory: true，一次拿到每個動作的上次紀錄與先前最佳。' +
+  '分析今天或最近一次訓練：直接 get_training_day（不給 date＝最近一個訓練日）加 includeRecentHistory: true，一次拿到每個動作的前兩次紀錄（recentSessions 可調 1–5）與先前最佳。' +
   '當天的動作依實際執行順序（order）。整體狀況用 get_training_overview；動作名稱不確定時用 list_exercises 找 id；' +
   '某個動作的進步用 get_exercise_history（exercises 可一次查多個）。所有工具都是唯讀。' +
   '常用分析框架見 prompts（analyze_training_day、weekly_review、asymmetry_review、exercise_progress）。';

@@ -37,7 +37,7 @@ export const AGENT_PROMPTS: AgentPrompt[] = [
         `請分析 ${v(a.date, '最近一個訓練日')} 的訓練。`,
         `步驟：呼叫 get_training_day（date: ${a.date?.trim() ? `"${a.date.trim()}"` : '不給'}，includeRecentHistory: true）。通常這一次就夠，不必再逐一查動作歷程。`,
         '分析重點：',
-        '1. 每個動作和上一次（recent.previous）、先前最佳（recent.bestBefore）比：重量、次數、推估 1RM、RIR 有沒有進步；有破紀錄就點出來。',
+        '1. 每個動作和前兩次（recent.previous，新到舊）、先前最佳（recent.bestBefore）比：重量、次數、推估 1RM、RIR、力竭的走向是進步、停滯還是退步；有破紀錄就點出來。',
         '2. 執行順序的影響：預疲勞後做的動作，表現下降是否合理。',
         '3. 左右不對稱、疼痛或技術問題（feel、cue、condition、日誌原文）。',
         '4. 下次這些動作的重量／次數建議（依 RIR 與動作要點）。',

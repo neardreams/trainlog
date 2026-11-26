@@ -335,7 +335,14 @@ describe('AI 查詢', () => {
     expect(le.volumeKg).toBe(1980);
     expect(le.rirMin).toBe(0);
     expect(le.prs?.map((p) => p.kind).sort()).toEqual(['e1rm', 'reps']);
-    expect(le.recent?.previous).toMatchObject({ date: '2026-10-20', daysBefore: 36 });
+    expect(le.recent?.previous.map((p) => p.date)).toEqual(['2026-10-20', '2026-10-02']);
+    expect(le.recent?.previous[0]).toMatchObject({ date: '2026-10-20', daysBefore: 36 });
+    const one = agentDay(ds, '2026-11-25', { today: T, recentSessions: 1 });
+    if ('error' in one) throw new Error(one.error);
+    expect(one.entries[0]!.recent?.previous).toHaveLength(1);
+    const none = agentDay(ds, '2026-11-25', { today: T });
+    if ('error' in none) throw new Error(none.error);
+    expect('recent' in none.entries[0]!).toBe(false);
     expect(le.recent?.bestBefore).toMatchObject({ weightKg: 30, date: '2026-10-02' });
     expect(le.recent?.family?.[0]).toMatchObject({ exerciseId: 'leg_extension', date: '2026-09-10' });
     const fw = d.entries.find((e) => e.exercise === '農夫走路')!;

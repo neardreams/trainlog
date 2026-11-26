@@ -10,6 +10,7 @@ import {
   entryStrengthPrs,
   familyMembers,
   neglectedExercises,
+  prevEntries,
   progressOf,
   sortExercises,
   SORT_KEYS,
@@ -494,19 +495,20 @@ export function agentExercisesHistory(ds: Dataset, args: ExerciseHistoryArgs) {
 }
 
 export interface DayArgs {
-  /** 帶回每個動作的上一次紀錄、先前最佳、動作要點與同型動作的最近一次 */
+  /** 帶回每個動作的前幾次紀錄、先前最佳、動作要點與同型動作的最近一次 */
   includeRecentHistory?: boolean;
+  /** 前幾次（1–5，預設 2，和網頁明細卡一樣）；有給就等於 includeRecentHistory */
+  recentSessions?: number;
   /** 附上日誌全文（預設 true） */
   includeJournal?: boolean;
   /** date 沒給、或給 latest／today 時用 */
   today?: DateStr;
 }
 
-/** 某動作在某天之前的參考資料：上一次、先前最佳、動作要點、同型動作的最近一次 */
-function recentHistory(ds: Dataset, e: Entry) {
+/** 某動作在某天之前的參考資料：前 n 次（新到舊）、先前最佳、動作要點、同型動作的最近一次 */
+function recentHistory(ds: Dataset, e: Entry, n: number) {
   const ex = exOf(ds, e.exerciseId);
   const before = entriesOf(ds, e.exerciseId).filter((h) => h.date < e.date);
-  const prev = before.at(-1);
   const best = bestOf(before);
   const e1 = ex ? bestE1rmOf(ds, ex, before) : null;
   const family = ex
@@ -521,21 +523,23 @@ function recentHistory(ds: Dataset, e: Entry) {
     : [];
   return {
     sessionsBefore: before.length,
-    previous: prev
-      ? {
-          date: prev.date,
-          daysBefore: daysBetween(prev.date, e.date),
-          setsText: ex ? formatSets(prev, ex) : '',
-          maxWeightKg: getMaxWeight(prev.sets),
-          ...(() => {
-            const v = estimate1rm(prev.sets, ex);
-            return v != null ? { e1rmKg: v } : {};
-          })(),
-          volumeKg: volOf(ds, prev),
-          ...(prev.feel ? { feel: prev.feel } : {}),
-          ...(prev.exhaustion ? { exhaustion: prev.exhaustion } : {}),
-        }
-      : null,
+    previous: prevEntries(ds, e, n).map((p) => {
+      const v = estimate1rm(p.sets, ex);
+      const rir = rirMin(parseRir(p.feel));
+      const ev = entryVideo(ds, p);
+      return {
+        date: p.date,
+        daysBefore: daysBetween(p.date, e.date),
+        setsText: ex ? formatSets(p, ex) : '',
+        maxWeightKg: getMaxWeight(p.sets),
+        ...(v != null ? { e1rmKg: v } : {}),
+        volumeKg: volOf(ds, p),
+        ...(rir != null ? { rirMin: rir } : {}),
+        ...(p.feel ? { feel: p.feel } : {}),
+        ...(p.exhaustion ? { exhaustion: p.exhaustion } : {}),
+        ...(ev ? { videoUrl: youtubeUrl(ev.video.youtubeId, ev.segments[0]?.start ?? 0) } : {}),
+      };
+    }),
     bestBefore: best
       ? {
           weightKg: best.weight,
@@ -565,6 +569,11 @@ export function agentDay(ds: Dataset, dateArg?: string, args: DayArgs = {}) {
   if (!date) return { error: '沒有任何訓練紀錄' };
   if (!DATE_RE.test(date)) return { error: '日期格式需為 YYYY-MM-DD（或 latest、today）' };
   const entries = ds.entriesByDate.get(date) ?? [];
+  // 有給 recentSessions 就等於要 recent；只給 includeRecentHistory 時預設前 2 次（和網頁明細卡一樣）
+  const recentN =
+    args.recentSessions != null || args.includeRecentHistory
+      ? Math.min(Math.max(1, Math.round(args.recentSessions ?? 2)), 5)
+      : 0;
   const journal = ds.journals.get(date);
   const video = ds.videosByDate.get(date);
   if (!entries.length && !journal)
@@ -582,7 +591,7 @@ export function agentDay(ds: Dataset, dateArg?: string, args: DayArgs = {}) {
     /** 依實際執行順序（order） */
     entries: entries.map((e) => ({
       ...agentEntry(ds, e, { date: true }),
-      ...(args.includeRecentHistory ? { recent: recentHistory(ds, e) } : {}),
+      ...(recentN ? { recent: recentHistory(ds, e, recentN) } : {}),
     })),
     ...(args.includeJournal === false
       ? {}

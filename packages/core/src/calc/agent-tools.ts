@@ -140,7 +140,7 @@ export const AGENT_TOOLS: AgentTool[] = [
   {
     name: 'get_training_day',
     description:
-      '某一天的完整訓練紀錄，動作依實際執行順序：每個動作的組數、最高重量、推估 1RM、容量、破紀錄、感受與解析出的 RIR、力竭、身心狀態、教練提醒與影片段落（每段可直接跳到的 YouTube 網址），加上熱身清單、當天日誌全文、整支影片與網頁連結。date 不給（或給 latest）＝最近一個訓練日、today＝今天。分析某天的訓練時加 includeRecentHistory: true，會一併帶回每個動作的上一次紀錄、先前最佳、動作要點與同型動作的最近一次，通常就不必再逐一呼叫 get_exercise_history。沒有紀錄時回傳前後最近的訓練日。',
+      '某一天的完整訓練紀錄，動作依實際執行順序：每個動作的組數、最高重量、推估 1RM、容量、破紀錄、感受與解析出的 RIR、力竭、身心狀態、教練提醒與影片段落（每段可直接跳到的 YouTube 網址），加上熱身清單、當天日誌全文、整支影片與網頁連結。date 不給（或給 latest）＝最近一個訓練日、today＝今天。分析某天的訓練時加 includeRecentHistory: true，會一併帶回每個動作的前幾次紀錄（預設前 2 次，recentSessions 可調 1–5；每次含組數、推估 1RM、容量、RIR、力竭、感受與影片網址）、先前最佳、動作要點與同型動作的最近一次，通常就不必再逐一呼叫 get_exercise_history。沒有紀錄時回傳前後最近的訓練日。',
     inputSchema: {
       type: 'object',
       properties: {
@@ -152,7 +152,13 @@ export const AGENT_TOOLS: AgentTool[] = [
         includeRecentHistory: {
           type: 'boolean',
           description:
-            '每個動作附上 recent：上一次紀錄、先前最佳重量與推估 1RM、動作要點、同型動作的最近一次',
+            '每個動作附上 recent：previous（前幾次紀錄，新到舊）、先前最佳重量與推估 1RM、動作要點、同型動作的最近一次',
+        },
+        recentSessions: {
+          type: 'integer',
+          minimum: 1,
+          maximum: 5,
+          description: 'recent.previous 要帶前幾次（預設 2）；有給就自動附上 recent',
         },
         includeJournal: {
           type: 'boolean',
@@ -164,6 +170,7 @@ export const AGENT_TOOLS: AgentTool[] = [
     run: (ds, today, a) =>
       agentDay(ds, str(a.date), {
         includeRecentHistory: bool(a.includeRecentHistory),
+        recentSessions: num(a.recentSessions),
         includeJournal: bool(a.includeJournal),
         today,
       }),

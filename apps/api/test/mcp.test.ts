@@ -32,7 +32,7 @@ describe('MCP', () => {
     );
     const r = await result('initialize', { protocolVersion: '1999-01-01' });
     expect(r.protocolVersion).toBe(PROTOCOL_VERSIONS[0]);
-    expect(r.capabilities).toEqual({ tools: { listChanged: false } });
+    expect(r.capabilities).toEqual({ tools: { listChanged: false }, prompts: { listChanged: false } });
   });
 
   it('通知沒有回應', async () => {
@@ -61,6 +61,30 @@ describe('MCP', () => {
       arguments: { exercise: 'nope' },
     });
     expect(miss.isError).toBe(true);
+  });
+
+  it('prompts/list 與 prompts/get：產生分析框架；缺必填參數或未知 prompt 回錯誤', async () => {
+    const prompts = (await result('prompts/list')).prompts as { name: string; arguments: unknown[] }[];
+    expect(prompts.map((p) => p.name)).toContain('analyze_training_day');
+    const g = await result('prompts/get', {
+      name: 'analyze_training_day',
+      arguments: { date: '2026-10-19' },
+    });
+    const msg = (g.messages as { role: string; content: { type: string; text: string } }[])[0];
+    expect(msg?.role).toBe('user');
+    expect(msg?.content.text).toContain('get_training_day');
+    expect(msg?.content.text).toContain('"2026-10-19"');
+    const miss = await call('prompts/get', { name: 'exercise_progress', arguments: {} });
+    expect(miss && 'error' in miss && miss.error.code).toBe(INVALID_PARAMS);
+    const unknown = await call('prompts/get', { name: 'nope' });
+    expect(unknown && 'error' in unknown && unknown.error.code).toBe(INVALID_PARAMS);
+  });
+
+  it('get_training_day 不給日期：今天以前最近的訓練日', async () => {
+    const r = await result('tools/call', { name: 'get_training_day', arguments: { includeJournal: false } });
+    const body = JSON.parse((r.content as { text: string }[])[0]?.text ?? '');
+    expect(body.date).toBe('2026-10-19');
+    expect('journal' in body).toBe(false);
   });
 
   it('未知工具與方法回錯誤', async () => {

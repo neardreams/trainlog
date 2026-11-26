@@ -2,13 +2,13 @@
 import { datesInRange, type DateStr } from '../dates';
 import type { Dataset, Entry, Exercise } from '../domain/types';
 import { exhaustionBucket } from './labels';
-import { calcVolume, getMaxWeight } from './sets';
+import { getMaxWeight, volOf } from './sets';
 
 export const dayEntries = (ds: Dataset, date: DateStr): Entry[] => ds.entriesByDate.get(date) ?? [];
 export const daySets = (ds: Dataset, date: DateStr) =>
   dayEntries(ds, date).reduce((s, e) => s + e.sets.length, 0);
 export const dayVol = (ds: Dataset, date: DateStr) =>
-  dayEntries(ds, date).reduce((s, e) => s + (calcVolume(e.sets) ?? 0), 0);
+  dayEntries(ds, date).reduce((s, e) => s + (volOf(ds, e) ?? 0), 0);
 export function dayGroups(ds: Dataset, date: DateStr): string[] {
   const ents = dayEntries(ds, date);
   return ds.groupOrder.filter((g) => ents.some((e) => ds.exerciseById.get(e.exerciseId)?.group === g));
@@ -64,7 +64,7 @@ export function rangeEntries(ds: Dataset, centre: DateStr, days: number, sort: R
   const fn: Record<RangeSortKey, (a: Entry, b: Entry) => number> = {
     'date-desc': (a, b) => b.date.localeCompare(a.date),
     'date-asc': (a, b) => a.date.localeCompare(b.date),
-    'vol-desc': (a, b) => (calcVolume(b.sets) ?? 0) - (calcVolume(a.sets) ?? 0),
+    'vol-desc': (a, b) => (volOf(ds, b) ?? 0) - (volOf(ds, a) ?? 0),
     'wt-desc': (a, b) => (getMaxWeight(b.sets) ?? 0) - (getMaxWeight(a.sets) ?? 0),
     name: (a, b) => name(a).localeCompare(name(b), 'zh-TW'),
   };
@@ -92,7 +92,7 @@ export function groupRangeEntries(
     id,
     entries: list,
     maxWeight: Math.max(0, ...list.map((e) => getMaxWeight(e.sets) ?? 0)),
-    volume: list.reduce((s, e) => s + (calcVolume(e.sets) ?? 0), 0),
+    volume: list.reduce((s, e) => s + (volOf(ds, e) ?? 0), 0),
   });
   const bucket = (keyOf: (e: Entry) => string) => {
     const m = new Map<string, Entry[]>();
@@ -143,7 +143,7 @@ export function rangeStats(ds: Dataset, centre: DateStr, days: number): RangeSta
     trainingDays: dates.filter((d) => ds.entriesByDate.has(d)).length,
     entries: entries.length,
     sets: entries.reduce((s, e) => s + e.sets.length, 0),
-    volume: entries.reduce((s, e) => s + (calcVolume(e.sets) ?? 0), 0),
+    volume: entries.reduce((s, e) => s + (volOf(ds, e) ?? 0), 0),
     groups: ds.groupOrder.filter((g) => setsByGroup[g]),
     setsByGroup,
     exhaustion,
@@ -166,9 +166,9 @@ export function compareDays(ds: Dataset, a: DateStr, b: DateStr) {
       const oe = om.get(e.exerciseId);
       return {
         entry: e,
-        volume: calcVolume(e.sets),
+        volume: volOf(ds, e),
         maxWeight: getMaxWeight(e.sets),
-        other: oe ? { volume: calcVolume(oe.sets), maxWeight: getMaxWeight(oe.sets) } : null,
+        other: oe ? { volume: volOf(ds, oe), maxWeight: getMaxWeight(oe.sets) } : null,
       };
     });
   };

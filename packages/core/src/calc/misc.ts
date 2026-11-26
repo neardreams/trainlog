@@ -2,7 +2,7 @@
 import { DATE_RE, type DateStr } from '../dates';
 import type { Dataset, Exercise } from '../domain/types';
 import { daysAgo, entriesOf, lastDate } from './exercises';
-import { calcVolume, getMaxWeight } from './sets';
+import { calcVolume, entryVolume, getMaxWeight } from './sets';
 
 export const CSV_HEADER = [
   '動作',
@@ -24,14 +24,14 @@ export function exercisesCsv(ds: Dataset, rows: Exercise[], today: DateStr): str
     const lq = q[q.length - 1];
     const ld = lastDate(ds, ex.id);
     const mx = Math.max(0, ...h.map((x) => getMaxWeight(x.sets) ?? 0));
-    const tv = h.reduce((s, x) => s + (calcVolume(x.sets) ?? 0), 0);
+    const tv = h.reduce((s, x) => s + (entryVolume(x, ex) ?? 0), 0);
     return [
       ex.name,
       ex.group,
       ld,
       daysAgo(ld, today),
       lq ? (getMaxWeight(lq.sets) ?? '') : '',
-      lq ? (calcVolume(lq.sets) ?? '') : '',
+      lq ? (entryVolume(lq, ex) ?? '') : '',
       mx || '',
       tv || '',
       h.length,

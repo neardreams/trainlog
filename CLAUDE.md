@@ -130,10 +130,17 @@ type Exercise = {
   rep_unit?: '秒' | '米' // 次數欄改為秒數或米數
   zero_label?: string   // 重量為 0 時顯示：空重／自重／空槓
   per_side?: boolean    // 重量記每邊（單手單腳、雙手各一顆啞鈴、左右分開的器械或繩索）：畫面顯示「kg/邊」
+  reps_per_side?: boolean // 重量記合計、次數記每邊（左右輪流，例：雙手持啞鈴的後腳抬高蹲）：容量 ×2
+  family?: string       // 同型動作代號（同一個動作換器材／單雙邊，例：leg_extension＝坐姿踢腿機＋單腳腿伸展）；不合併，只關聯
+  archived?: boolean    // 使用者說不再做的動作：不列入久未練
+  pattern?: Pattern     // 動作模式：squat／lunge／hinge／hip_thrust／h_push／v_push／h_pull／v_pull／carry／core／isolation／activation／cardio
+  muscles?: Muscle[]    // 主要肌群（固定清單，見 packages/core/src/domain/taxonomy.ts）
+  secondary_muscles?: Muscle[] // 次要肌群
   history: HistoryEntry[] // 依日期由舊到新
 }
 type HistoryEntry = {
   date: string                      // YYYY-MM-DD（本地日期，不要轉 UTC）
+  order?: number                    // 當天第幾個做（1 起算，依日誌實際順序）；同一天每筆都有、剛好 1..N（2026-11-26 全部回填）
   sets: [number | null, number | null][] // [重量kg, 次數]；重量 null = 未記錄或無重量
   warmup_sets?: [number | null, number | null][] // 熱身組（格式同 sets）：另起一列顯示，不算進組數、容量、最高重量、破紀錄
   sets_display?: string             // 預設格式無法表達時的覆寫文字，有值就直接顯示它
@@ -185,13 +192,17 @@ type Videos = {
 
 | 名稱 | 定義 |
 |---|---|
-| 容量 `calcVolume(sets)` | Σ 重量×次數；**只要任一組重量或次數是 null 就回傳 null**；沒有組數回傳 null |
+| 容量 `entryVolume(entry, ex)` | Σ 重量×次數×倍數（`calcVolume(sets)` 是不含倍數的 Σ 重量×次數；**只要任一組重量或次數是 null 就回傳 null**；沒有組數回傳 null）。倍數：重量記每邊（`per_side`）或次數記每邊（`reps_per_side`）×2，不會疊成 ×4。**有氧、用秒數或米數計次（`rep_unit`）的動作沒有容量**（畫面改顯示合計秒數／米數）。2026-11-26 使用者同意改定義，之前沿用 v6 的單純 Σ 重量×次數 |
 | 最高重量 `getMaxWeight(sets)` | 重量 > 0 的最大值；沒有則 null |
-| 破紀錄（PR） | 某次的最高重量 **大於** 該動作先前所有紀錄的最高重量（需有先前紀錄）；有氧不計。器械輔助類目前也照「越高越好」判斷（已知限制） |
+| 破紀錄（PR） | 某次的最高重量 **大於** 該動作先前所有紀錄的最高重量（需有先前紀錄）；有氧不計。器械輔助類目前也照「越高越好」判斷（已知限制）。網站只用這個定義 |
+| AI 用的破紀錄 `strengthPrEvents` | weight（同上）；reps：在某個重量（或更重）做到的次數超過先前所有紀錄，同一天已是 weight 就不另算；e1rm：推估 1RM 超過先前所有紀錄 |
+| 推估 1RM `estimate1rm` | Epley：重量×(1＋次數/30)，1 下就是重量本身；只算 1–12 下、有重量的組；有氧與秒數／米數動作沒有；四捨五入到 0.1 |
+| RIR／有氧數值 | 執行時從 `feel`／`sets_display` 文字解析（`parseRir`、`parseCardio`），不寫回 JSON；寫法規則在 SKILL.md |
+| 每天的動作順序 | 依 history 的 `order`；沒有 order 的舊格式依動作在 `exercises` 的順序 |
 | 距今天數 | 以本地日期計算的整數天差 |
 | 上次訓練色 | ≤3 天 成功色、≤7 天 警示色、其他 危險色 |
 | 狀態篩選 | 近 7 天（≤7）、8–30 天、30 天以上 |
-| 久未練動作 | 練過 ≥3 次，且距上次 >21 天 |
+| 久未練動作 | 練過 ≥3 次，且距上次 >21 天；`archived` 的不算；同一個 `family` 裡有任何一個 21 天內練過也不算 |
 | 連續訓練週數 | 從本週往回數，每週（週一到週日）至少 1 個訓練日；本週還沒練就從上週開始數 |
 | 本週比較 | 本週（週一到今天）vs 上週同期（上週一到上週的今天） |
 | 訓練日 | `history` 中出現過的日期 |
@@ -242,7 +253,7 @@ type Videos = {
 - **動作庫**：標頭屬性列（動作數、7 天內／8–30 天／超過 30 天、有影片）；搜尋、部位多選、狀態篩選、篩選標籤、8 種排序（含點表頭排序）、依部位分組可收合、固定表頭、每列影片欄、展開明細（分頁：概覽／歷程／動作要點；概覽是欄位格＋趨勢圖＋動作要點＋最近 5 次）、展開全部／收合全部、匯出 CSV（UTF-8 BOM）、底部筆數統計。
 - **訓練紀錄**：上一個／下一個訓練日、跳到日期、今天；範圍（當天、±3、±7、±14、±30 天）；分組（依動作／日期／部位）與排序；分頁（訓練整理／日期比較／原始日誌）；當天影片面板；每個動作一張明細卡（組數、感受、力竭、身心狀態、動作提示、影片縮圖、破紀錄）；熱身面板（當天熱身清單；範圍時每天一列；沒記熱身就不顯示）；明細卡的熱身組在正式組上方另起一列（虛線、淡色，小尺寸的組數不顯示）；日期比較是多天並排的矩陣（當天＝前 3 個訓練日＋這天＋後 1 個；範圍＝範圍內的訓練日）；點動作下鑽看全歷程並標出來源日期、可返回；標頭屬性列（動作、組數、容量、部位分布、力竭分布、身心狀態）；≥1600 寬右側當日日誌。
 - **網址**：路徑網址 `/`、`/exercises`、`/days/YYYY-MM-DD`、`/spec`（2026-11-25 從 hash 路由改過來）；舊的 `#/…` 與 `?date=YYYY-MM-DD`、`?exercise=<id>`、`?view=exercise|day` 開頁時自動轉成新網址（`legacyUrlToPath`）；預設進總覽。
-- **給爬蟲與 AI**：建置時預先渲染（SSR）總覽、動作庫、每個訓練日；`llms.txt`、`sitemap.xml`；唯讀查詢工具有兩個入口：網頁的 WebMCP（`apps/web/src/lib/webmcp.ts`）與 Worker 的 MCP 伺服器 `https://trainlog.x-hu.com/mcp`（`apps/api`，Streamable HTTP、無狀態、不需驗證，可加成 Claude／ChatGPT 的自訂連接器）；工具清單 `AGENT_TOOLS` 與查詢邏輯都在 `packages/core/src/calc/agent*.ts`，新增工具只改那裡。`/mcp` 的資料在建置時打包進 Worker（`tools/prerender.mjs` 驗證後寫出 `apps/api/src/generated/dataset.txt`，未納入版本控制），Worker 啟動時建好資料並熱身；免費方案每個請求只有 10ms CPU，新增工具後用 `npx wrangler tail trainlog --format json` 看 `cpuTime`。瀏覽器端用 `createRoot` 整個換掉預先渲染的 HTML（不 hydrate），所以元件不必和建置時輸出完全一致，但模組最上層不能直接碰 `document`／`window`（Node 裡沒有）。
+- **給爬蟲與 AI**：建置時預先渲染（SSR）總覽、動作庫、每個訓練日；`llms.txt`、`sitemap.xml`；唯讀查詢工具有兩個入口：網頁的 WebMCP（`apps/web/src/lib/webmcp.ts`）與 Worker 的 MCP 伺服器 `https://trainlog.x-hu.com/mcp`（`apps/api`，Streamable HTTP、無狀態、不需驗證，可加成 Claude／ChatGPT 的自訂連接器）；工具清單 `AGENT_TOOLS`、分析框架 `AGENT_PROMPTS`（MCP prompts：analyze_training_day、weekly_review、asymmetry_review、exercise_progress）與查詢邏輯都在 `packages/core/src/calc/agent*.ts`，新增工具只改那裡。`get_training_day` 不給日期＝最近一個訓練日，加 `includeRecentHistory` 一次帶回每個動作的上次紀錄與先前最佳；`get_exercise_history` 的 `exercises` 可一次查多個動作。`/mcp` 的資料在建置時打包進 Worker（`tools/prerender.mjs` 驗證後寫出 `apps/api/src/generated/dataset.txt`，未納入版本控制），Worker 啟動時建好資料並熱身；免費方案每個請求只有 10ms CPU，新增工具後用 `npx wrangler tail trainlog --format json` 看 `cpuTime`。瀏覽器端用 `createRoot` 整個換掉預先渲染的 HTML（不 hydrate），所以元件不必和建置時輸出完全一致，但模組最上層不能直接碰 `document`／`window`（Node 裡沒有）。
 
 ---
 

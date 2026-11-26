@@ -1,6 +1,7 @@
 // 領域模型：正規化後的資料結構，對應日後資料庫的四張表（exercises、sessions、entries、sets）。
 // 畫面、計算邏輯、日後的 API 都使用這一層；欄位一律 camelCase、日期為本地 YYYY-MM-DD。
 import type { DateStr } from '../dates';
+import type { Muscle, Pattern } from './taxonomy';
 
 export type ExerciseKind = 'strength' | 'cardio';
 
@@ -17,6 +18,17 @@ export interface Exercise {
   zeroLabel?: string;
   /** 重量記每邊（一手／一腳／一側），畫面顯示「kg/邊」 */
   perSide?: boolean;
+  /** 重量記合計、次數記每邊（左右輪流做）：容量 ×2 */
+  repsPerSide?: boolean;
+  /** 同型動作的代號（同一個動作換器材或單雙邊）；沒有同型動作就沒有這個欄位 */
+  family?: string;
+  /** 不再做的動作（不列入久未練） */
+  archived?: boolean;
+  pattern?: Pattern;
+  /** 主要肌群（沒標就是空陣列） */
+  muscles: Muscle[];
+  /** 次要肌群 */
+  secondaryMuscles: Muscle[];
   /** 在原始資料中的順序（排序的穩定基準） */
   order: number;
 }
@@ -43,6 +55,8 @@ export interface Entry {
   distanceKm?: number;
   /** 有值時覆蓋動作的 perSide（同一動作混了啞鈴與槓鈴時） */
   perSide?: boolean;
+  /** 當天第幾個做的動作（1 起算）；舊資料沒有時依動作主檔順序 */
+  order?: number;
 }
 
 /** 當天熱身清單的一項（滾筒放鬆、伸展、活動度、啟動動作…） */
@@ -55,7 +69,7 @@ export interface WarmupItem {
 /** 訓練日（有訓練或有日誌的日子） */
 export interface Session {
   date: DateStr;
-  /** 當天的動作（依原始資料的動作順序） */
+  /** 當天的動作（依實際執行順序） */
   entryIds: string[];
   hasJournal: boolean;
 }
@@ -90,7 +104,7 @@ export interface Dataset {
   exerciseById: ReadonlyMap<string, Exercise>;
   /** 每個動作的紀錄，依日期由舊到新 */
   entriesByExercise: ReadonlyMap<string, Entry[]>;
-  /** 每一天的紀錄，依動作順序 */
+  /** 每一天的紀錄，依實際執行順序（order；沒有 order 時依動作主檔順序） */
   entriesByDate: ReadonlyMap<DateStr, Entry[]>;
   /** 有訓練的日期，由舊到新（不含只有日誌的日子） */
   trainingDates: DateStr[];

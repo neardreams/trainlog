@@ -2,7 +2,7 @@
 import type { ReactNode } from 'react';
 import clsx from 'clsx';
 import {
-  calcVolume,
+  volOf,
   dayEntries,
   entryVideo,
   exerciseVideos,
@@ -461,7 +461,7 @@ export function SpecPage() {
                       </span>
                     </td>
                     <td className="r num">{e.sets.length}</td>
-                    <td className="r num b">{fmtN(calcVolume(e.sets) ?? 0)}</td>
+                    <td className="r num b">{fmtN(volOf(ds, e) ?? 0)}</td>
                   </tr>
                 ))}
               </tbody>

@@ -1,6 +1,7 @@
 // @trainlog/core 公開 API（瀏覽器、App、日後的後端都可使用；不含任何 Node 專用模組）
 export * from './dates';
 export * from './domain/types';
+export * from './domain/taxonomy';
 export { fromRawJson, stripJournalHeading } from './adapters/fromRawJson';
 export { parseDataset, type ParseResult } from './parse';
 export * from './calc/sets';
@@ -13,4 +14,6 @@ export * from './calc/misc';
 export * from './calc/videos';
 export * from './calc/agent';
 export * from './calc/agent-tools';
+export * from './calc/agent-prompts';
+export * from './calc/notes';
 export type { DataSource, WritableDataSource } from './ports/DataSource';

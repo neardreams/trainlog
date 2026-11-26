@@ -1,7 +1,7 @@
 // 動作層級的統計、排序、篩選
 import { daysBetween, type DateStr } from '../dates';
 import type { Dataset, Entry, Exercise } from '../domain/types';
-import { calcVolume, cardioTotals, getMaxWeight, isCardio } from './sets';
+import { calcVolume, cardioTotals, entryVolume, estimate1rm, getMaxWeight, isCardio } from './sets';
 
 export const entriesOf = (ds: Dataset, exId: string): Entry[] => ds.entriesByExercise.get(exId) ?? [];
 
@@ -44,9 +44,9 @@ export function summarize(ds: Dataset, ex: Exercise, today: DateStr): ExerciseSu
     daysAgo: last ? daysAgo(last.date, today) : null,
     latestQualified: lq,
     latestWeight: lq ? getMaxWeight(lq.sets) : null,
-    latestVolume: lq ? calcVolume(lq.sets) : null,
+    latestVolume: lq ? entryVolume(lq, ex) : null,
     maxWeight: Math.max(0, ...h.map((x) => getMaxWeight(x.sets) ?? 0)),
-    totalVolume: h.reduce((s, x) => s + (calcVolume(x.sets) ?? 0), 0),
+    totalVolume: h.reduce((s, x) => s + (entryVolume(x, ex) ?? 0), 0),
     cardio: cardioTotals(h),
     lastEntry: last,
   };
@@ -98,7 +98,7 @@ export function sortExercises(ds: Dataset, key: SortKey): Exercise[] {
     case 'maxwt':
       return by((e) => Math.max(0, ...entriesOf(ds, e.id).map((h) => getMaxWeight(h.sets) ?? 0)));
     case 'volume':
-      return by((e) => entriesOf(ds, e.id).reduce((s, h) => s + (calcVolume(h.sets) ?? 0), 0));
+      return by((e) => entriesOf(ds, e.id).reduce((s, h) => s + (entryVolume(h, e) ?? 0), 0));
     case 'sessions':
       return by((e) => entriesOf(ds, e.id).length);
     case 'progress':
@@ -123,10 +123,25 @@ export function filterExercises(ds: Dataset, key: SortKey, f: ExerciseFilter, to
   );
 }
 
-/** 久未練：練過 ≥3 次、距上次 >21 天；依次數多到少 */
+/** 同型動作（同一個 family 的其他動作，不含自己）；沒有 family 回傳空陣列 */
+export function familyMembers(ds: Dataset, ex: Exercise): Exercise[] {
+  return ex.family ? ds.exercises.filter((e) => e.family === ex.family && e.id !== ex.id) : [];
+}
+
+/**
+ * 久未練：練過 ≥3 次、距上次 >21 天；依次數多到少。
+ * 不再做的動作（archived）不算；同型動作（family）裡有任何一個 21 天內練過也不算（例：改做單腳腿伸展後，坐姿踢腿機不算久未練）。
+ */
 export function neglectedExercises(ds: Dataset, today: DateStr, limit = 6): Exercise[] {
+  const stale = (id: string) => daysAgo(lastDate(ds, id), today) > 21;
   return ds.exercises
-    .filter((e) => entriesOf(ds, e.id).length >= 3 && daysAgo(lastDate(ds, e.id), today) > 21)
+    .filter(
+      (e) =>
+        !e.archived &&
+        entriesOf(ds, e.id).length >= 3 &&
+        stale(e.id) &&
+        familyMembers(ds, e).every((m) => stale(m.id)),
+    )
     .sort((a, b) => entriesOf(ds, b.id).length - entriesOf(ds, a.id).length)
     .slice(0, limit);
 }
@@ -174,6 +189,96 @@ export function entryPr(ds: Dataset, entry: Pick<Entry, 'exerciseId' | 'date'>):
   return m.get(`${entry.exerciseId}|${entry.date}`);
 }
 
+/**
+ * 給 AI 分析用的破紀錄（網站的「破紀錄」仍只看最高重量，見 prEvents）：
+ * - weight：最高重量超過先前所有紀錄（同 prEvents）
+ * - reps：在某個重量（或更重）做到的次數超過先前所有紀錄（同一天已經是 weight 破紀錄就不另外算）；
+ *   秒數／米數動作就是撐更久、走更遠
+ * - e1rm：推估 1RM（estimate1rm）超過先前所有紀錄
+ * 都需要有先前紀錄；有氧不計；依日期新到舊。
+ */
+export type PrKind = 'weight' | 'reps' | 'e1rm';
+export interface StrengthPr {
+  kind: PrKind;
+  exerciseId: string;
+  date: DateStr;
+  /** weight／e1rm：舊紀錄 → 新紀錄（kg） */
+  from?: number;
+  to?: number;
+  /** reps：那一組的重量（無重量記 0）、先前在這個重量或更重做到的最多次數、這次的次數 */
+  weightKg?: number;
+  prevReps?: number;
+  reps?: number;
+}
+const strengthPrCache = new WeakMap<Dataset, readonly StrengthPr[]>();
+export function strengthPrEvents(ds: Dataset): readonly StrengthPr[] {
+  let v = strengthPrCache.get(ds);
+  if (!v) {
+    v = Object.freeze(computeStrengthPrs(ds));
+    strengthPrCache.set(ds, v);
+  }
+  return v;
+}
+function computeStrengthPrs(ds: Dataset): StrengthPr[] {
+  const out: StrengthPr[] = [];
+  for (const ex of ds.exercises) {
+    if (isCardio(ex)) continue;
+    let bestW: number | null = null;
+    let bestE: number | null = null;
+    /** 重量 → 做到的最多次數（先前所有紀錄） */
+    const repsAt = new Map<number, number>();
+    const prevRepsAtLeast = (w: number) => {
+      let r: number | null = null;
+      for (const [k, n] of repsAt) if (k >= w && (r == null || n > r)) r = n;
+      return r;
+    };
+    for (const h of entriesOf(ds, ex.id)) {
+      const w = getMaxWeight(h.sets);
+      const e1 = estimate1rm(h.sets, ex);
+      const weightPr = w != null && bestW != null && w > bestW;
+      if (weightPr)
+        out.push({ kind: 'weight', exerciseId: ex.id, date: h.date, from: bestW as number, to: w });
+      if (e1 != null && bestE != null && e1 > bestE)
+        out.push({ kind: 'e1rm', exerciseId: ex.id, date: h.date, from: bestE, to: e1 });
+      if (!weightPr) {
+        let cand: { weightKg: number; reps: number; prevReps: number } | null = null;
+        for (const s of h.sets) {
+          if (s.reps == null) continue;
+          const sw = s.weightKg ?? 0;
+          const prev = prevRepsAtLeast(sw);
+          if (prev == null || s.reps <= prev) continue;
+          if (!cand || sw > cand.weightKg || (sw === cand.weightKg && s.reps > cand.reps))
+            cand = { weightKg: sw, reps: s.reps, prevReps: prev };
+        }
+        if (cand) out.push({ kind: 'reps', exerciseId: ex.id, date: h.date, ...cand });
+      }
+      if (w != null && (bestW == null || w > bestW)) bestW = w;
+      if (e1 != null && (bestE == null || e1 > bestE)) bestE = e1;
+      for (const s of h.sets)
+        if (s.reps != null) {
+          const sw = s.weightKg ?? 0;
+          repsAt.set(sw, Math.max(repsAt.get(sw) ?? 0, s.reps));
+        }
+    }
+  }
+  return out.sort((a, b) => b.date.localeCompare(a.date));
+}
+
+const strengthPrByEntry = new WeakMap<Dataset, Map<string, StrengthPr[]>>();
+/** 這筆紀錄的所有破紀錄（weight／reps／e1rm）；沒有回傳空陣列 */
+export function entryStrengthPrs(ds: Dataset, entry: Pick<Entry, 'exerciseId' | 'date'>): StrengthPr[] {
+  let m = strengthPrByEntry.get(ds);
+  if (!m) {
+    m = new Map();
+    for (const p of strengthPrEvents(ds)) {
+      const k = `${p.exerciseId}@${p.date}`;
+      m.set(k, [...(m.get(k) ?? []), p]);
+    }
+    strengthPrByEntry.set(ds, m);
+  }
+  return m.get(`${entry.exerciseId}@${entry.date}`) ?? [];
+}
+
 /** 重量進步幅度：最後一次最高重量 − 第一次（有重量的紀錄不到 2 次時沒有） */
 export function progressOf(ds: Dataset, exId: string): { first: number; last: number; delta: number } | null {
   const qs = entriesOf(ds, exId).filter((h) => getMaxWeight(h.sets));
@@ -214,7 +319,7 @@ export function trendSeries(
     };
   return {
     primary: h.flatMap((x) => {
-      const v = calcVolume(x.sets);
+      const v = entryVolume(x, ex);
       return v == null ? [] : [[x.date, v] as [DateStr, number]];
     }),
     secondary: h.flatMap((x) => {

@@ -121,7 +121,7 @@ export function llmsTxt(ds: Dataset): string {
 
 > 一個人的重量訓練紀錄與分析網站（繁體中文）。共 ${o.trainingDays} 個訓練日（${o.firstDate ? slash(o.firstDate) : '—'}–${o.lastDate ? slash(o.lastDate) : '—'}）、${o.exerciseCount} 個動作，部位：${o.groups.join('、')}。
 
-每一頁都已預先渲染成 HTML，不執行 JavaScript 也讀得到內容。重量單位是公斤；「kg/邊」表示每邊（單手、單腳或一側）的重量；容量＝Σ 重量×次數。
+每一頁都已預先渲染成 HTML，不執行 JavaScript 也讀得到內容。重量單位是公斤；「kg/邊」表示每邊（單手、單腳或一側）的重量；容量＝Σ 重量×次數，左右兩邊都算（每邊重量或每邊次數 ×2），秒數或米數計次的動作（棒式、農夫走路…）不算容量。每天的動作依實際執行順序排列。
 
 ## 頁面
 

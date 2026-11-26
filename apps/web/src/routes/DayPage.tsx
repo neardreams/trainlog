@@ -5,7 +5,6 @@ import clsx from 'clsx';
 import { Navigate, useNavigate } from '@tanstack/react-router';
 import {
   EXHAUSTION_ORDER,
-  calcVolume,
   compareColumns,
   dayEntries,
   dowOf,
@@ -13,6 +12,7 @@ import {
   entryPerSide,
   entryPr,
   entryVideo,
+  entryVolume,
   exerciseOf,
   exercisesOnDates,
   fmtN,
@@ -31,6 +31,7 @@ import {
   stripJournalHeading,
   topSetIndex,
   trainingDayNo,
+  unitTotal,
   weightUnit,
   type DateStr,
   type Entry,
@@ -106,7 +107,8 @@ function LineItem({
   const ex = exerciseOf(ds, e);
   const pr = entryPr(ds, e);
   const max = getMaxWeight(e.sets);
-  const vol = calcVolume(e.sets);
+  const vol = entryVolume(e, ex);
+  const total = unitTotal(e, ex);
   const stats = isCardio(ex) ? (
     <>
       {e.minutes != null && (
@@ -133,9 +135,17 @@ function LineItem({
           容量<b>{fmtN(vol)}</b>kg
         </span>
       )}
+      {total != null && (
+        <span>
+          合計<b>{fmtN(total)}</b>
+          {ex.repUnit}
+        </span>
+      )}
     </>
   );
-  const hasStats = isCardio(ex) ? e.minutes != null || e.distanceKm != null : max != null || vol != null;
+  const hasStats = isCardio(ex)
+    ? e.minutes != null || e.distanceKm != null
+    : max != null || vol != null || total != null;
   const notes = [
     e.feel && (
       <>

@@ -22,8 +22,11 @@ const DATASET = fromRawJson(RAW.training, RAW.journals, RAW.videos);
 {
   const last = DATASET.trainingDates.at(-1) ?? '2026-01-01';
   const sample: Record<string, Record<string, unknown>> = {
-    get_exercise_history: { exercise: DATASET.exercises[0]?.id ?? '' },
-    get_training_day: { date: last },
+    get_exercise_history: {
+      exercises: DATASET.exercises.slice(0, 2).map((e) => e.id),
+      includeFamily: true,
+    },
+    get_training_day: { date: last, includeRecentHistory: true },
     compare_training_days: { a: last, b: DATASET.trainingDates.at(-2) ?? last },
     search_notes: { query: '的' },
   };

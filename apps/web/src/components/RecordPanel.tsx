@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useNavigate } from '@tanstack/react-router';
 import {
-  calcVolume,
   daysAgo,
   dowOf,
   entriesOf,
@@ -15,6 +14,8 @@ import {
   progressOf,
   summarize,
   trendPoints,
+  entryVolume,
+  unitTotal,
   weightUnit,
   type DateStr,
   type Entry,
@@ -35,7 +36,16 @@ export function VolCell({ ex, h }: { ex: Exercise; h: Entry }) {
     ].filter(Boolean);
     return <>{b.length ? b.join(' · ') : <span className="na">—</span>}</>;
   }
-  const v = calcVolume(h.sets);
+  // 秒數／米數動作沒有容量，改顯示合計秒數或米數
+  const t = unitTotal(h, ex);
+  if (t != null)
+    return (
+      <>
+        {fmtN(t)}
+        <small>{ex.repUnit}</small>
+      </>
+    );
+  const v = entryVolume(h, ex);
   return v != null ? (
     <>
       {fmtN(v)}

@@ -2,6 +2,7 @@
 // 只用於讀檔與驗證；畫面與計算一律使用 domain/ 的領域模型（ESLint 禁止 apps 匯入本檔）。
 import { z } from 'zod';
 import { DATE_RE } from '../dates';
+import { MUSCLES, PATTERNS } from '../domain/taxonomy';
 
 const optStr = z.string().nullish();
 
@@ -22,6 +23,8 @@ export const RawHistoryEntrySchema = z
     distance_km: z.number().nullish(),
     /** 這筆紀錄的重量是不是每邊（一手／一腳／一側）的重量；有值時覆蓋動作的 per_side（同一動作混了啞鈴與槓鈴時用） */
     per_side: z.boolean().optional(),
+    /** 當天第幾個做的動作（1 起算，依日誌的實際執行順序）；同一天要嘛全部都有、要嘛全部都沒有 */
+    order: z.number().int().positive().optional(),
   })
   .strict();
 
@@ -37,6 +40,21 @@ export const RawExerciseSchema = z
     zero_label: z.string().optional(),
     /** 重量記每邊（一手／一腳／一側）：單手單腳動作、雙手各拿一顆啞鈴、左右分開的器械或繩索 */
     per_side: z.boolean().optional(),
+    /** 重量記合計、次數記每邊（左右輪流做，例：雙手持啞鈴的後腳抬高蹲）：容量 ×2 */
+    reps_per_side: z.boolean().optional(),
+    /** 同型動作（同一個動作換器材、換單雙邊）共用的代號，例：坐姿踢腿機與單腳腿伸展都是 leg_extension */
+    family: z
+      .string()
+      .regex(/^[a-z0-9_]+$/, 'family 必須是小寫英文、數字與底線')
+      .optional(),
+    /** 不再做的動作：不列入久未練 */
+    archived: z.boolean().optional(),
+    /** 動作模式 */
+    pattern: z.enum(PATTERNS).optional(),
+    /** 主要肌群 */
+    muscles: z.array(z.enum(MUSCLES)).min(1).optional(),
+    /** 次要肌群 */
+    secondary_muscles: z.array(z.enum(MUSCLES)).min(1).optional(),
     history: z.array(RawHistoryEntrySchema),
   })
   .strict();
@@ -90,6 +108,22 @@ export const RawTrainingDataSchema = z
           });
       });
     });
+    // 動作順序：同一天要嘛全部都有 order、要嘛全部都沒有；有的話必須剛好是 1..N
+    const byDate = new Map<string, (number | undefined)[]>();
+    for (const e of d.exercises)
+      for (const h of e.history) byDate.set(h.date, [...(byDate.get(h.date) ?? []), h.order]);
+    for (const [date, orders] of byDate) {
+      const given = orders.filter((o): o is number => o != null);
+      if (!given.length) continue;
+      const ok =
+        given.length === orders.length && [...given].sort((a, b) => a - b).every((o, i) => o === i + 1);
+      if (!ok)
+        ctx.addIssue({
+          code: 'custom',
+          path: ['exercises'],
+          message: `${date} 的 order 必須每筆都有且剛好是 1..${orders.length}（目前：${orders.map((o) => o ?? '缺').join(', ')}）`,
+        });
+    }
   });
 
 export const RawJournalsSchema = z.record(

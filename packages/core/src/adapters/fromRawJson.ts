@@ -21,6 +21,12 @@ export function fromRawJson(
     ...(e.rep_unit ? { repUnit: e.rep_unit } : {}),
     ...(e.zero_label ? { zeroLabel: e.zero_label } : {}),
     ...(e.per_side ? { perSide: true } : {}),
+    ...(e.reps_per_side ? { repsPerSide: true } : {}),
+    ...(e.family ? { family: e.family } : {}),
+    ...(e.archived ? { archived: true } : {}),
+    ...(e.pattern ? { pattern: e.pattern } : {}),
+    muscles: e.muscles ?? [],
+    secondaryMuscles: e.secondary_muscles ?? [],
     order,
   }));
   const entriesByExercise = new Map<string, Entry[]>();
@@ -42,6 +48,7 @@ export function fromRawJson(
       ...(h.minutes !== undefined ? { minutes: h.minutes } : {}),
       ...(h.distance_km != null ? { distanceKm: h.distance_km } : {}),
       ...(h.per_side != null ? { perSide: h.per_side } : {}),
+      ...(h.order != null ? { order: h.order } : {}),
     }));
     entriesByExercise.set(e.id, list);
     for (const en of list) {
@@ -50,6 +57,8 @@ export function fromRawJson(
       else entriesByDate.set(en.date, [en]);
     }
   });
+  // 每天依實際執行順序（order）排；沒有 order 的排在後面、保持動作主檔順序（sort 是穩定排序）
+  for (const list of entriesByDate.values()) list.sort((a, b) => (a.order ?? 1e9) - (b.order ?? 1e9));
   const trainingDates = [...entriesByDate.keys()].sort();
   const journals = new Map<DateStr, string>(Object.entries(rawJournals));
   const allDates = [...new Set([...trainingDates, ...journals.keys()])].sort();

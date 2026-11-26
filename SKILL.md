@@ -53,7 +53,8 @@ PYTHONIOENCODING=utf-8 python scripts/find_sources.py --json   # 給你讀（讀
 ```
 
 它會列出：
-- **日誌來源**：iCloud Drive 的 `Apple日誌條目/Entries`（目前是 `~/iCloudDrive/daily/Apple日誌條目/Entries`）和 FreeFileSync 複本 `../raw/Entries`，自動挑最新的那個（複本常落後，例如 2026-11-19 時複本只到 10/30）。Step 1 的 `--entries-dir` 用它給的路徑。
+- **Taildrop**（使用者 2026-11-25 起改用，因為 iCloud 同步常延遲）：iOS 27.3 是在「日誌」App 裡匯出，匯出的是資料夾（`index.html`、`Entries/`、`Resources/`），不是 ZIP；Tailscale 的分享選單不收資料夾。所以使用者在「檔案」App 長按匯出的資料夾 →「壓縮」，把 ZIP 用分享選單的 Tailscale 傳到這台電腦（`marcopc`），或是直接選 `Entries` 裡的幾個 `.html` 傳。Windows 版 Tailscale 收到的檔案通常直接存進「下載」（2026-11-25 實測，ZIP 是 `Downloads\Apple日誌條目.zip`），不進收件匣。腳本會先跑 `tailscale file get` 把收件匣移到 `../raw/taildrop/`：零散的 `YYYY-MM-DD.html`（收件匣或「下載」裡的）收進 `../raw/taildrop/loose/Entries`；ZIP（`../raw/taildrop/` 或「下載」，最近 60 天）只解出 `Entries/*.html` 到 `../raw/taildrop/<ZIP 檔名>/Entries`。`../raw/taildrop/` 底下所有 `Entries` 資料夾都是最優先的日誌來源，最近收到的在前。沒收到時照舊用 iCloud。`--no-taildrop` 可以跳過。
+- **日誌來源**：iCloud Drive 的 `Apple日誌條目/Entries`（目前是 `~/iCloudDrive/daily/Apple日誌條目/Entries`）和 FreeFileSync 複本 `../raw/Entries`，自動挑最新的那個（複本常落後，例如 2026-11-19 時複本只到 10/30）。Step 1 的 `--entries-dir` 用它給的路徑。iCloud 的檔案可能只是雲端佔位檔（`attrib` 顯示 `O`），讀取時會「Permission denied」；先 `attrib +P -U "<檔案>"` 強制下載再同步（2026-11-25 的 11/25 條目就是這樣）。
 - **還沒同步的日誌日期**（不在 `journals_raw.json` 的）。
 - **新影片**：iCloud 照片資料夾（`~/Pictures/iCloud Photos/Photos`，實際在 `E:\iCloudPhoto\Photos`）裡，local-media 最後一個影片日之後拍的 .MOV/.MP4，依拍攝日分組，標出那天有沒有日誌、哪些已匯入（用檔案大小比對；IMG 編號會重複使用，不能靠編號）。
 - **codex.exe 的目前路徑**（hash 資料夾每次更新都會變）。
@@ -99,9 +100,14 @@ python3 <trainlog>/scripts/sync_journals.py \
       "group": "腿部",
       "icon": "🏋️",
       "notes": ["技術要點1", "技術要點2"],
+      "family": "barbell_squat",
+      "pattern": "squat",
+      "muscles": ["股四頭", "臀"],
+      "secondary_muscles": ["上背", "腹"],
       "history": [
         {
           "date": "2026-03-24",
+          "order": 2,
           "sets": [[45, 10], [45, 10], [45, 10], [45, 10]],
           "warmup_sets": [[20, 10], [35, 5]],
           "feel": "正常訓練",
@@ -125,6 +131,13 @@ python3 <trainlog>/scripts/sync_journals.py \
 
 - `warmup_sets`（可選）：那個動作的熱身組，格式同 `sets`、依日誌順序；沒有熱身組就不要寫（不能是空陣列）。網站把它另起一列顯示，**不算進組數、容量、最高重量、破紀錄**。
 - `warmups`（可選）：每天的熱身清單，key 是日期、依日誌順序；每項 `name`（動作名稱）＋可選的 `detail`（組數次數、秒數、部位或做法，例：「2 組 × 10 下」「40 秒」「背、開胸椎」）。沒有熱身就不要寫那一天。
+- `order`（**必填**，2026-11-26 起）：這筆是當天第幾個做的動作，1 起算，**依日誌的實際執行順序**（不是動作在 `exercises` 裡的順序）。同一天每筆都要有、剛好是 1..N（`pnpm validate:data` 會檢查）。新增一天時，那天所有動作一起編號；超級組照日誌提到的先後。熱身段落裡記成動作的正式訓練（推雪橇等）照它在日誌出現的位置排。這個順序影響分析（預疲勞後做的動作重量自然較低）。
+- 動作分類（新建 exercise 時**一定要填** `pattern` 與 `muscles`；值只能用下面列的，`packages/core/src/domain/taxonomy.ts` 是權威來源）：
+  - `pattern`：`squat` 雙腳蹲（膝主導）、`lunge` 單腳蹲／分腿／弓箭步、`hinge` 髖鉸鏈（硬舉、RDL、擺盪）、`hip_thrust` 臀推／臀橋、`h_push` 水平推（臥推、胸推、伏地挺身、雙槓）、`v_push` 垂直推（肩推）、`h_pull` 水平拉（划船、面拉）、`v_pull` 垂直拉（下拉、引體）、`carry` 負重行走（農夫走路、推雪橇）、`core` 核心（棒式、捲腹、抗旋轉）、`isolation` 單關節（腿伸展、腿後勾、彎舉、側平舉、夾胸、提踵…）、`activation` 啟動／矯正（彈力繩外旋、風車、Arm Bar…）、`cardio` 有氧
+  - `muscles`（主要肌群）／`secondary_muscles`（次要肌群，可省略）：股四頭、腿後、臀、內收、髖外展、小腿、下背、闊背、上背、斜方、胸、前三角、側三角、後三角、肩袖、前鋸、二頭、三頭、前臂、腹、腹斜、髖屈、心肺（有氧）。統計時主要肌群算 1 組、次要算 0.5 組，所以只列真正出力的
+- `family`（可選）：同一個動作換器材、換握法或單／雙邊的版本共用一個代號（例：`leg_extension` 坐姿踢腿機＋單腳腿伸展、`barbell_squat` 背槓／熊抱槓／SSB、`lateral_raise` 各種側平舉）。新動作若是既有動作的變化式，就沿用那個動作的 `family`（沒有就兩個一起加）。同型動作裡有一個 21 天內練過，其他的就不算久未練；AI 查歷程時也會一併參考
+- `archived`（可選）：使用者說不再做的動作設 `true`，不列入久未練。**只在使用者明確說不做了才設**，不要自己推測
+- `reps_per_side`（可選）：重量記**合計**、次數記**每邊**（左右輪流做）的動作設 `true`，例：雙手持啞鈴的後腳抬高蹲、分腿蹲、Pallof press、左右各轉的斜向捲腹。容量會 ×2。已設 `per_side` 的動作不用再設（每邊重量本來就 ×2）
 
 #### 截取規則
 
@@ -136,6 +149,7 @@ python3 <trainlog>/scripts/sync_journals.py \
    - 如果是全新動作 → 建立新的 exercise 物件（需確認 group 分類）
 3. **截取欄位**：
    - `date`：該日誌的日期
+   - `order`：當天第幾個做（依日誌順序，見上面）
    - `sets`：每組的 `[重量kg, 次數]`，如果沒有明確重量就用 `[null, 次數]`
    - `feel`：體感描述，摘要成一句話
    - `exhaustion`：從「輕鬆/普通/吃力/力竭」中選一個，根據日誌描述判斷
@@ -156,7 +170,7 @@ python3 <trainlog>/scripts/sync_journals.py \
   - 日誌沒逐組標明、但寫「從熱身組到…」這類的，依重量和次數判斷（例：11/18 硬舉 60×3、60×3、80×3 是熱身，100 起 1 下 1 下加重的是正式組）；看不出來就問使用者
   - 沒寫「熱身」、但比正式組重、次數少的那組（top set，例：3/16 坐姿踢腿機 72×2 再 59×10×3）是正式組，要留在 `sets`，不能自己推測成試重或熱身拿掉
 - 正式訓練中的輔助／復健動作要記：前臂復健（旋前、旋後、尺偏、橈偏）、肩胛／核心啟動（Y-raise、Pallof press、側棒式、單腳臀橋、單腳提踵、反向北歐彎舉…）、RDL 持槓握力練習
-- 同一動作但不同器械或單／雙側版本拆成不同動作（例：三樓蝴蝶機夾胸 vs Panatta Standing Multi-Flight；三樓腿伸展 vs 一樓分腿腿伸展），重量才可比較
+- 同一動作但不同器械或單／雙側版本拆成不同動作（例：三樓蝴蝶機夾胸 vs Panatta Standing Multi-Flight；三樓腿伸展 vs 一樓分腿腿伸展），重量才可比較；再用 `family` 把它們關聯起來（不要合併）
 - 腿「踢」和腿「勾」是相反的動作，不能混：
   - 坐姿踢腿機、坐姿腿踢、機械腿踢、器械腿踢、腿屈伸、腿伸展（Leg Extension）都是**腿屈伸**（練股四頭）→ 三樓雙腿 `leg_extension`、一樓分腿／單腳 `leg_extension_single`。2026-04-24 原文誤寫「坐姿腿推 32 公斤」也是這個。
   - 腿勾、腿後勾、腿捲（Leg Curl）是**腿後勾**（練腿後側）→ 坐姿 `leg_curl_seated`、趴姿 `leg_curl_prone`、一樓站姿單腳 `leg_curl_standing_single`
@@ -168,12 +182,15 @@ python3 <trainlog>/scripts/sync_journals.py \
   - 看不出來的照原文數字記，並問使用者
   - （2026-11-24 使用者指正：之前有 9 筆下肢雙手持啞鈴、1 筆臀推機只記了單邊，已改正）
   - **記單邊的動作要在 exercise 上設 `"per_side": true`**，網站的組數格就會顯示「kg/邊」，不會和合計混淆。左右分開出力、各自有重量的都算，不一定是單邊動作（雙手各一顆啞鈴、左右分開的器械或繩索也要設）；記合計的動作不設
+  - 記合計、但左右腳（手）輪流各做一次的動作（下肢雙手持啞鈴的後腳抬高蹲、分腿蹲等），exercise 設 `"reps_per_side": true`：次數照記每邊的次數，容量才會算兩邊
   - 新建 exercise 時先判斷要不要設 `per_side`；同一個動作某一天的記法和平常不同（例：平常雙手各一顆啞鈴，那天改用槓鈴記總重），在那筆 history 加 `"per_side": false`（或反過來加 `true`）覆蓋
 - 輔助引體／雙槓記輔助公斤數（負 64 公斤 → 64）；器械空重或自重記 0
 - `exhaustion` 依 RIR 判斷：RIR 0（或「半下」）→ 力竭；RIR 1–2 → 吃力；RIR 2–3 以上 → 普通；只有左邊力竭 → 力竭（左）
+- `feel` 裡的 RIR 用固定寫法，AI 查詢會解析成數字（`parseRir`）：`RIR 2`、`RIR 0–1`、`RIR 約 2`、`RIR 3+`、`RIR 半下`；指定組數寫在前面（`第三組 RIR 0–1`）；左右不同寫成 `右腳 RIR 0–1、左腳 RIR 2–3`（左／右＋手／腳／邊，每一邊都寫 `RIR`）。原文寫錯（例：「RRR2」）照意思寫成 `RIR 約 2`
 - 時間／距離類動作在 exercise 上設 `rep_unit`（`"秒"` 或 `"米"`），次數欄就填秒數或米數；重量 0 的顯示文字用 `zero_label`（`"空重"`／`"自重"`／`"空槓"`）
 - 預設格式無法表達時（例：「最重 85kg（教練課）」「4×10（槓高 7）」），在 history 加 `sets_display` 覆寫顯示文字
 - 有氧要記（分類「有氧」，exercise 設 `"kind": "cardio"`）：跑步機、操場跑、飛輪課、樓梯機、風扇車 HIIT、團體有氧課。history 用 `sets: []`、`minutes`（總分鐘，不知道就 `null`）、`distance_km`（可選）、`sets_display`（例：「35 分 · 4 km/h · 坡度 4 · 心率 ~130」）
+  - `sets_display` 用 ` · ` 分隔、固定寫法，AI 查詢會解析成數字（`parseCardio`）：速度 `4 km/h`（範圍 `4–4.5 km/h`；原文只寫「速度 4」的跑步機也寫成 `4 km/h`）、`坡度 3`、心率 `心率 ~130`／`心率 125–130`／`心率 120 出頭`／`心率 不到 130`、樓梯機與飛輪的檔位 `檔位 2`、功率 `500–600 W`、配速 `均速約 8.8 分/km`
 
 ### Step 3: 驗證資料
 

@@ -1,5 +1,5 @@
 // 單筆紀錄的計算（定義沿用 generate_v6.py；改動前要先問使用者）
-import type { Entry, Exercise, SetRow } from '../domain/types';
+import type { Dataset, Entry, Exercise, SetRow } from '../domain/types';
 
 /** 容量：Σ 重量×次數；任一組重量或次數為 null 就回傳 null；沒有組數回傳 null */
 export function calcVolume(sets: readonly SetRow[]): number | null {
@@ -10,6 +10,66 @@ export function calcVolume(sets: readonly SetRow[]): number | null {
     t += s.weightKg * s.reps;
   }
   return t;
+}
+
+type VolumeEx = Pick<Exercise, 'kind' | 'repUnit' | 'perSide' | 'repsPerSide'>;
+
+/** 用秒數或米數計次的動作（棒式、持槓、農夫走路…）：次數欄不是「下」，不算容量 */
+export const hasRepUnit = (ex: Pick<Exercise, 'repUnit'> | undefined) => !!ex?.repUnit;
+
+/**
+ * 容量倍數：左右兩邊都要算進去。
+ * - 重量記每邊（單手／單腳、雙手各一顆啞鈴、左右分開的器械）→ ×2
+ * - 重量記合計、次數記每邊（雙手持重、左右腳輪流）→ ×2
+ * 兩者不會疊成 ×4：雙手持重又左右腳輪流的動作，重量一律記兩顆合計（per_side 不標）。
+ */
+export function volumeFactor(entry: Pick<Entry, 'perSide'>, ex: VolumeEx | undefined): 1 | 2 {
+  return entryPerSide(entry, ex) || ex?.repsPerSide ? 2 : 1;
+}
+
+/**
+ * 一筆紀錄的容量（kg）：Σ 重量×次數×倍數（見 volumeFactor）。
+ * 有氧、用秒數或米數計次的動作沒有容量（null）；組數不完整時同 calcVolume 回傳 null。
+ */
+export function entryVolume(entry: Pick<Entry, 'sets' | 'perSide'>, ex: VolumeEx | undefined): number | null {
+  if (!ex || isCardio(ex) || hasRepUnit(ex)) return null;
+  const v = calcVolume(entry.sets);
+  return v == null ? null : v * volumeFactor(entry, ex);
+}
+
+/** 某筆紀錄的容量（從資料集找動作）；見 entryVolume */
+export const volOf = (ds: Pick<Dataset, 'exerciseById'>, e: Entry): number | null =>
+  entryVolume(e, ds.exerciseById.get(e.exerciseId));
+
+/** 用秒數或米數計次的動作：所有組的秒數或米數合計（沒有單位或組數不完整時 null） */
+export function unitTotal(
+  entry: Pick<Entry, 'sets'>,
+  ex: Pick<Exercise, 'repUnit'> | undefined,
+): number | null {
+  if (!hasRepUnit(ex) || !entry.sets.length || entry.sets.some((s) => s.reps == null)) return null;
+  return entry.sets.reduce((t, s) => t + (s.reps ?? 0), 0);
+}
+
+/** 推估 1RM 只採用這個次數以內的組（次數越多 Epley 越不準） */
+export const E1RM_MAX_REPS = 12;
+
+/**
+ * 推估 1RM（Epley：重量 × (1 + 次數/30)），取各組最大值、四捨五入到 0.1 kg。
+ * 只算有重量、1–12 下的組；有氧與秒數／米數動作沒有。重量照紀錄的記法（每邊或合計），和最高重量一致。
+ */
+export function estimate1rm(
+  sets: readonly SetRow[],
+  ex: Pick<Exercise, 'kind' | 'repUnit'> | undefined,
+): number | null {
+  if (!ex || isCardio(ex) || hasRepUnit(ex)) return null;
+  let best: number | null = null;
+  for (const s of sets) {
+    if (s.weightKg == null || s.weightKg <= 0 || s.reps == null || s.reps < 1 || s.reps > E1RM_MAX_REPS)
+      continue;
+    const v = s.reps === 1 ? s.weightKg : s.weightKg * (1 + s.reps / 30);
+    if (best == null || v > best) best = v;
+  }
+  return best == null ? null : Math.round(best * 10) / 10;
 }
 
 /** 最高重量：重量 > 0 的最大值；沒有則 null */

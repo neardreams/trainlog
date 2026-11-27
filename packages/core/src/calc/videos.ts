@@ -88,7 +88,7 @@ export function segmentsByExercise(video: DayVideo): { exerciseId: string; segme
 export const segmentAt = (segments: readonly VideoSegment[], sec: number): VideoSegment | undefined =>
   segments.find((s) => s.start <= sec && sec < s.end);
 
-/** 不公開影片的分享網址；start 為秒數，從該處開始播放 */
+/** 影片的分享網址；start 為秒數，從該處開始播放 */
 export function youtubeUrl(youtubeId: string, start = 0): string {
   const t = Math.floor(start);
   return `https://youtu.be/${youtubeId}${t > 0 ? `?t=${t}` : ''}`;

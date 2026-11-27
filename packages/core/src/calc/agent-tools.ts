@@ -320,7 +320,7 @@ export const AGENT_TOOLS: AgentTool[] = [
   {
     name: 'get_videos',
     description:
-      '訓練影片（YouTube 不公開影片）：給 date 回傳那天的影片與每一段（動作、第幾組、開始秒數、直接跳到那段的網址）；給 exercise 回傳這個動作所有拍了影片的日子；都不給則列出最近的影片。',
+      '訓練影片（YouTube 影片）：給 date 回傳那天的影片與每一段（動作、第幾組、開始秒數、直接跳到那段的網址）；給 exercise 回傳這個動作所有拍了影片的日子；都不給則列出最近的影片。',
     inputSchema: {
       type: 'object',
       properties: {

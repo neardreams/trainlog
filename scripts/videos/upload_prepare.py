@@ -120,7 +120,7 @@ for j in days:
     title = j["title"].replace("<", "＜").replace(">", "＞")
     assert len(title) <= 100 and len(desc) <= LIMIT and desc.split("\n\n")[1].startswith("0:00"), d
     m = {"date": d, "file": os.path.join(RENDER, j["file"]), "title": title, "description": desc,
-         "visibility": "unlisted", "recordingDate": d, "category": CATEGORY, "playlists": playlists_of[d]}
+         "visibility": "public", "recordingDate": d, "category": CATEGORY, "playlists": playlists_of[d]}
     manifest.append(m | {"metaHash": meta_hash(m)})
 
 if missing and not a.allow_missing:

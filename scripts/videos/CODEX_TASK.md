@@ -1,4 +1,4 @@
-# 任務：把訓練影片上傳到 YouTube「Marco's workout」頻道（不公開）
+# 任務：把訓練影片上傳到 YouTube「Marco's workout」頻道（影片公開、播放清單不公開）
 
 > 這份由 `scripts/videos/upload_prepare.py` 複製到 `local-media/training/_render/upload/`。上傳者（Codex）在那個資料夾執行。
 
@@ -10,7 +10,7 @@
   - `file`：影片的絕對路徑，1080p H.264
   - `title`
   - `description`：開頭是 YouTube 章節時間戳記，接著是每個動作的紀錄和日誌原文，最後一行是 hashtag
-  - `visibility`：一律是 `unlisted`
+  - `visibility`：一律是 `public`（2026-11-27 起；之前是 `unlisted`）
   - `recordingDate`：錄製日期 YYYY-MM-DD
   - `category`：類別，「運動」
   - `playlists`：要加入的播放清單標題
@@ -48,13 +48,13 @@
    5. **目標觀眾**：選「否，這不是為兒童打造的內容」。
    6. 「顯示更多」→ **錄製日期**：填 `recordingDate`；**類別**：選「運動」。
    7. 其他欄位（標記、影片元素等）都不要動。
-   8. **瀏覽權限**：選「不公開」（Unlisted），然後按「儲存」。
+   8. **瀏覽權限**：選「公開」（Public），然後按「儲存」。
    9. 確認都存好之後，在 `results.json` 加一筆：
       ```json
-      {"date": "2026-02-04", "file": "...", "videoId": "...", "url": "https://youtu.be/...", "visibility": "unlisted", "savedAt": "<時間>"}
+      {"date": "2026-02-04", "file": "...", "videoId": "...", "url": "https://youtu.be/...", "visibility": "public", "savedAt": "<時間>"}
       ```
       並在 `metadata-results.json` 加一筆：`{"date": "...", "videoId": "...", "metaHash": "<manifest 裡的 metaHash>", "savedAt": "<時間>"}`。
-4. 這次執行的第一支傳完，在 Studio 的「內容」清單確認標題正確、瀏覽權限是「不公開」，有任何不對就先修正再繼續。**不要打開觀看頁**（youtube.com/watch、youtu.be）：在 Windows 上 computer use 判斷不出那種分頁的網址時，會直接結束這次工作。章節要等 YouTube 處理完才會出現，不用等。
+4. 這次執行的第一支傳完，在 Studio 的「內容」清單確認標題正確、瀏覽權限是「公開」，有任何不對就先修正再繼續。**不要打開觀看頁**（youtube.com/watch、youtu.be）：在 Windows 上 computer use 判斷不出那種分頁的網址時，會直接結束這次工作。章節要等 YouTube 處理完才會出現，不用等。
 
 ## 停止條件
 - 出現「已達每日上傳上限」之類的訊息：把已完成的寫進 `results.json`，回報停在哪一天。

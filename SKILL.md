@@ -274,7 +274,7 @@ local-media/training/
    2. `python scripts/videos/upload_prepare.py --add-excerpts <AI 的輸出>`：只收逐行和日誌一致的原文；
    3. `python scripts/videos/upload_prepare.py` 產生 `manifest.json`、每天的 `.txt`、`playlists.json` 和 `CODEX_TASK.md`。說明欄要先給使用者看過再上傳。
       - 說明欄最後一行是 hashtag：每個動作各一個中文和英文（對照表在 `scripts/videos/hashtags.json`，新動作要補上），再加 `#重訓`。使用者想點 hashtag 參考別人的影片。
-      - 每支都會設定錄製日期（訓練日）、類別「運動」，並加入播放清單：全部訓練、每個月，以及錄過 3 天以上的動作各一個、教練課。播放清單一律不公開。
+      - 每支都會設定錄製日期（訓練日）、類別「運動」，並加入播放清單：全部訓練、每個月，以及錄過 3 天以上的動作各一個、教練課。影片一律公開（2026-11-27 起），播放清單一律不公開。
 6. 上傳（交給 Codex，模型一律 **gpt-6.1-terra**；`~/.codex/config.toml` 的預設是別的模型，所以 `-m` 一定要寫）：
    - 先在同一則訊息裡把說明欄給使用者看，並提醒上傳期間不要碰滑鼠鍵盤、不要按 Esc（每支約 10 分鐘），使用者同意後再開始。
    - 先開 Studio 分頁：`Start-Process chrome https://studio.youtube.com`（不要讓 Codex 開空白分頁或 watch 頁，會中斷）。
@@ -307,7 +307,7 @@ local-media/training/
 9. 照 Step 4、Step 5 commit（含 `data/videos.json`）並部署。
 
 ### 注意
-- 瀏覽權限：影片和播放清單一律上傳成「不公開」（`upload_prepare.py`、兩份 `CODEX_*TASK.md` 寫死）。Gemini 讀不到不公開的影片，所以 2026-11-26 使用者叫我把 11/24（`AsTODbFJReE`）改成公開試試看；其他還是不公開。要不要全部公開、預設要不要改，等使用者決定，**不要自己改任何影片的瀏覽權限**。補附加資料的那一輪（`CODEX_METADATA_TASK.md`）不會動瀏覽權限，公開的那支不會被改回去。網站不用登入，網頁、`sitemap.xml`、`llms.txt`、MCP 本來就會給出影片連結；公開多出來的是 YouTube 搜尋、推薦和 Google 影片搜尋，而說明欄有日誌原文。
+- 瀏覽權限：**影片一律公開、播放清單一律不公開**（使用者 2026-11-27 決定：Gemini 讀不到不公開的影片；當天把之前的影片全部改成公開，之後上傳也預設公開）。`upload_prepare.py` 寫死影片 `public`、播放清單 `unlisted`，`CODEX_TASK.md` 也照這樣寫。播放清單要不要公開，等使用者決定，**不要自己改**。補附加資料的那一輪（`CODEX_METADATA_TASK.md`）不會動影片的瀏覽權限。公開之後 YouTube 搜尋、推薦和 Google 影片搜尋都找得到，說明欄的日誌原文也會被搜到（使用者知道）。改既有影片的瀏覽權限用 Studio「內容」清單的批次編輯（全選 → 編輯 → 瀏覽權限），不用一支一支開。
 - 直式而且 3 分鐘以內的影片會被 YouTube 當成 Shorts，手機上不顯示章節、也不能跳到指定時間；`render.py` 會把這種日子改成橫式輸出。
 - 用未經 Google 稽核的 API 上傳，影片會被永久鎖成「私人」，所以上傳要透過 YouTube Studio 網頁。
 - YouTube 只靠說明欄的時間戳記產生章節（第一個從 0:00 開始、每段至少 10 秒）。「Marco's workout」頻道已在 2026-10-29 啟用進階功能，章節會在影片處理完後出現，每日上傳上限也已提高。

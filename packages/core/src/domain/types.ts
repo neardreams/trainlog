@@ -86,7 +86,7 @@ export interface VideoSegment {
   side?: '左' | '右';
 }
 
-/** 一個訓練日合併成的一支 YouTube 影片（不公開） */
+/** 一個訓練日合併成的一支 YouTube 影片（2026-11-27 起公開） */
 export interface DayVideo {
   date: DateStr;
   youtubeId: string;

@@ -155,7 +155,7 @@ type HistoryEntry = {
 ```
 `journals_raw.json`：`{ "YYYY-MM-DD": "日誌原文" }`，原文第一行通常是 `# 日期`，顯示時要去掉。
 
-`videos.json`（可選；沒有這個檔案時網站照常運作）：每個訓練日的影片合併成一支 YouTube 不公開影片，segments 是影片中的各段（也是 YouTube 說明欄的章節）。由 `scripts/videos/build_videos_json.py` 產生，不要手動編輯。
+`videos.json`（可選；沒有這個檔案時網站照常運作）：每個訓練日的影片合併成一支 YouTube 公開影片（2026-11-27 起；播放清單不公開），segments 是影片中的各段（也是 YouTube 說明欄的章節）。由 `scripts/videos/build_videos_json.py` 產生，不要手動編輯。
 ```ts
 type Videos = {
   videos: {

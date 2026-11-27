@@ -134,6 +134,11 @@ python3 <trainlog>/scripts/sync_journals.py \
 - `order`（**必填**，2026-11-26 起）：這筆是當天第幾個做的動作，1 起算，**依日誌的實際執行順序**（不是動作在 `exercises` 裡的順序）。同一天每筆都要有、剛好是 1..N（`pnpm validate:data` 會檢查）。新增一天時，那天所有動作一起編號；超級組照日誌提到的先後。熱身段落裡記成動作的正式訓練（推雪橇等）照它在日誌出現的位置排。這個順序影響分析（預疲勞後做的動作重量自然較低）。
 - 動作分類（新建 exercise 時**一定要填** `pattern` 與 `muscles`；值只能用下面列的，`packages/core/src/domain/taxonomy.ts` 是權威來源）：
   - `pattern`：`squat` 雙腳蹲（膝主導）、`lunge` 單腳蹲／分腿／弓箭步、`hinge` 髖鉸鏈（硬舉、RDL、擺盪）、`hip_thrust` 臀推／臀橋、`h_push` 水平推（臥推、胸推、伏地挺身、雙槓）、`v_push` 垂直推（肩推）、`h_pull` 水平拉（划船、面拉）、`v_pull` 垂直拉（下拉、引體）、`carry` 負重行走（農夫走路、推雪橇）、`core` 核心（棒式、捲腹、抗旋轉）、`isolation` 單關節（腿伸展、腿後勾、彎舉、側平舉、夾胸、提踵…）、`activation` 啟動／矯正（彈力繩外旋、風車、Arm Bar…）、`cardio` 有氧
+  - 介於兩種模式中間的動作：選最接近的一個，**不要為它新開模式**（只有一兩個動作用到，反而把統計拆散）；偏向另一邊的部分用肌群表達。拿不準時看使用者的日誌寫哪裡出力（2026-11-26 全部動作看過一輪後定下）：
+    - 拉：看手肘從哪裡開始、停在哪裡。從肩膀以上拉到身體兩側 → `v_pull`（滑輪下拉、輔助引體、Panatta High Row）；從肩膀高度拉到身體後面 → `h_pull`（划船、面拉、滑輪在胸口高度的單手划船）。High Row 原本標 `h_pull`，2026-11-26 改成 `v_pull`、主要肌群只留闊背
+    - 推：上斜推（上斜啞鈴臥推、上斜胸推機）→ `h_push`，前三角列主要肌群；地雷管肩推 → `v_push`，胸列主要；器械輔助雙槓 → `h_push`（肩關節動作像下斜臥推）
+    - 腿：膝主導還是髖主導看日誌感受，例如六角槓硬拉寫「由髖主導」「大腿後側最強烈」→ `hinge`；單腳 RDL → `hinge`
+    - 手肘不彎、只動肩關節的（直臂下拉）→ `isolation`；當熱身、一趟十幾米的推雪橇 → `carry`
   - `muscles`（主要肌群）／`secondary_muscles`（次要肌群，可省略）：股四頭、腿後、臀、內收、髖外展、小腿、下背、闊背、上背、斜方、胸、前三角、側三角、後三角、肩袖、前鋸、二頭、三頭、前臂、腹、腹斜、髖屈、心肺（有氧）。統計時主要肌群算 1 組、次要算 0.5 組，所以只列真正出力的
 - `family`（可選）：同一個動作換器材、換握法或單／雙邊的版本共用一個代號（例：`leg_extension` 坐姿踢腿機＋單腳腿伸展、`barbell_squat` 背槓／熊抱槓／SSB、`lateral_raise` 各種側平舉）。新動作若是既有動作的變化式，就沿用那個動作的 `family`（沒有就兩個一起加）。同型動作裡有一個 21 天內練過，其他的就不算久未練；AI 查歷程時也會一併參考
 - `archived`（可選）：使用者說不再做的動作設 `true`，不列入久未練。**只在使用者明確說不做了才設**，不要自己推測
@@ -284,15 +289,25 @@ local-media/training/
      "<codex.exe>" exec -m gpt-6.1-terra -c 'model_reasoning_effort="xhigh"' -c 'service_tier="fast"' --skip-git-repo-check - < CODEX_METADATA_TASK.md
      ```
    - 工具順序（使用者 2026-11-25 指定，寫在兩份 `CODEX_*TASK.md` 裡）：Codex **優先用 Chrome 工具**（ChatGPT Chrome 擴充功能的瀏覽器工具）；不能用時先用 computer use 在 Chrome 打開 ChatGPT 擴充功能、再重試 Chrome 工具；真的不行才退回 computer use 直接操作 Chrome 視窗（截圖、點擊、輸入，選檔時在 Windows「開啟」對話框輸入完整路徑）。從 Codex 26.1027 起，命令列啟動時 Chrome 工具都會回報「The browser access host is unavailable」：Chrome 工具要有桌面 app 傳給工作的存取通道（`BROWSER_USE_ACCESS_PIPE_PATH`、`BROWSER_USE_ACCESS_VERIFYING_IDENTITY`），`codex exec` 拿不到這兩個變數，而且這是權限檢查，不要繞過。這是已知問題（openai/codex#59334 等，2026-11-25 還沒修）。2026-11-25 用 CLI 0.167.0／app 26.1117 再試，打開 ChatGPT 側邊欄後也一樣失敗，所以實際上還是靠 computer use 上傳。要用 Chrome 工具只能在 Codex 桌面 app 裡開工作，貼上任務說明。用 computer use 時會佔用滑鼠和鍵盤。Claude in Chrome 一次只能交給網頁 10 MB 的檔案，沒辦法上傳這些影片。
-7. 產生影片清單並驗證：
+7. 檢查能不能播（版權）：
+   ```bash
+   PYTHONIOENCODING=utf-8 python scripts/videos/check_playback.py <這次上傳的日期…>
+   ```
+   健身房的背景音樂常被 Content ID 認領（2026-11-26 查過：116 支裡 14 支有聲明，都不是版權警告）。使用者不開營利，**只要能播就好，被消音也可以**，所以：
+   - 能播、能嵌入、台灣看得到 → 沒事。只在少數國家看不到（常見是 RU、BY）也不用處理，回報一句就好。
+   - 不能播、不能嵌入、或台灣看不到 → 告訴使用者是哪一支、哪首歌；處理方式是在 Studio 版權聲明頁「採取行動 → 清除歌曲」（只消音那段），**要使用者同意才做**。
+   - 腳本看不出只拿營利、不封鎖的聲明（對使用者沒影響）。要看是哪首歌：程式內建瀏覽器窗格已登入使用者的 YouTube（不要登出、不要改其他設定），Studio 先切到「Marco's workout」頻道（`UCYpNHz3J74z4LiJUQQ-uE2Q`；預設開的是個人頻道），開 `https://studio.youtube.com/video/<影片 ID>/claims`，或看「內容」清單的「限制」欄。
+   - 不要一次查上百支：連續抓觀看頁約 100 次後 YouTube 會暫時回 HTTP 429。
+8. 產生影片清單並驗證：
    ```bash
    python scripts/videos/build_videos_json.py
    pnpm validate:data
    ```
    驗證會檢查：每一段都對得到當天那個動作的訓練紀錄、組號不超過組數、時間不重疊。每支影片也要有 `canvas`（畫面尺寸，取自 `_render/<日期>.json`），網站的播放器用它決定直式或橫式。
-8. 照 Step 4、Step 5 commit（含 `data/videos.json`）並部署。
+9. 照 Step 4、Step 5 commit（含 `data/videos.json`）並部署。
 
 ### 注意
+- 瀏覽權限：影片和播放清單一律上傳成「不公開」（`upload_prepare.py`、兩份 `CODEX_*TASK.md` 寫死）。Gemini 讀不到不公開的影片，所以 2026-11-26 使用者叫我把 11/24（`AsTODbFJReE`）改成公開試試看；其他還是不公開。要不要全部公開、預設要不要改，等使用者決定，**不要自己改任何影片的瀏覽權限**。補附加資料的那一輪（`CODEX_METADATA_TASK.md`）不會動瀏覽權限，公開的那支不會被改回去。網站不用登入，網頁、`sitemap.xml`、`llms.txt`、MCP 本來就會給出影片連結；公開多出來的是 YouTube 搜尋、推薦和 Google 影片搜尋，而說明欄有日誌原文。
 - 直式而且 3 分鐘以內的影片會被 YouTube 當成 Shorts，手機上不顯示章節、也不能跳到指定時間；`render.py` 會把這種日子改成橫式輸出。
 - 用未經 Google 稽核的 API 上傳，影片會被永久鎖成「私人」，所以上傳要透過 YouTube Studio 網頁。
 - YouTube 只靠說明欄的時間戳記產生章節（第一個從 0:00 開始、每段至少 10 秒）。「Marco's workout」頻道已在 2026-10-29 啟用進階功能，章節會在影片處理完後出現，每日上傳上限也已提高。

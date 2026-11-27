@@ -46,7 +46,7 @@ import {
 import { HistorySheet, PEEK_ATTR } from '@/components/HistorySheet';
 import { AttrNum, ObjDate, ObjectHeader, ObjIcon, OTab, type Attr } from '@/components/ObjectHeader';
 import { RecordPanel } from '@/components/RecordPanel';
-import { Empty, ExhBadge, Panel, PartTile, Seg, Sets, SetsBrief } from '@/components/ui';
+import { Empty, ExhBadge, Panel, PartTile, Seg, Sets, SetsBrief, setSlotVars } from '@/components/ui';
 import {
   DayVideoAction,
   DayVideoButton,
@@ -108,6 +108,8 @@ function LineItem({
   const ds = useDs();
   const ex = exerciseOf(ds, e);
   const pr = entryPr(ds, e);
+  // 當天、熱身、前兩次的組數格等寬（PrevSessions 用同樣的 prevEntries）
+  const slots = setSlotVars([e, ...prevEntries(ds, e, 2)].map((entry) => ({ entry, ex })));
   const max = getMaxWeight(e.sets);
   const vol = entryVolume(e, ex);
   const total = unitTotal(e, ex);
@@ -180,7 +182,7 @@ function LineItem({
   ].filter(Boolean);
   const peek = () => onPeek(e);
   return (
-    <article className={clsx('li', peeked && 'on')} {...{ [PEEK_ATTR]: '' }}>
+    <article className={clsx('li', peeked && 'on')} style={slots} {...{ [PEEK_ATTR]: '' }}>
       <header className="li-h">
         <span
           className={clsx('ix', PART_DARK.has(ex.group) && 'dk')}

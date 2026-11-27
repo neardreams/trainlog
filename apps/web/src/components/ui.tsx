@@ -1,5 +1,5 @@
 // 小型共用元件（v14）：部位字塊、距今、力竭徽章、增減標籤、組數格、空狀態、分段控制
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import clsx from 'clsx';
 import {
   daysLabel,
@@ -104,11 +104,77 @@ export function Delta({
   );
 }
 
+/** 一格的文字：重量、次數，以及重量要不要標單位（0 或沒有重量時不標） */
+function chipText(b: SetBlock) {
+  return {
+    w: b.zeroLabel ?? (b.weightKg == null ? '—' : fmtN(b.weightKg)),
+    reps: b.reps == null ? '？' : Number.isInteger(b.reps) ? String(b.reps) : b.reps.toFixed(1),
+    kg: b.weightKg != null && b.weightKg > 0,
+  };
+}
+
 /**
- * 組數格（v14）：每組一格「重量 × 次數」。最重的組（重量不同時）墨色實心；破紀錄那一組綠色；
- * 影片拍到的組右上角有播放記號，點了從那一組開始播。mini 是表格裡的小格（不顯示組號）
+ * 字串在組數字型（窄體斜體、等寬數字）裡的寬度，單位 ch。ch 是照一般的「0」算的，等寬數字比它寬，
+ * 實測（2026-11-27）：數字 1.1ch、小數點 0.49ch、破折號 1.31ch、中文／全形問號 2.28ch；最後多留 0.05ch 避免捨入撐寬
  */
-/** 組數標記；有熱身組時，熱身組另起一列放在正式組上面（小尺寸不顯示熱身組） */
+const chWidth = (s: string) =>
+  [...s].reduce((n, c) => n + (c >= '0' && c <= '9' ? 1.1 : c === '.' ? 0.5 : c === '—' ? 1.35 : 2.3), 0.05);
+
+/**
+ * 組數格等寬：同一張卡（熱身、當天、前兩次）或同一個歷史面板裡，重量和次數各留最長那筆的寬度，
+ * 重量靠右、次數靠左，格子就一樣寬、數字上下對齊。回傳要放在外層容器的 CSS 變數
+ */
+export function setSlotVars(items: readonly { entry: Entry; ex: Exercise }[]): CSSProperties {
+  let w = 0;
+  let r = 0;
+  let kg = false;
+  for (const { entry, ex } of items) {
+    const sb = setBlocks(entry, ex);
+    for (const b of [...warmupBlocks(entry, ex), ...(sb.kind === 'blocks' ? sb.blocks : [])]) {
+      const t = chipText(b);
+      w = Math.max(w, chWidth(t.w));
+      r = Math.max(r, chWidth(t.reps));
+      kg ||= t.kg;
+    }
+  }
+  const ch = (n: number) => `${Math.round(n * 100) / 100}ch`;
+  return { '--sw': ch(w), '--sr': ch(r), '--sph': kg ? 'inline' : 'none' } as CSSProperties;
+}
+
+/**
+ * 格子內容：左上角淡色組號＋「重量 單位 × 次數 單位」。
+ * 重量 0／沒有重量的格子放一個看不見的單位佔位，和同一張卡裡有單位的格子一樣寬
+ */
+function ChipBody({ b, kg }: { b: SetBlock; kg: string }) {
+  const t = chipText(b);
+  return (
+    <>
+      <span className="n" aria-hidden="true">
+        {b.no}
+      </span>
+      <span className="v">
+        <span className="w">{t.w}</span>
+        {t.kg ? (
+          <small>{kg}</small>
+        ) : (
+          <small className="ph" aria-hidden="true">
+            {kg}
+          </small>
+        )}
+        <span className="x">×</span>
+        <span className="r">{t.reps}</span>
+        {b.unit && <small>{b.unit}</small>}
+      </span>
+    </>
+  );
+}
+
+/**
+ * 組數格（v14）：每組一格「重量 × 次數」，一行高；熱身組、正式組、前兩次（SetsBrief）都是同樣大小的格子，
+ * 左上角有淡色的組號。外層有 setSlotVars 時同一張卡的格子等寬。最重的組（重量不同時）墨色實心；
+ * 破紀錄那一組綠色；影片拍到的組右上角有播放記號，點了從那一組開始播。mini 是表格裡的小格（不顯示組號）。
+ * 有熱身組時，熱身組另起一列放在正式組上面（小尺寸不顯示熱身組）
+ */
 export function Sets({ entry, ex, mini }: { entry: Entry; ex: Exercise; mini?: boolean }) {
   const main = <WorkSets entry={entry} ex={ex} mini={mini} />;
   const wb = mini ? [] : warmupBlocks(entry, ex);
@@ -119,21 +185,14 @@ export function Sets({ entry, ex, mini }: { entry: Entry; ex: Exercise; mini?: b
       <div className="sets wu" aria-label="熱身組（不算進組數與容量）">
         <span className="wu-l">熱身</span>
         {wb.map((b) => {
-          const w = b.zeroLabel ?? (b.weightKg == null ? '—' : fmtN(b.weightKg));
-          const reps = b.reps == null ? '？' : fmtN(b.reps);
+          const { w, reps } = chipText(b);
           return (
             <span
               key={b.no}
               className="set wu"
               title={`熱身第 ${b.no} 組 · ${b.zeroLabel || b.weightKg == null ? `${w} · ` : `${w} kg × `}${reps} ${b.unit ?? '下'}（不算進組數與容量）`}
             >
-              <span className="v">
-                {w}
-                {b.weightKg != null && b.weightKg > 0 && <small>{kg}</small>}
-                <span className="x">×</span>
-                {reps}
-                {b.unit && <small>{b.unit}</small>}
-              </span>
+              <ChipBody b={b} kg={kg} />
             </span>
           );
         })}
@@ -143,7 +202,10 @@ export function Sets({ entry, ex, mini }: { entry: Entry; ex: Exercise; mini?: b
   );
 }
 
-/** 精簡組數（訓練紀錄卡的「前兩次」）：連續相同的組併成一格、前面標組數；文字紀錄（有氧等）只顯示一行 */
+/**
+ * 前兩次的組數（訓練紀錄卡最下方）：和當天的組數同樣的一行格子、一組一格不合併，
+ * 第 N 組和當天的第 N 組上下對齊；顏色較淡、不標最重。文字紀錄（有氧等）只顯示一行
+ */
 export function SetsBrief({ entry, ex }: { entry: Entry; ex: Exercise }) {
   const r = setBlocks(entry, ex);
   if (r.kind === 'text')
@@ -155,34 +217,14 @@ export function SetsBrief({ entry, ex }: { entry: Entry; ex: Exercise }) {
   if (r.kind !== 'blocks') return <span className="na">{r.kind === 'practice' ? '動作練習' : '—'}</span>;
   const ps = entryPerSide(entry, ex);
   const kg = weightUnit(ps);
-  const runs: { b: SetBlock; n: number }[] = [];
-  for (const b of r.blocks) {
-    const last = runs.at(-1);
-    const same =
-      last &&
-      last.b.weightKg === b.weightKg &&
-      last.b.reps === b.reps &&
-      last.b.unit === b.unit &&
-      last.b.zeroLabel === b.zeroLabel;
-    if (same) last.n++;
-    else runs.push({ b, n: 1 });
-  }
   return (
-    <div className="sets mini brief">
-      {runs.map(({ b, n }) => {
-        const w = b.zeroLabel ?? (b.weightKg == null ? '—' : fmtN(b.weightKg));
-        const reps = b.reps == null ? '？' : Number.isInteger(b.reps) ? String(b.reps) : b.reps.toFixed(1);
-        const tip = `${n > 1 ? `${n} 組 · ` : `第 ${b.no} 組 · `}${b.zeroLabel ? `${w} · ` : b.weightKg == null ? '' : `${ps ? '每邊 ' : ''}${w} kg × `}${reps} ${b.unit ?? '下'}`;
+    <div className="sets brief">
+      {r.blocks.map((b) => {
+        const { w, reps } = chipText(b);
+        const tip = `第 ${b.no} 組 · ${b.zeroLabel ? `${w} · ` : b.weightKg == null ? '' : `${ps ? '每邊 ' : ''}${w} kg × `}${reps} ${b.unit ?? '下'}`;
         return (
           <span key={b.no} className="set" title={tip}>
-            <span className="v">
-              {n > 1 && <small className="k">{n}組</small>}
-              {w}
-              {b.weightKg != null && b.weightKg > 0 && <small>{kg}</small>}
-              <span className="x">×</span>
-              {reps}
-              {b.unit && <small>{b.unit}</small>}
-            </span>
+            <ChipBody b={b} kg={kg} />
           </span>
         );
       })}
@@ -216,26 +258,10 @@ function WorkSets({ entry, ex, mini }: { entry: Entry; ex: Exercise; mini?: bool
   const chips = (
     <div className={clsx('sets', mini && 'mini')}>
       {r.blocks.map((b, i) => {
-        const w = b.zeroLabel ?? (b.weightKg == null ? '—' : fmtN(b.weightKg));
-        const reps = b.reps == null ? '？' : Number.isInteger(b.reps) ? String(b.reps) : b.reps.toFixed(1);
+        const { w, reps } = chipText(b);
         const pr = i === prIdx;
         const cls = clsx('set', pr ? 'pr' : b.level === 3 && 'heavy');
-        const no = String(b.no).padStart(2, '0');
-        const body = (
-          <>
-            <span className="n">
-              {no}
-              {pr && ' · 破紀錄'}
-            </span>
-            <span className="v">
-              {w}
-              {b.weightKg != null && b.weightKg > 0 && <small>{kg}</small>}
-              <span className="x">×</span>
-              {reps}
-              {b.unit && <small>{b.unit}</small>}
-            </span>
-          </>
-        );
+        const body = <ChipBody b={b} kg={kg} />;
         const tip = `第 ${b.no} 組 · ${b.zeroLabel ? `${w} · ` : b.weightKg == null ? '' : `${ps ? '每邊 ' : ''}${w} kg × `}${reps} ${b.unit ?? '下'}${pr ? ' · 破紀錄' : ''}`;
         const segs = bySet?.get(b.no);
         if (!ev || !segs?.length)

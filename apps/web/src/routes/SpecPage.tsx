@@ -374,7 +374,7 @@ export function SpecPage() {
           <Panel
             className="c6"
             title="組數標記"
-            meta="墨色＝最重的一組；綠色＝破紀錄；右上角播放記號＝這組有影片，點了直接播"
+            meta="一組一格、一行高，左上角淡色組號；同一張卡（熱身、正式、前兩次）的格子等寬、數字對齊；墨色＝最重的一組；綠色＝破紀錄；右上角播放記號＝這組有影片，點了直接播"
           >
             <div className="sp-pad">
               {vEntry && (

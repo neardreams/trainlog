@@ -18,7 +18,7 @@ import {
   type Exercise,
 } from '@trainlog/core';
 import { VolCell } from './RecordPanel';
-import { ExhBadge, GDot, Sets } from './ui';
+import { ExhBadge, GDot, Sets, setSlotVars } from './ui';
 import { EntryVideoButton } from './VideoLinks';
 import { Icon } from '@/lib/icons';
 import { PEEK_ATTR } from '@/lib/peek';
@@ -41,6 +41,8 @@ export function HistorySheet({
   const ds = useDs();
   const navigate = useNavigate();
   const desc = useMemo(() => [...entriesOf(ds, ex.id)].reverse(), [ds, ex.id]);
+  // 整個歷史面板的組數格等寬（同一個動作，一路往下看都對齊）
+  const slots = useMemo(() => setSlotVars(desc.map((entry) => ({ entry, ex }))), [desc, ex]);
   const prs = useMemo(
     () =>
       new Set(
@@ -114,7 +116,7 @@ export function HistorySheet({
               <dd>{s.lastDate ? `${md(s.lastDate)} · ${daysLabel(daysAgo(s.lastDate, TODAY))}` : '—'}</dd>
             </div>
           </dl>
-          <ol className="sheet-list">
+          <ol className="sheet-list" style={slots}>
             {desc.map((h) => {
               const f = h.date === focus;
               const note = [h.condition, h.cue].filter(Boolean).join('；');

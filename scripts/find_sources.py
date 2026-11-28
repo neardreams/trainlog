@@ -7,8 +7,11 @@
   python scripts/find_sources.py --import --dates 2026-11-07   # 只匯入指定日期（沒有日誌的日子要這樣指定）
 
 來源（可用參數或環境變數覆寫：--journal-dir / TRAINLOG_JOURNAL_DIR、--photos-dir / TRAINLOG_PHOTOS_DIR）：
-- 日誌：iCloud Drive 裡的「Apple日誌條目/Entries」，以及 FreeFileSync 複本 ../raw/Entries（可能落後）。
-  挑最新一篇日期最晚的那個（同日期時優先 iCloud）。
+- 日誌：
+  1. Taildrop：先跑 `tailscale file get` 把收件匣的檔案移到 ../raw/taildrop/，再找最新的 Apple 日誌匯出 ZIP
+     （../raw/taildrop/ 或「下載」資料夾，最近 60 天），只解出 Entries/*.html 到 ../raw/taildrop/<ZIP 檔名>/Entries。
+  2. iCloud Drive 裡的「Apple日誌條目/Entries」，以及 FreeFileSync 複本 ../raw/Entries（可能落後）。
+  挑最新一篇日期最晚的那個（同日期時優先 Taildrop，再來 iCloud）。--no-taildrop 跳過 1。
 - 影片：iCloud 照片資料夾（~/Pictures/iCloud Photos/Photos、各磁碟的 iCloudPhoto/Photos）。
   IMG 編號會重複使用，所以依拍攝時間（建立時間與修改時間取早的）篩選，用檔案大小判斷是否已匯入。
   預設只看 local-media 最後一個影片日（含）之後的檔案，可用 --since 往前。
@@ -23,7 +26,9 @@ import os
 import re
 import shutil
 import string
+import subprocess
 import sys
+import zipfile
 
 for _s in (sys.stdout, sys.stderr):
     _s.reconfigure(encoding="utf-8", errors="replace")
@@ -49,9 +54,103 @@ def load(path, default=None):
 
 # ── 日誌 ─────────────────────────────────────────────
 
-def journal_candidates():
-    """(路徑, 標籤)；iCloud 在前"""
+TAILDROP_DIR = os.path.join(os.path.dirname(REPO), "raw", "taildrop")
+ENTRY_IN_ZIP = re.compile(r"(?:^|/)Entries/(\d{4}-\d{2}-\d{2})\.html$")
+
+
+def tailscale_exe():
+    return shutil.which("tailscale") or next(
+        (p for p in (r"C:\Program Files\Tailscale\tailscale.exe",) if os.path.exists(p)), None)
+
+
+def receive_taildrop():
+    """把 Tailscale 收件匣（Taildrop）的檔案移到 raw/taildrop/；回傳 (收到的檔名, 錯誤訊息)"""
+    exe = tailscale_exe()
+    if not exe:
+        return [], "找不到 tailscale"
+    os.makedirs(TAILDROP_DIR, exist_ok=True)
+    try:
+        # 同名就覆蓋：每次匯出都是整本，新的取代舊的
+        r = subprocess.run([exe, "file", "get", "--verbose", "--conflict=overwrite", TAILDROP_DIR],
+                           capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=60)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        return [], f"tailscale file get 失敗：{e}"
+    got = []
+    for f in os.listdir(TAILDROP_DIR):
+        p = os.path.join(TAILDROP_DIR, f)
+        if os.path.isfile(p) and DATE_RE.match(f):
+            # 直接傳資料夾時，HTML 可能被攤平放在收件匣：收進 loose/Entries
+            dest = os.path.join(TAILDROP_DIR, "loose", "Entries")
+            os.makedirs(dest, exist_ok=True)
+            os.replace(p, os.path.join(dest, f))
+            got.append(f)
+    # Windows 版 Tailscale 收到的檔案直接存進「下載」：零散的 YYYY-MM-DD.html 複製（不搬走）進 loose/Entries
+    limit = dt.datetime.now().timestamp() - 60 * 86400
+    for p in glob.glob(os.path.join(HOME, "Downloads", "*.html")):
+        f = os.path.basename(p)
+        if not DATE_RE.match(f) or os.path.getmtime(p) < limit:
+            continue
+        dest = os.path.join(TAILDROP_DIR, "loose", "Entries", f)
+        if not os.path.exists(dest) or os.path.getmtime(dest) < os.path.getmtime(p):
+            os.makedirs(os.path.dirname(dest), exist_ok=True)
+            shutil.copy2(p, dest)
+            got.append(f)
+    if r.returncode == 0:
+        got += [ln for ln in (r.stdout + r.stderr).splitlines() if ln.strip() and not ln.startswith("moved 0/")]
+    return sorted(set(got)), (None if r.returncode == 0 else (r.stderr or r.stdout).strip())
+
+
+def taildrop_entry_dirs():
+    """raw/taildrop/ 底下所有含 YYYY-MM-DD.html 的 Entries 資料夾（ZIP 解出的、攤平收進來的、整個資料夾傳來的）"""
     out = []
+    for root, dirs, files in os.walk(TAILDROP_DIR):
+        html = [os.path.join(root, f) for f in files if DATE_RE.match(f)]
+        if os.path.basename(root) == "Entries" and html:
+            out.append((max(map(os.path.getmtime, html)), os.path.abspath(root)))
+    # 最近收到的在前：日期一樣時優先用最新那份（舊條目改過才看得到）
+    return [p for _, p in sorted(out, reverse=True)]
+
+
+def journal_zips():
+    """Taildrop 收到的、或 Windows 版 Tailscale 直接存到「下載」的 Apple 日誌匯出 ZIP（最近 60 天），新到舊"""
+    limit = dt.datetime.now().timestamp() - 60 * 86400
+    paths = glob.glob(os.path.join(TAILDROP_DIR, "*.zip")) + glob.glob(os.path.join(HOME, "Downloads", "*.zip"))
+    out = []
+    for p in paths:
+        try:
+            if os.path.getmtime(p) < limit:
+                continue
+            with zipfile.ZipFile(p) as z:
+                if any(ENTRY_IN_ZIP.search(n) for n in z.namelist()):
+                    out.append(p)
+        except (OSError, zipfile.BadZipFile):
+            continue
+    return sorted(out, key=os.path.getmtime, reverse=True)
+
+
+def extract_entries(zip_path):
+    """只解出 Entries/*.html 到 raw/taildrop/<ZIP 檔名>/Entries（照片等附件用不到）；已解過且 ZIP 沒變就跳過"""
+    stem = os.path.splitext(os.path.basename(zip_path))[0]
+    dest = os.path.join(TAILDROP_DIR, stem, "Entries")
+    stamp = os.path.join(TAILDROP_DIR, stem, ".from-zip")
+    sig = f"{os.path.abspath(zip_path)}|{os.path.getsize(zip_path)}|{int(os.path.getmtime(zip_path))}"
+    if os.path.isdir(dest) and os.path.exists(stamp) and open(stamp, encoding="utf-8").read() == sig:
+        return dest
+    os.makedirs(dest, exist_ok=True)
+    with zipfile.ZipFile(zip_path) as z:
+        for n in z.namelist():
+            m = ENTRY_IN_ZIP.search(n)
+            if m:  # 只用日期當檔名，不照 ZIP 裡的路徑寫檔
+                with z.open(n) as src, open(os.path.join(dest, f"{m.group(1)}.html"), "wb") as dst:
+                    shutil.copyfileobj(src, dst)
+    with open(stamp, "w", encoding="utf-8") as f:
+        f.write(sig)
+    return dest
+
+
+def journal_candidates(taildrop=False):
+    """(路徑, 標籤)；Taildrop 最優先，再來 iCloud"""
+    out = [(p, "Taildrop") for p in taildrop_entry_dirs()] if taildrop else []
     icloud = os.path.join(HOME, "iCloudDrive")
     for pat in ("Apple日誌條目/Entries", "*/Apple日誌條目/Entries", "*/*/Apple日誌條目/Entries"):
         out += [(p, "iCloud Drive") for p in sorted(glob.glob(os.path.join(icloud, pat)))]
@@ -71,15 +170,15 @@ def entry_dates(d):
     return sorted(m.group(1) for f in os.listdir(d) if (m := DATE_RE.match(f)))
 
 
-def pick_journal(override):
+def pick_journal(override, taildrop=False):
     if override:
         if not os.path.isdir(override):
             raise SystemExit(f"找不到日誌資料夾：{override}")
         return {"dir": os.path.abspath(override), "label": "指定", "dates": entry_dates(override)}, []
-    cands = [{"dir": p, "label": l, "dates": entry_dates(p)} for p, l in journal_candidates()]
+    cands = [{"dir": p, "label": l, "dates": entry_dates(p)} for p, l in journal_candidates(taildrop)]
     cands = [c for c in cands if c["dates"]]
     if not cands:
-        raise SystemExit("找不到 Apple 日誌匯出（Apple日誌條目/Entries）。用 --journal-dir 指定。")
+        raise SystemExit("找不到 Apple 日誌匯出（Taildrop 的 ZIP 或 Apple日誌條目/Entries）。用 --journal-dir 指定。")
     best = max(cands, key=lambda c: (c["dates"][-1], -cands.index(c)))
     return best, cands
 
@@ -173,9 +272,18 @@ def main():
     ap.add_argument("--import", dest="do_import", action="store_true", help="複製新影片到 <日期>/待確認/")
     ap.add_argument("--dates", help="只匯入這些日期（逗號分隔）；可包含沒有日誌的日子")
     ap.add_argument("--json", action="store_true")
+    ap.add_argument("--no-taildrop", action="store_true", help="不收 Taildrop、不看 ZIP")
     a = ap.parse_args()
 
-    journal, cands = pick_journal(a.journal_dir)
+    received, td_err, td_zip = [], None, None
+    use_td = not a.journal_dir and not a.no_taildrop
+    if use_td:
+        received, td_err = receive_taildrop()
+        zips = journal_zips()
+        if zips:
+            td_zip = zips[0]
+            extract_entries(td_zip)
+    journal, cands = pick_journal(a.journal_dir, use_td)
     synced = set(load(os.path.join(DATA, "journals_raw.json"), {}) or {})
     journal_days = set(journal["dates"])
     new_dates = [d for d in journal["dates"] if d not in synced]
@@ -228,6 +336,7 @@ def main():
                 copied.append({"date": day["date"], "from": c["path"], "to": os.path.relpath(dst, REPO)})
 
     out = {
+        "taildrop": {"received": received, "error": td_err, "zip": td_zip},
         "journal": {"dir": journal["dir"], "source": journal["label"], "latest": journal["dates"][-1],
                     "others": [{"dir": c["dir"], "source": c["label"], "latest": c["dates"][-1]}
                                for c in cands if c["dir"] != journal["dir"]]},
@@ -242,6 +351,12 @@ def main():
         print(json.dumps(out, ensure_ascii=False, indent=1))
         return
 
+    if received:
+        print(f"Taildrop 收到：{', '.join(received)}")
+    if td_err:
+        print(f"Taildrop：{td_err}")
+    if td_zip:
+        print(f"Taildrop／下載的日誌 ZIP：{td_zip}（{dt.datetime.fromtimestamp(os.path.getmtime(td_zip), TZ):%m/%d %H:%M}）")
     print(f"日誌來源：{journal['dir']}（{journal['label']}，最新 {journal['dates'][-1]}）")
     for o in out["journal"]["others"]:
         lag = "  ← 落後" if o["latest"] < journal["dates"][-1] else ""
